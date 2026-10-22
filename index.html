@@ -7558,10 +7558,25 @@ $('origem').addEventListener('input',reset);dest.addEventListener('input',reset)
 const norm=t=&gt;String(t).normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase().trim();
 const known={'limeira, sp':[-47.4017,-22.5646],'santa gertrudes, sp':[-47.5303,-22.4567],'aeroporto internacional de viracopos, campinas, sp':[-47.1345,-23.0074],'viracopos':[-47.1345,-23.0074]};
 async function json(url){const ctrl=new AbortController(),timer=setTimeout(()=&gt;ctrl.abort(),20000);try{const r=await fetch(url,{signal:ctrl.signal});if(!r.ok)throw Error('Serviço de rotas indisponível');return await r.json()}finally{clearTimeout(timer)}}
-async function locate(t){const k=norm(t);if(known[k])return known[k];const d=await json('https://nominatim.openstreetmap.org/search?format=jsonv2&amp;limit=1&amp;countrycodes=br&amp;q='+encodeURIComponent(t+', Brasil'));if(!d.length)throw Error('Não encontrei '+t+'. Informe cidade e estado.');return [Number(d[0].lon),Number(d[0].lat)]}
+async function locate(t){
+ const k=norm(t).replace(/[^a-z0-9]+/g,' ').trim();
+ // O nome apresentado pelo autocomplete deve ser reconhecido pelo calculador.
+ if(/viracopos|\bvcp\b/.test(k))return [-47.1345,-23.0074];
+ if(/cumbica|\bgru\b|aeroporto.*guarulhos/.test(k))return [-46.4731,-23.4356];
+ if(/congonhas|\bcgh\b/.test(k))return [-46.6566,-23.6261];
+ if(known[norm(t)])return known[norm(t)];
+ const clean=String(t).trim();
+ const queries=[clean,/brasil$/i.test(clean)?clean:clean+', Brasil'];
+ for(const q of [...new Set(queries)]){
+  try{const d=await json('https://nominatim.openstreetmap.org/search?format=jsonv2&amp;limit=3&amp;countrycodes=br&amp;q='+encodeURIComponent(q));
+   if(d.length&&Number.isFinite(+d[0].lon)&&Number.isFinite(+d[0].lat))return [+d[0].lon,+d[0].lat];
+  }catch(e){}
+ }
+ throw Error('Não encontrei '+t+'. Confira o endereço, cidade e estado.');
+}
 function line(parent,label,val){const r=document.createElement('div');r.className='mini';const a=document.createElement('span'),b=document.createElement('strong');a.textContent=label;b.textContent=val;r.append(a,b);parent.append(r)}
 let active=null;
-$('calcular').addEventListener('click',async e=&gt;{const mid=[...stops.querySelectorAll('input')].map(i=&gt;i.value.trim()).filter(Boolean);e.stopImmediatePropagation();const pts=[$('origem').value.trim(),...mid,dest.value.trim()];if(pts.some(x=&gt;!x)){alert('Preencha todos os locais.');return}const btn=$('calcular'),out=$('resultado');btn.disabled=true;btn.textContent='Calculando trechos…';$('salvarViagem').disabled=true;$('waEnviar').disabled=true;active=null;out.textContent='Consultando as distâncias rodoviárias dos '+(pts.length-1)+' trechos…';try{const coords=await Promise.all(pts.map(locate));let legs=[];for(let j=0;j&lt;coords.length-1;j++){const a=coords[j],b=coords[j+1],url='https://router.project-osrm.org/route/v1/driving/'+a.join(',')+';'+b.join(',')+'?overview=false&amp;steps=true';const d=await json(url);if(d.code!=='Ok'||!d.routes?.length)throw Error('Rota indisponível: '+pts[j]+' → '+pts[j+1]);const route=d.routes[0];legs.push({from:pts[j],to:pts[j+1],km:route.distance/1000,roads:[...new Set((route.legs||[]).flatMap(l=&gt;(l.steps||[]).map(x=&gt;x.ref||x.name).filter(Boolean)))].slice(0,8).join(', ')})}
+$('calcular').addEventListener('click',async e=&gt;{const mid=[...stops.querySelectorAll('input')].map(i=&gt;i.value.trim()).filter(Boolean);e.stopImmediatePropagation();const pts=[$('origem').value.trim(),...mid,dest.value.trim()];if($('tipo').value==='ida' &amp;&amp; pts[0] &amp;&amp; pts[pts.length-1] &amp;&amp; norm(pts[0])!==norm(pts[pts.length-1]))pts.push(pts[0]);if(pts.some(x=&gt;!x)){alert('Preencha todos os locais.');return}const btn=$('calcular'),out=$('resultado');btn.disabled=true;btn.textContent='Calculando trechos…';$('salvarViagem').disabled=true;$('waEnviar').disabled=true;active=null;out.textContent='Consultando as distâncias rodoviárias dos '+(pts.length-1)+' trechos…';try{const coords=await Promise.all(pts.map(locate));let legs=[];for(let j=0;j&lt;coords.length-1;j++){const a=coords[j],b=coords[j+1],url='https://router.project-osrm.org/route/v1/driving/'+a.join(',')+';'+b.join(',')+'?overview=false&amp;steps=true';const d=await json(url);if(d.code!=='Ok'||!d.routes?.length)throw Error('Rota indisponível: '+pts[j]+' → '+pts[j+1]);const route=d.routes[0];legs.push({from:pts[j],to:pts[j+1],km:route.distance/1000,roads:[...new Set((route.legs||[]).flatMap(l=&gt;(l.steps||[]).map(x=&gt;x.ref||x.name).filter(Boolean)))].slice(0,8).join(', ')})}
 const db=JSON.parse(localStorage.getItem('michelon_base_nova_v1')||'{}'),cfg={ida:2.1,vazio:1.5,volta:3,margem:10,...db.cfg};const km=legs.reduce((a,l)=&gt;a+l.km,0),tipo=$('tipo').value;let base=0;if(tipo==='volta')base=km*cfg.volta;else if(tipo==='buscar')base=legs.reduce((a,l,i)=&gt;a+l.km*(i===0?cfg.vazio:cfg.ida),0);else base=legs.reduce((a,l,i)=&gt;a+l.km*(i===legs.length-1?cfg.vazio:cfg.ida),0);
 out.replaceChildren();const h=document.createElement('h3');h.textContent='Cotação com '+legs.length+' trechos';out.append(h);legs.forEach((l,i)=&gt;line(out,(i+1)+'. '+l.from+' → '+l.to,l.km.toFixed(1)+' km'));line(out,'Distância total',km.toFixed(1)+' km');line(out,'Valor sem pedágios',fmt(base*(1+cfg.margem/100)));
 const note=document.createElement('p');note.className='muted';note.textContent='Pedágios: informe somente os valores realmente cobrados em cada trecho. Não há duplicação automática.';out.append(note);
