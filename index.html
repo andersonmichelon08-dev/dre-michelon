@@ -3027,6 +3027,9 @@ function finalizarCorrida(id){const h=getHist(),x=h.find(v=&gt;v.id===id);if(!x)
 function renderAgenda(){
  const box=$('agendaLista');if(!box)return;
  let h=getHist().slice();
+ // Reserva legada de referência: exibida na agenda, sem alterar o histórico financeiro.
+ const existeLegada=h.some(x=&gt;x.numero==='MV-2026-0001'||(x.data==='2026-12-03'&amp;&amp;String(x.cliente||'').trim().toLowerCase()==='bruno campos de oliveira'));
+ if(!existeLegada)h.push({id:-20261203,numero:'MV-2026-0001',data:'2026-12-03',dataRetorno:'2026-12-03',horaSaida:'08:00',horaRetorno:'22:00',cliente:'Bruno Campos de Oliveira',origem:'São Paulo',destino:'Atibaia (ida e volta)',passageiros:1,valor:1450.44,recebido:0,status:'confirmada',referenciaLegada:true});
  const f=$('agendaFiltro')?$('agendaFiltro').value:'proximas',hoje=new Date().toISOString().slice(0,10);
  if(f==='proximas')h=h.filter(x=&gt;(x.status==='confirmada'||x.status==='pago'||x.status==='em_andamento')&amp;&amp;(x.data||'')&gt;=hoje);
  else if(f!=='todas')h=h.filter(x=&gt;x.status===f);
@@ -3042,7 +3045,8 @@ function renderAgenda(){
     👥 ${x.passageiros||'-'} passageiro(s) • 💵 ${brl(valor)} • 
     💰 Recebido: &lt;b&gt;${brl(recebido)}&lt;/b&gt; • Saldo: &lt;b&gt;${brl(saldo)}&lt;/b&gt;
     ${x.fone?` • 📱 ${x.fone}`:''}${x.obs?` • &lt;small&gt;📝 ${x.obs}&lt;/small&gt;`:''}&lt;/div&gt;
-    ${x.status!=='cancelada'?`&lt;div class=&quot;btns&quot; style=&quot;margin-top:9px&quot;&gt;
+    ${x.referenciaLegada?'&lt;div class=&quot;note&quot; style=&quot;margin-top:8px&quot;&gt;Reserva preservada do backup · pagamento pendente · sem lançamento financeiro.&lt;/div&gt;':''}
+    ${!x.referenciaLegada&amp;&amp;x.status!=='cancelada'?`&lt;div class=&quot;btns&quot; style=&quot;margin-top:9px&quot;&gt;
       ${saldo&gt;0?`&lt;button class=&quot;mini primary&quot; onclick=&quot;registrarSinal(${x.id})&quot;&gt;💰 Registrar recebimento&lt;/button&gt;`:''}
       ${x.fone?`&lt;button class=&quot;mini secondary&quot; onclick=&quot;whatsReserva(${x.id})&quot;&gt;📲 WhatsApp&lt;/button&gt;`:''}
       ${!x.concluida&amp;&amp;x.status!=='em_andamento'?`&lt;button class=&quot;mini driver-main&quot; onclick=&quot;iniciarCorrida(${x.id})&quot;&gt;🚗 INICIAR VIAGEM&lt;/button&gt;`:''}
@@ -3052,7 +3056,7 @@ function renderAgenda(){
       ${x.concluida?`&lt;button class=&quot;mini secondary&quot; onclick=&quot;enviarRecibo(${x.id})&quot;&gt;🧾 ENVIAR RECIBO&lt;/button&gt;`:''}
       ${!x.concluida?`&lt;button class=&quot;mini danger&quot; onclick=&quot;cancelarReserva(${x.id})&quot;&gt;Cancelar&lt;/button&gt;`:''}
     &lt;/div&gt;`:''}
-    &lt;div style=&quot;margin-top:7px&quot;&gt;&lt;button class=&quot;mini danger&quot; onclick=&quot;excluirReserva(${x.id})&quot;&gt;🗑️ Excluir reserva&lt;/button&gt;&lt;/div&gt;
+    ${!x.referenciaLegada?`&lt;div style=&quot;margin-top:7px&quot;&gt;&lt;button class=&quot;mini danger&quot; onclick=&quot;excluirReserva(${x.id})&quot;&gt;🗑️ Excluir reserva&lt;/button&gt;&lt;/div&gt;`:&#x27;&#x27;}
    &lt;/div&gt;`
  }).join(''):'&lt;div class=&quot;note&quot;&gt;Nenhum agendamento para este filtro.&lt;/div&gt;'
 }
