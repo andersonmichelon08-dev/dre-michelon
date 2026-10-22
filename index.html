@@ -963,45 +963,61 @@ render();
 <style id="dre-cotacao-sem-pedagio-style">#dreManualBox{background:#e9f6f2;border:1px solid #b9dcd1;border-radius:14px;padding:14px;margin:12px 0;display:grid;gap:10px}#dreManualBox label{display:grid;gap:5px;font-weight:700}#dreManualBox .drecheck{display:flex;align-items:center;gap:8px}#dreManualBox .drecheck input{width:22px;min-height:22px}#dreManualBox button{min-height:48px}#dreManualMsg{font-size:13px;color:#145a47}</style>
 <script id="dre-cotacao-sem-pedagio-fix">(()=>{'use strict';
 const $=id=>document.getElementById(id), money=v=>Number(v).toLocaleString('pt-BR',{style:'currency',currency:'BRL'});
-let approved=null;
-const box=document.createElement('div');box.id='dreManualBox';box.innerHTML='<strong>✅ Finalizar cotação com distância conferida</strong><span style="font-size:13px">Se a consulta automática não funcionar, confira os quilômetros no Google Maps e preencha aqui. Para rota sem pedágio, marque a confirmação abaixo.</span><label>Distância da ida (km)<input id="dreKmIda" type="number" min="0.1" step="0.1" placeholder="Km conferidos da ida"></label><label>Distância do retorno (km)<input id="dreKmVolta" type="number" min="0.1" step="0.1" placeholder="Km conferidos do retorno"></label><label>Pedágio total ida e volta (R$)<input id="drePedTotal" type="number" min="0" step="0.01" value="0"></label><label class="drecheck"><input id="dreSemPedagio" type="checkbox"> Confirmo que esta rota não tem pedágio</label><button class="primary" id="dreConfirmarCotacao" type="button">Confirmar valores e liberar botões</button><span id="dreManualMsg" role="status"></span>';
+const KEY='michelon_base_nova_v1';let approved=null;
+const box=document.createElement('div');box.id='dreManualBox';
+box.innerHTML='<strong>✅ Finalizar cotação com distância conferida</strong><span style="font-size:13px">Confira os quilômetros da ida e do retorno. Se a rota estiver cadastrada, as distâncias serão preenchidas. Para rota sem pedágio, marque a confirmação abaixo.</span><label>Distância da ida (km)<input id="dreKmIda" type="number" min="0.1" step="0.1" placeholder="Km conferidos da ida"></label><label>Distância do retorno (km)<input id="dreKmVolta" type="number" min="0.1" step="0.1" placeholder="Km conferidos do retorno"></label><label>Pedágio total ida e volta (R$)<input id="drePedTotal" type="number" min="0" step="0.01" value="0"></label><label class="drecheck"><input id="dreSemPedagio" type="checkbox"> Confirmo que esta rota não tem pedágio</label><button class="primary" id="dreConfirmarCotacao" type="button">Confirmar valores e liberar botões</button><span id="dreManualMsg" role="status" aria-live="polite"></span>';
 const result=$('resultado');result.parentNode.insertBefore(box,result.nextSibling);
-function invalidate(){approved=null;$('salvarViagem').disabled=true;$('waEnviar').disabled=true}
+function invalidate(){approved=null;$('salvarViagem').disabled=true;$('waEnviar').disabled=true;$('waEnviar').dataset.manualQuote='';$('dreManualMsg').textContent='';}
+const normalize=s=>String(s||'').normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase().replace(/[^a-z0-9]/g,' ').replace(/\s+/g,' ').trim();
+function match(a,b,aliases=''){const q=normalize(a);return q&&[b,...String(aliases).split(',')].some(x=>{const v=normalize(x);return v&&(q===v||(q.length>=4&&v.includes(q))||(v.length>=4&&q.includes(v)))});}
+function prefill(){
+ const origin=$('origem').value.trim(),dest=$('destino').value.trim();if(!origin||!dest)return;
+ let db;try{db=JSON.parse(localStorage.getItem(KEY)||'{}')}catch{return}
+ const routes=Array.isArray(db.routes)?db.routes:[];
+ const direct=routes.find(r=>match(origin,r.origem)&&match(dest,r.destino,r.aliases));
+ const reverse=routes.find(r=>match(dest,r.origem)&&match(origin,r.destino,r.aliases));
+ const r=direct||reverse;if(!r)return;
+ const ida=Number(direct?r.ida:r.volta),volta=Number(direct?r.volta:r.ida);
+ if(ida>0&&volta>0){$('dreKmIda').value=ida;$('dreKmVolta').value=volta;$('dreManualMsg').textContent='Distâncias recuperadas da tabela de rotas. Confira antes de confirmar.';}
+ if(r.pedStatus==='nenhum'){$('dreSemPedagio').checked=true;$('drePedTotal').value='0';$('drePedTotal').readOnly=true;}
+ else if(r.pedStatus==='valor'){$('dreSemPedagio').checked=false;$('drePedTotal').readOnly=false;$('drePedTotal').value=(Number(r.pedIda)||0)+(Number(r.pedVolta)||0);}
+}
 ['origem','destino','tipo','dreKmIda','dreKmVolta','drePedTotal','dreSemPedagio'].forEach(id=>$(id).addEventListener('input',invalidate));
 $('dreSemPedagio').addEventListener('change',()=>{if($('dreSemPedagio').checked){$('drePedTotal').value='0';$('drePedTotal').readOnly=true}else $('drePedTotal').readOnly=false});
-$('dreConfirmarCotacao').addEventListener('click',()=>{const origin=$('origem').value.trim(),dest=$('destino').value.trim(),ida=Number($('dreKmIda').value),volta=Number($('dreKmVolta').value),toll=Number($('drePedTotal').value),sem=$('dreSemPedagio').checked;
-if(!origin||!dest||!$('dreKmIda').value||!$('dreKmVolta').value||!(ida>0)||!(volta>0)||!Number.isFinite(toll)||toll<0||(!sem&&!$('drePedTotal').value)){alert('Confira origem, destino, quilômetros e pedágios.');return}
-if(sem&&toll!==0){alert('Rota sem pedágio precisa ter valor R$ 0,00.');return}
-const db=JSON.parse(localStorage.getItem('michelon_base_nova_v1')||'{}'),c={ida:2.1,vazio:1.5,volta:3,margem:10,...db.cfg},tipo=$('tipo').value;
-const base=tipo==='ida'?ida*c.ida+volta*c.vazio:tipo==='buscar'?ida*c.vazio+volta*c.ida:(ida+volta)*c.volta;
-const total=Math.round((base+toll)*(1+Number(c.margem)/100)*100)/100;
-if(!Number.isFinite(total)||total<=0){alert('Valor final inválido. Confira os ajustes.');return}
-approved={origin,dest,tipo,km:ida+volta,total,toll,road:'Distâncias conferidas pelo usuário',manual:true,points:[origin,dest]};
-$('resultado').innerHTML='';for(const [name,value] of [['Origem',origin],['Destino',dest],['Ida',ida.toFixed(1)+' km'],['Retorno',volta.toFixed(1)+' km'],['Pedágios',money(toll)],['Orçamento final',money(total)]]){const line=document.createElement('div');line.className='mini';const a=document.createElement('span'),b=document.createElement('strong');a.textContent=name;b.textContent=value;line.append(a,b);$('resultado').append(line)}
-$('dreManualMsg').textContent='Orçamento confirmado. Toque em Salvar na agenda ou Enviar pelo WhatsApp.';$('salvarViagem').disabled=false;$('waEnviar').disabled=false;
+['origem','destino'].forEach(id=>$(id).addEventListener('change',()=>{if(!$('dreKmIda').value&&!$('dreKmVolta').value)prefill()}));
+$('calcular').addEventListener('click',()=>{invalidate();if(!$('dreKmIda').value&&!$('dreKmVolta').value)prefill();},true);
+$('dreConfirmarCotacao').addEventListener('click',()=>{
+ if(!$('dreKmIda').value&&!$('dreKmVolta').value)prefill();
+ const origin=$('origem').value.trim(),dest=$('destino').value.trim(),ida=Number($('dreKmIda').value),volta=Number($('dreKmVolta').value),toll=Number($('drePedTotal').value),sem=$('dreSemPedagio').checked;
+ if(!origin||!dest){$('dreManualMsg').textContent='Preencha origem e destino.';alert('Preencha origem e destino.');return}
+ if(!($('dreKmIda').value&&$('dreKmVolta').value&&ida>0&&volta>0&&Number.isFinite(ida)&&Number.isFinite(volta))){$('dreManualMsg').textContent='Faltam os quilômetros da ida e do retorno. Preencha os dois campos para liberar os botões.';alert('Informe os quilômetros conferidos da ida e do retorno. Marcar sem pedágio não substitui as distâncias.');$('dreKmIda').focus();return}
+ if(!Number.isFinite(toll)||toll<0||(!sem&&!$('drePedTotal').value)){alert('Confira o valor do pedágio ou marque que a rota não tem pedágio.');return}
+ if(sem&&toll!==0){alert('Rota sem pedágio precisa ter valor R$ 0,00.');return}
+ let db={};try{db=JSON.parse(localStorage.getItem(KEY)||'{}')}catch{}const c={ida:2.1,vazio:1.5,volta:3,margem:10,...db.cfg},tipo=$('tipo').value;
+ const base=tipo==='ida'?ida*c.ida+volta*c.vazio:tipo==='buscar'?ida*c.vazio+volta*c.ida:(ida+volta)*c.volta;
+ const total=Math.round((base+toll)*(1+Number(c.margem)/100)*100)/100;
+ if(!Number.isFinite(total)||total<=0){alert('Valor final inválido. Confira os ajustes.');return}
+ approved={origin,dest,tipo,km:ida+volta,kmIda:ida,kmVolta:volta,total,toll,road:'Distâncias conferidas',manual:true,points:[origin,dest]};
+ result.replaceChildren();for(const [name,value] of [['Origem',origin],['Destino',dest],['Ida',ida.toFixed(1)+' km'],['Retorno',volta.toFixed(1)+' km'],['Pedágios',money(toll)],['Orçamento final',money(total)]]){const line=document.createElement('div');line.className='mini';const a=document.createElement('span'),b=document.createElement('strong');a.textContent=name;b.textContent=value;line.append(a,b);result.append(line)}
+ $('dreManualMsg').textContent='Orçamento confirmado. Os botões de agenda e WhatsApp estão liberados.';
+ $('salvarViagem').disabled=false;$('waEnviar').disabled=false;
 });
-// Captura no documento antes dos handlers antigos: evita conflitos entre versoes.
+// Intercepta os comandos antigos para não disparar duas ações nem enviar valores desatualizados.
 document.addEventListener('click',function(e){
- const target=e.target.closest && e.target.closest('#salvarViagem,#waEnviar');
- if(!target || !approved)return;
+ const target=e.target.closest&&e.target.closest('#salvarViagem,#waEnviar');if(!target||!approved)return;
  e.preventDefault();e.stopPropagation();e.stopImmediatePropagation();
  if(target.id==='salvarViagem'){
-  try{
-   const key='michelon_base_nova_v1';const db=JSON.parse(localStorage.getItem(key)||'{}');
-   db.trips=Array.isArray(db.trips)?db.trips:[];
+  try{const db=JSON.parse(localStorage.getItem(KEY)||'{}');db.trips=Array.isArray(db.trips)?db.trips:[];
    const id=(window.crypto&&crypto.randomUUID)?crypto.randomUUID():'cot-'+Date.now();
    db.trips.unshift({...approved,id,date:new Date().toLocaleDateString('pt-BR'),status:'Cotação'});
-   localStorage.setItem(key,JSON.stringify(db));
+   localStorage.setItem(KEY,JSON.stringify(db));
    $('dreManualMsg').textContent='Cotação salva na agenda com sucesso.';
-   alert('Cotação salva na agenda e em Minhas Viagens.');
-   document.querySelector('[data-page="agenda"]').click();
-  }catch(err){alert('Erro ao salvar cotação: '+err.message)}
+   alert('Cotação salva na Agenda e em Minhas Viagens.');document.querySelector('[data-page="agenda"]').click();
+  }catch(err){$('dreManualMsg').textContent='Não foi possível salvar: '+err.message;alert('Erro ao salvar cotação: '+err.message)}
  }else{
   const msg=['*Michelon Viagens Executivas*','Proposta de viagem','Origem: '+approved.origin,'Destino: '+approved.dest,'Pedágios: '+money(approved.toll),'Valor: '+money(approved.total),'Confirme a disponibilidade para agendar.'].join('\n');
-  const url='https://wa.me/?text='+encodeURIComponent(msg);
-  $('dreManualMsg').textContent='Abrindo WhatsApp…';
-  // Navegacao na mesma aba evita bloqueio de pop-up do Safari no iPhone.
-  window.location.href=url;
+  $('dreManualMsg').textContent='Abrindo WhatsApp…';window.location.assign('https://wa.me/?text='+encodeURIComponent(msg));
  }
 },true);
+prefill();
 })();</script></body></html>
