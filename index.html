@@ -999,6 +999,12 @@ $('dreConfirmarCotacao').addEventListener('click',()=>{
  if(!Number.isFinite(total)||total<=0){alert('Valor final inválido. Confira os ajustes.');return}
  approved={origin,dest,tipo,km:ida+volta,kmIda:ida,kmVolta:volta,total,toll,road:'Distâncias conferidas',manual:true,points:[origin,dest]};
  result.replaceChildren();for(const [name,value] of [['Origem',origin],['Destino',dest],['Ida',ida.toFixed(1)+' km'],['Retorno',volta.toFixed(1)+' km'],['Pedágios',money(toll)],['Orçamento final',money(total)]]){const line=document.createElement('div');line.className='mini';const a=document.createElement('span'),b=document.createElement('strong');a.textContent=name;b.textContent=value;line.append(a,b);result.append(line)}
+ // Guarda somente a rota conferida, para reutilizar as distâncias na próxima cotação.
+ try { const stored=JSON.parse(localStorage.getItem(KEY)||'{}');stored.routes=Array.isArray(stored.routes)?stored.routes:[];
+ const idx=stored.routes.findIndex(r=>normalize(r.origem)===normalize(origin)&&normalize(r.destino)===normalize(dest));
+ const route={...(idx>=0?stored.routes[idx]:{}),origem:origin,destino:dest,ida,volta,pedStatus:sem?'nenhum':'valor',pedIda:toll/2,pedVolta:toll/2};
+ if(idx>=0)stored.routes[idx]=route;else stored.routes.push({...route,id:'rota-'+Date.now()});
+ localStorage.setItem(KEY,JSON.stringify(stored));}catch(err){console.warn('Rota não persistida',err)}
  $('dreManualMsg').textContent='Orçamento confirmado. Os botões de agenda e WhatsApp estão liberados.';
  $('salvarViagem').disabled=false;$('waEnviar').disabled=false;
 });
@@ -1012,11 +1018,11 @@ document.addEventListener('click',function(e){
    db.trips.unshift({...approved,id,date:new Date().toLocaleDateString('pt-BR'),status:'Cotação'});
    localStorage.setItem(KEY,JSON.stringify(db));
    $('dreManualMsg').textContent='Cotação salva na agenda com sucesso.';
-   alert('Cotação salva na Agenda e em Minhas Viagens.');document.querySelector('[data-page="agenda"]').click();
+   alert('Cotação salva na Agenda e em Minhas Viagens.');document.querySelector('[data-page="agenda"]')?.click();
   }catch(err){$('dreManualMsg').textContent='Não foi possível salvar: '+err.message;alert('Erro ao salvar cotação: '+err.message)}
  }else{
   const msg=['*Michelon Viagens Executivas*','Proposta de viagem','Origem: '+approved.origin,'Destino: '+approved.dest,'Pedágios: '+money(approved.toll),'Valor: '+money(approved.total),'Confirme a disponibilidade para agendar.'].join('\n');
-  $('dreManualMsg').textContent='Abrindo WhatsApp…';window.location.assign('https://wa.me/?text='+encodeURIComponent(msg));
+  $('dreManualMsg').textContent='Abrindo WhatsApp…';window.location.href='https://wa.me/?text='+encodeURIComponent(msg);
  }
 },true);
 prefill();
