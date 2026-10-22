@@ -8,7 +8,16 @@ header small{font-size:clamp(8px,2.4vw,10px);letter-spacing:1px;overflow-wrap:an
 nav{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:7px;padding:9px}
 nav button{min-width:0;width:100%;font-size:clamp(11px,3.3vw,13px);padding:12px 5px;white-space:normal;overflow-wrap:anywhere}
 iframe{width:100%;max-width:100%;min-width:0}
-</style></head><body><header><b>MICHELON</b><small>DRE · VIAGENS EXECUTIVAS &amp; GESTÃO</small></header><nav><button aria-selected="true" class="active" id="bv" onclick="show('v')">🚘 Minhas Viagens</button><button aria-selected="false" id="bf" onclick="show('f')">💳 Meu Financeiro</button><button aria-selected="false" id="bc" onclick="show('c')">🛣️ Cotação e pedágios</button><button id="backupSeguro" onclick="exportarBackupDRE()" type="button">💾 Backup de segurança</button></nav><iframe allow="geolocation; clipboard-write; web-share" class="active" id="v" loading="eager" srcdoc="&lt;!doctype html&gt;
+</style><style>
+/* Refinamento visual: somente uma identidade e menu principal visíveis. */
+body > header{display:none!important}
+body > nav{display:none;grid-template-columns:repeat(2,minmax(0,1fr));padding:8px 10px;background:#fff;border-bottom:1px solid #dce5ed}
+body > nav.dre-open{display:grid}
+#dreModuleBar{display:flex;align-items:center;justify-content:space-between;gap:8px;padding:7px 11px;background:#fff;border-bottom:1px solid #dce5ed}
+#dreModuleBar strong{font-size:12px;color:#203e5c;letter-spacing:.2px}
+#dreModuleBar button{width:auto;min-width:120px;border:1px solid #d6e0eb;background:#f1f5fa;color:#234364;border-radius:9px;padding:8px 12px;font-size:12px;font-weight:800}
+body > iframe{height:calc(100dvh - 49px);min-height:550px}
+</style></head><body><header><b>MICHELON</b><small>DRE · VIAGENS EXECUTIVAS &amp; GESTÃO</small></header><div id="dreModuleBar"><strong>MICHELON · DRE</strong><button aria-controls="dreMainNav" aria-expanded="false" id="dreModulesToggle" type="button">☰ Módulos e backup</button></div><nav id="dreMainNav"><button aria-selected="true" class="active" id="bv" onclick="show('v')">🚘 Minhas Viagens</button><button aria-selected="false" id="bf" onclick="show('f')">💳 Meu Financeiro</button><button aria-selected="false" id="bc" onclick="show('c')">🛣️ Cotação e pedágios</button><button id="backupSeguro" onclick="exportarBackupDRE()" type="button">💾 Backup de segurança</button></nav><iframe allow="geolocation; clipboard-write; web-share" class="active" id="v" loading="eager" srcdoc="&lt;!doctype html&gt;
 &lt;html lang=&quot;pt-BR&quot;&gt;
 &lt;head&gt;
 &lt;meta charset=&quot;utf-8&quot;&gt;
@@ -5647,7 +5656,7 @@ input:focus,select:focus,textarea:focus{outline:2px solid #bfdbfe!important;bord
 .hidden-values .money-value{filter:blur(8px);user-select:none}
 @media(max-width:1100px){.cards{grid-template-columns:repeat(2,1fr)!important}#homeInsights{grid-template-columns:1fr}.app-layout{grid-template-columns:235px 1fr!important}.salary-pill{display:none}}
 @media(max-width:760px){.app-layout{display:block!important}.actions{position:relative!important;height:auto!important}.main-content{padding:0 10px 20px!important}.modern-top{margin:0 -10px 12px}.cards{grid-template-columns:1fr!important}.privacy-pill{margin-left:0}.profile-pill{display:none}.bank-mini{min-width:175px}}
-.analytics-grid{display:grid;grid-template-columns:1.05fr 1.05fr .8fr;gap:14px;margin-top:14px}.analytics-card{background:#fff;border:1px solid var(--line);border-radius:16px;padding:16px;box-shadow:0 6px 18px rgba(31,73,125,.06);min-height:250px}.analytics-card h3{margin:0 0 14px}.bar-chart{height:175px;display:flex;align-items:flex-end;gap:8px;border-bottom:1px solid #dce6f0;padding:8px 6px 0}.bar-month{flex:1;display:flex;align-items:flex-end;justify-content:center;gap:3px;height:100%;position:relative}.bar{width:11px;border-radius:5px 5px 0 0;min-height:2px}.bar.in{background:#10a66a}.bar.out{background:#ef3f46}.bar-label{position:absolute;bottom:-25px;font-size:11px;color:#6b7d94}.chart-legend{display:flex;gap:15px;font-size:12px;margin:4px 0 10px;color:#5e718a}.dot{width:9px;height:9px;border-radius:50%;display:inline-block;margin-right:5px}.dot.in{background:#10a66a}.dot.out{background:#ef3f46}.cat-list{display:grid;gap:9px}.cat-row{display:grid;grid-template-columns:1fr auto;gap:8px;align-items:center}.cat-track{grid-column:1/-1;height:8px;background:#edf2f7;border-radius:99px;overflow:hidden}.cat-fill{height:100%;background:#1677ff;border-radius:99px}.goal-ring{width:120px;height:120px;border-radius:50%;margin:8px auto 14px;display:grid;place-items:center;background:conic-gradient(#10a66a var(--goal),#e7eef5 0)}.goal-ring:before{content:&#x27;&#x27;;width:86px;height:86px;border-radius:50%;background:white;position:absolute}.goal-ring b{position:relative;font-size:25px}.goal-info{text-align:center}.goal-info strong{font-size:23px;color:#079257}.goal-missing{margin-top:14px;background:#f7faff;border-radius:12px;padding:12px;text-align:center;font-weight:800}.next-salary-box{background:#f5f9ff;border:1px solid var(--line);border-radius:12px;padding:9px 12px;font-size:12px;font-weight:800}.home-title{display:flex;align-items:center;justify-content:space-between;margin:2px 0 12px}.home-title h2{margin:0;font-size:20px}.section.all-launches{margin-top:14px}.dashboard-note{font-size:12px;color:#6b7d94}@media(max-width:1100px){.analytics-grid{grid-template-columns:1fr 1fr}.analytics-card.goal-card{grid-column:1/-1}}@media(max-width:760px){.analytics-grid{grid-template-columns:1fr}.analytics-card.goal-card{grid-column:auto}.modern-top{height:auto;flex-wrap:wrap}}
+.analytics-grid{display:grid;grid-template-columns:1.05fr 1.05fr .8fr;gap:14px;margin-top:14px}.analytics-card{background:#fff;border:1px solid var(--line);border-radius:16px;padding:16px;box-shadow:0 6px 18px rgba(31,73,125,.06);min-height:250px}.analytics-card h3{margin:0 0 14px}.bar-chart{height:175px;display:flex;align-items:flex-end;gap:8px;border-bottom:1px solid #dce6f0;padding:8px 6px 0}.bar-month{flex:1;display:flex;align-items:flex-end;justify-content:center;gap:3px;height:100%;position:relative}.bar{width:11px;border-radius:5px 5px 0 0;min-height:2px}.bar.in{background:#10a66a}.bar.out{background:#ef3f46}.bar-label{position:absolute;bottom:-25px;font-size:11px;color:#6b7d94}.chart-legend{display:flex;gap:15px;font-size:12px;margin:4px 0 10px;color:#5e718a}.dot{width:9px;height:9px;border-radius:50%;display:inline-block;margin-right:5px}.dot.in{background:#10a66a}.dot.out{background:#ef3f46}.cat-list{display:grid;gap:9px}.cat-row{display:grid;grid-template-columns:1fr auto;gap:8px;align-items:center}.cat-track{grid-column:1/-1;height:8px;background:#edf2f7;border-radius:99px;overflow:hidden}.cat-fill{height:100%;background:#1677ff;border-radius:99px}.goal-ring{width:120px;height:120px;border-radius:50%;margin:8px auto 14px;display:grid;place-items:center;background:conic-gradient(#10a66a var(--goal),#e7eef5 0)}.goal-ring:before{content:'';width:86px;height:86px;border-radius:50%;background:white;position:absolute}.goal-ring b{position:relative;font-size:25px}.goal-info{text-align:center}.goal-info strong{font-size:23px;color:#079257}.goal-missing{margin-top:14px;background:#f7faff;border-radius:12px;padding:12px;text-align:center;font-weight:800}.next-salary-box{background:#f5f9ff;border:1px solid var(--line);border-radius:12px;padding:9px 12px;font-size:12px;font-weight:800}.home-title{display:flex;align-items:center;justify-content:space-between;margin:2px 0 12px}.home-title h2{margin:0;font-size:20px}.section.all-launches{margin-top:14px}.dashboard-note{font-size:12px;color:#6b7d94}@media(max-width:1100px){.analytics-grid{grid-template-columns:1fr 1fr}.analytics-card.goal-card{grid-column:1/-1}}@media(max-width:760px){.analytics-grid{grid-template-columns:1fr}.analytics-card.goal-card{grid-column:auto}.modern-top{height:auto;flex-wrap:wrap}}
 &lt;/style&gt;
 
 
@@ -5773,12 +5782,12 @@ button,input,select,textarea{touch-action:manipulation}
   &lt;div class=&quot;app-layout&quot;&gt;
     &lt;div class=&quot;actions&quot;&gt;
       &lt;div class=&quot;brand-v30&quot;&gt;&lt;div class=&quot;logo&quot;&gt;📈&lt;/div&gt;&lt;div&gt;&lt;b&gt;Meu Financeiro&lt;/b&gt;&lt;small&gt;Controle de Gastos&lt;/small&gt;&lt;/div&gt;&lt;/div&gt;
-      &lt;button class=&quot;active-nav&quot; onclick=&quot;window.scrollTo({top:0,behavior:&#x27;smooth&#x27;})&quot;&gt;🏠 Início&lt;/button&gt;
+      &lt;button class=&quot;active-nav&quot; onclick=&quot;window.scrollTo({top:0,behavior:'smooth'})&quot;&gt;🏠 Início&lt;/button&gt;
       &lt;div class=&quot;nav-label&quot;&gt;Lançamentos&lt;/div&gt;
-      &lt;button class=&quot;income&quot; onclick=&quot;openForm(&#x27;Receita&#x27;)&quot;&gt;＋ Nova Receita&lt;/button&gt;
-      &lt;button class=&quot;expense&quot; onclick=&quot;openForm(&#x27;Despesa&#x27;)&quot;&gt;＋ Nova Despesa&lt;/button&gt;
+      &lt;button class=&quot;income&quot; onclick=&quot;openForm('Receita')&quot;&gt;＋ Nova Receita&lt;/button&gt;
+      &lt;button class=&quot;expense&quot; onclick=&quot;openForm('Despesa')&quot;&gt;＋ Nova Despesa&lt;/button&gt;
       &lt;button onclick=&quot;openTransfer()&quot;&gt;⇄ Transferência&lt;/button&gt;
-      &lt;button onclick=&quot;openForm(&#x27;Receita&#x27;)&quot;&gt;💰 Registrar recebimento&lt;/button&gt;
+      &lt;button onclick=&quot;openForm('Receita')&quot;&gt;💰 Registrar recebimento&lt;/button&gt;
       &lt;div class=&quot;nav-label&quot;&gt;Planejamento&lt;/div&gt;
       &lt;button onclick=&quot;openFixed()&quot;&gt;📌 Contas Fixas&lt;/button&gt;
       &lt;button onclick=&quot;openReserveGoal()&quot;&gt;🎯 Metas / Reserva&lt;/button&gt;
@@ -5793,7 +5802,7 @@ button,input,select,textarea{touch-action:manipulation}
       &lt;button onclick=&quot;openMonthMove()&quot;&gt;📅 Mudar mês&lt;/button&gt;
       &lt;div class=&quot;nav-label&quot;&gt;Configurações&lt;/div&gt;
       &lt;button onclick=&quot;backupJSON()&quot;&gt;☁️ Fazer Backup&lt;/button&gt;
-      &lt;button onclick=&quot;document.getElementById(&#x27;restoreFile&#x27;).click()&quot;&gt;↥ Restaurar Backup&lt;/button&gt;
+      &lt;button onclick=&quot;document.getElementById('restoreFile').click()&quot;&gt;↥ Restaurar Backup&lt;/button&gt;
       &lt;button onclick=&quot;manualDlg.showModal()&quot;&gt;📖 Manual de Uso&lt;/button&gt;
       &lt;button onclick=&quot;clearAllEntries()&quot; style=&quot;color:#ff8c91!important&quot;&gt;🗑 Zerar Dados&lt;/button&gt;
       &lt;input id=&quot;restoreFile&quot; type=&quot;file&quot; accept=&quot;.json&quot; hidden onchange=&quot;restoreJSON(event)&quot;&gt;
@@ -5869,7 +5878,7 @@ button,input,select,textarea{touch-action:manipulation}
   &lt;/div&gt;
 &lt;/div&gt;
 
-&lt;dialog id=&quot;manualDlg&quot;&gt;&lt;div class=&quot;modal&quot;&gt;&lt;h2&gt;📘 Manual de Uso — Meu Financeiro&lt;/h2&gt;&lt;p style=&quot;color:#6b7280;margin-top:-6px&quot;&gt;Guia rápido com exemplos de como preencher as principais informações do sistema.&lt;/p&gt;&lt;div class=&quot;manual-nav&quot;&gt;&lt;button onclick=&quot;document.getElementById(&#x27;m1&#x27;).scrollIntoView()&quot;&gt;Início&lt;/button&gt;&lt;button onclick=&quot;document.getElementById(&#x27;m2&#x27;).scrollIntoView()&quot;&gt;Despesas&lt;/button&gt;&lt;button onclick=&quot;document.getElementById(&#x27;m3&#x27;).scrollIntoView()&quot;&gt;Receitas&lt;/button&gt;&lt;button onclick=&quot;document.getElementById(&#x27;m4&#x27;).scrollIntoView()&quot;&gt;Contas Fixas&lt;/button&gt;&lt;button onclick=&quot;document.getElementById(&#x27;m5&#x27;).scrollIntoView()&quot;&gt;Reserva&lt;/button&gt;&lt;button onclick=&quot;document.getElementById(&#x27;m7&#x27;).scrollIntoView()&quot;&gt;Bancos&lt;/button&gt;&lt;button onclick=&quot;document.getElementById(&#x27;m6&#x27;).scrollIntoView()&quot;&gt;Backup&lt;/button&gt;&lt;/div&gt;
+&lt;dialog id=&quot;manualDlg&quot;&gt;&lt;div class=&quot;modal&quot;&gt;&lt;h2&gt;📘 Manual de Uso — Meu Financeiro&lt;/h2&gt;&lt;p style=&quot;color:#6b7280;margin-top:-6px&quot;&gt;Guia rápido com exemplos de como preencher as principais informações do sistema.&lt;/p&gt;&lt;div class=&quot;manual-nav&quot;&gt;&lt;button onclick=&quot;document.getElementById('m1').scrollIntoView()&quot;&gt;Início&lt;/button&gt;&lt;button onclick=&quot;document.getElementById('m2').scrollIntoView()&quot;&gt;Despesas&lt;/button&gt;&lt;button onclick=&quot;document.getElementById('m3').scrollIntoView()&quot;&gt;Receitas&lt;/button&gt;&lt;button onclick=&quot;document.getElementById('m4').scrollIntoView()&quot;&gt;Contas Fixas&lt;/button&gt;&lt;button onclick=&quot;document.getElementById('m5').scrollIntoView()&quot;&gt;Reserva&lt;/button&gt;&lt;button onclick=&quot;document.getElementById('m7').scrollIntoView()&quot;&gt;Bancos&lt;/button&gt;&lt;button onclick=&quot;document.getElementById('m6').scrollIntoView()&quot;&gt;Backup&lt;/button&gt;&lt;/div&gt;
 &lt;div class=&quot;manual-step&quot; id=&quot;m1&quot;&gt;&lt;h3&gt;1. Tela inicial&lt;/h3&gt;&lt;p&gt;A nova tela inicial reúne entradas, saídas, saldo, saldo projetado após pendências, reserva, saldos por banco, lançamentos recentes e contas a vencer. Use o menu lateral organizado por grupos e o botão “Ocultar valores” quando quiser mais privacidade.&lt;/p&gt;&lt;img class=&quot;manual-img&quot; src=&quot;data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI5MDAiIGhlaWdodD0iMjY0IiB2aWV3Qm94PSIwIDAgOTAwIDI2NCI+PHJlY3Qgd2lkdGg9IjEwMCUiIGhlaWdodD0iMTAwJSIgcng9IjIwIiBmaWxsPSIjZjVmOGZjIi8+PHJlY3QgeD0iMjUiIHk9IjIyIiB3aWR0aD0iODUwIiBoZWlnaHQ9IjYwIiByeD0iMTQiIGZpbGw9IiMxMDJiNTUiLz48dGV4dCB4PSI1MCIgeT0iNjAiIGZvbnQtZmFtaWx5PSJBcmlhbCIgZm9udC1zaXplPSIyNSIgZm9udC13ZWlnaHQ9IjcwMCIgZmlsbD0id2hpdGUiPlRlbGEgaW5pY2lhbCDigJQgdXNlIG9zIGJvdMO1ZXMgZG8gbWVudTwvdGV4dD48dGV4dCB4PSI0NSIgeT0iMTMwIiBmb250LWZhbWlseT0iQXJpYWwiIGZvbnQtc2l6ZT0iMTciIGZvbnQtd2VpZ2h0PSI3MDAiIGZpbGw9IiMzMzQxNTUiPjE8L3RleHQ+PHJlY3QgeD0iMjUwIiB5PSIxMDUiIHdpZHRoPSI2MDAiIGhlaWdodD0iMzgiIHJ4PSI5IiBmaWxsPSJ3aGl0ZSIgc3Ryb2tlPSIjY2JkNWUxIi8+PHRleHQgeD0iMjY4IiB5PSIxMzAiIGZvbnQtZmFtaWx5PSJBcmlhbCIgZm9udC1zaXplPSIxNyIgZmlsbD0iIzBmMTcyYSI+Tm92YSBSZWNlaXRhIC8gTm92YSBEZXNwZXNhPC90ZXh0Pjx0ZXh0IHg9IjQ1IiB5PSIxNzgiIGZvbnQtZmFtaWx5PSJBcmlhbCIgZm9udC1zaXplPSIxNyIgZm9udC13ZWlnaHQ9IjcwMCIgZmlsbD0iIzMzNDE1NSI+MjwvdGV4dD48cmVjdCB4PSIyNTAiIHk9IjE1MyIgd2lkdGg9IjYwMCIgaGVpZ2h0PSIzOCIgcng9IjkiIGZpbGw9IndoaXRlIiBzdHJva2U9IiNjYmQ1ZTEiLz48dGV4dCB4PSIyNjgiIHk9IjE3OCIgZm9udC1mYW1pbHk9IkFyaWFsIiBmb250LXNpemU9IjE3IiBmaWxsPSIjMGYxNzJhIj5TYWzDoXJpbyBkaWEgMDUgLyBTYWzDoXJpbyBkaWEgMjA8L3RleHQ+PHRleHQgeD0iNDUiIHk9IjIyNiIgZm9udC1mYW1pbHk9IkFyaWFsIiBmb250LXNpemU9IjE3IiBmb250LXdlaWdodD0iNzAwIiBmaWxsPSIjMzM0MTU1Ij4zPC90ZXh0PjxyZWN0IHg9IjI1MCIgeT0iMjAxIiB3aWR0aD0iNjAwIiBoZWlnaHQ9IjM4IiByeD0iOSIgZmlsbD0id2hpdGUiIHN0cm9rZT0iI2NiZDVlMSIvPjx0ZXh0IHg9IjI2OCIgeT0iMjI2IiBmb250LWZhbWlseT0iQXJpYWwiIGZvbnQtc2l6ZT0iMTciIGZpbGw9IiMwZjE3MmEiPkNvbnRhcyBGaXhhcyAvIERhc2hib2FyZCAvIEJhY2t1cDwvdGV4dD48L3N2Zz4=&quot;&gt;&lt;/div&gt;
 &lt;div class=&quot;manual-step&quot; id=&quot;m2&quot;&gt;&lt;h3&gt;2. Como lançar uma despesa&lt;/h3&gt;&lt;p&gt;Clique em &lt;b&gt;Nova Despesa&lt;/b&gt;. Informe data, descrição, categoria, banco, valor e vencimento. No campo Banco, escolha um banco cadastrado. Para incluir, editar ou excluir bancos, use o botão &lt;b&gt;🏦 Bancos&lt;/b&gt; no menu lateral. Deixe &lt;b&gt;Pendente&lt;/b&gt; se ainda não pagou. Depois clique em &lt;b&gt;Salvar lançamento&lt;/b&gt;.&lt;/p&gt;&lt;img class=&quot;manual-img&quot; src=&quot;data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI5MDAiIGhlaWdodD0iNTA0IiB2aWV3Qm94PSIwIDAgOTAwIDUwNCI+PHJlY3Qgd2lkdGg9IjEwMCUiIGhlaWdodD0iMTAwJSIgcng9IjIwIiBmaWxsPSIjZjVmOGZjIi8+PHJlY3QgeD0iMjUiIHk9IjIyIiB3aWR0aD0iODUwIiBoZWlnaHQ9IjYwIiByeD0iMTQiIGZpbGw9IiMxMDJiNTUiLz48dGV4dCB4PSI1MCIgeT0iNjAiIGZvbnQtZmFtaWx5PSJBcmlhbCIgZm9udC1zaXplPSIyNSIgZm9udC13ZWlnaHQ9IjcwMCIgZmlsbD0id2hpdGUiPkV4ZW1wbG8g4oCUIE5vdmEgRGVzcGVzYTwvdGV4dD48dGV4dCB4PSI0NSIgeT0iMTMwIiBmb250LWZhbWlseT0iQXJpYWwiIGZvbnQtc2l6ZT0iMTciIGZvbnQtd2VpZ2h0PSI3MDAiIGZpbGw9IiMzMzQxNTUiPkRhdGE8L3RleHQ+PHJlY3QgeD0iMjUwIiB5PSIxMDUiIHdpZHRoPSI2MDAiIGhlaWdodD0iMzgiIHJ4PSI5IiBmaWxsPSJ3aGl0ZSIgc3Ryb2tlPSIjY2JkNWUxIi8+PHRleHQgeD0iMjY4IiB5PSIxMzAiIGZvbnQtZmFtaWx5PSJBcmlhbCIgZm9udC1zaXplPSIxNyIgZmlsbD0iIzBmMTcyYSI+MDUvMTAvMjAyNjwvdGV4dD48dGV4dCB4PSI0NSIgeT0iMTc4IiBmb250LWZhbWlseT0iQXJpYWwiIGZvbnQtc2l6ZT0iMTciIGZvbnQtd2VpZ2h0PSI3MDAiIGZpbGw9IiMzMzQxNTUiPkRlc2NyacOnw6NvPC90ZXh0PjxyZWN0IHg9IjI1MCIgeT0iMTUzIiB3aWR0aD0iNjAwIiBoZWlnaHQ9IjM4IiByeD0iOSIgZmlsbD0id2hpdGUiIHN0cm9rZT0iI2NiZDVlMSIvPjx0ZXh0IHg9IjI2OCIgeT0iMTc4IiBmb250LWZhbWlseT0iQXJpYWwiIGZvbnQtc2l6ZT0iMTciIGZpbGw9IiMwZjE3MmEiPkVuZXJnaWE8L3RleHQ+PHRleHQgeD0iNDUiIHk9IjIyNiIgZm9udC1mYW1pbHk9IkFyaWFsIiBmb250LXNpemU9IjE3IiBmb250LXdlaWdodD0iNzAwIiBmaWxsPSIjMzM0MTU1Ij5DYXRlZ29yaWE8L3RleHQ+PHJlY3QgeD0iMjUwIiB5PSIyMDEiIHdpZHRoPSI2MDAiIGhlaWdodD0iMzgiIHJ4PSI5IiBmaWxsPSJ3aGl0ZSIgc3Ryb2tlPSIjY2JkNWUxIi8+PHRleHQgeD0iMjY4IiB5PSIyMjYiIGZvbnQtZmFtaWx5PSJBcmlhbCIgZm9udC1zaXplPSIxNyIgZmlsbD0iIzBmMTcyYSI+TW9yYWRpYTwvdGV4dD48dGV4dCB4PSI0NSIgeT0iMjc0IiBmb250LWZhbWlseT0iQXJpYWwiIGZvbnQtc2l6ZT0iMTciIGZvbnQtd2VpZ2h0PSI3MDAiIGZpbGw9IiMzMzQxNTUiPkJhbmNvPC90ZXh0PjxyZWN0IHg9IjI1MCIgeT0iMjQ5IiB3aWR0aD0iNjAwIiBoZWlnaHQ9IjM4IiByeD0iOSIgZmlsbD0id2hpdGUiIHN0cm9rZT0iI2NiZDVlMSIvPjx0ZXh0IHg9IjI2OCIgeT0iMjc0IiBmb250LWZhbWlseT0iQXJpYWwiIGZvbnQtc2l6ZT0iMTciIGZpbGw9IiMwZjE3MmEiPkl0YcO6PC90ZXh0Pjx0ZXh0IHg9IjQ1IiB5PSIzMjIiIGZvbnQtZmFtaWx5PSJBcmlhbCIgZm9udC1zaXplPSIxNyIgZm9udC13ZWlnaHQ9IjcwMCIgZmlsbD0iIzMzNDE1NSI+VmFsb3I8L3RleHQ+PHJlY3QgeD0iMjUwIiB5PSIyOTciIHdpZHRoPSI2MDAiIGhlaWdodD0iMzgiIHJ4PSI5IiBmaWxsPSJ3aGl0ZSIgc3Ryb2tlPSIjY2JkNWUxIi8+PHRleHQgeD0iMjY4IiB5PSIzMjIiIGZvbnQtZmFtaWx5PSJBcmlhbCIgZm9udC1zaXplPSIxNyIgZmlsbD0iIzBmMTcyYSI+UiQgMzIwLDAwPC90ZXh0Pjx0ZXh0IHg9IjQ1IiB5PSIzNzAiIGZvbnQtZmFtaWx5PSJBcmlhbCIgZm9udC1zaXplPSIxNyIgZm9udC13ZWlnaHQ9IjcwMCIgZmlsbD0iIzMzNDE1NSI+U3RhdHVzPC90ZXh0PjxyZWN0IHg9IjI1MCIgeT0iMzQ1IiB3aWR0aD0iNjAwIiBoZWlnaHQ9IjM4IiByeD0iOSIgZmlsbD0id2hpdGUiIHN0cm9rZT0iI2NiZDVlMSIvPjx0ZXh0IHg9IjI2OCIgeT0iMzcwIiBmb250LWZhbWlseT0iQXJpYWwiIGZvbnQtc2l6ZT0iMTciIGZpbGw9IiMwZjE3MmEiPlBlbmRlbnRlPC90ZXh0Pjx0ZXh0IHg9IjQ1IiB5PSI0MTgiIGZvbnQtZmFtaWx5PSJBcmlhbCIgZm9udC1zaXplPSIxNyIgZm9udC13ZWlnaHQ9IjcwMCIgZmlsbD0iIzMzNDE1NSI+VmVuY2ltZW50bzwvdGV4dD48cmVjdCB4PSIyNTAiIHk9IjM5MyIgd2lkdGg9IjYwMCIgaGVpZ2h0PSIzOCIgcng9IjkiIGZpbGw9IndoaXRlIiBzdHJva2U9IiNjYmQ1ZTEiLz48dGV4dCB4PSIyNjgiIHk9IjQxOCIgZm9udC1mYW1pbHk9IkFyaWFsIiBmb250LXNpemU9IjE3IiBmaWxsPSIjMGYxNzJhIj4wNS8xMC8yMDI2PC90ZXh0Pjx0ZXh0IHg9IjQ1IiB5PSI0NjYiIGZvbnQtZmFtaWx5PSJBcmlhbCIgZm9udC1zaXplPSIxNyIgZm9udC13ZWlnaHQ9IjcwMCIgZmlsbD0iIzMzNDE1NSI+UmVjb3JyZW50ZTwvdGV4dD48cmVjdCB4PSIyNTAiIHk9IjQ0MSIgd2lkdGg9IjYwMCIgaGVpZ2h0PSIzOCIgcng9IjkiIGZpbGw9IndoaXRlIiBzdHJva2U9IiNjYmQ1ZTEiLz48dGV4dCB4PSIyNjgiIHk9IjQ2NiIgZm9udC1mYW1pbHk9IkFyaWFsIiBmb250LXNpemU9IjE3IiBmaWxsPSIjMGYxNzJhIj5TaW0sIHNlIHJlcGV0aXIgdG9kbyBtw6pzPC90ZXh0Pjwvc3ZnPg==&quot;&gt;&lt;div class=&quot;tip&quot;&gt;💡 Se a despesa repetir todo mês, escolha “Sim” em Recorrente. Para contas como energia, água e internet, você também pode usar Contas Fixas.&lt;/div&gt;&lt;/div&gt;
 &lt;div class=&quot;manual-step&quot; id=&quot;m3&quot;&gt;&lt;h3&gt;3. Como lançar receita e salário&lt;/h3&gt;&lt;p&gt;Para uma receita comum, clique em &lt;b&gt;Nova Receita&lt;/b&gt;. Para seus pagamentos, use os botões &lt;b&gt;Salário dia 05&lt;/b&gt; e &lt;b&gt;Salário dia 20&lt;/b&gt;. Quando o dinheiro entrar, deixe o status como &lt;b&gt;Recebido&lt;/b&gt;.&lt;/p&gt;&lt;img class=&quot;manual-img&quot; src=&quot;data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI5MDAiIGhlaWdodD0iNDA4IiB2aWV3Qm94PSIwIDAgOTAwIDQwOCI+PHJlY3Qgd2lkdGg9IjEwMCUiIGhlaWdodD0iMTAwJSIgcng9IjIwIiBmaWxsPSIjZjVmOGZjIi8+PHJlY3QgeD0iMjUiIHk9IjIyIiB3aWR0aD0iODUwIiBoZWlnaHQ9IjYwIiByeD0iMTQiIGZpbGw9IiMxMDJiNTUiLz48dGV4dCB4PSI1MCIgeT0iNjAiIGZvbnQtZmFtaWx5PSJBcmlhbCIgZm9udC1zaXplPSIyNSIgZm9udC13ZWlnaHQ9IjcwMCIgZmlsbD0id2hpdGUiPkV4ZW1wbG8g4oCUIE5vdmEgUmVjZWl0YSAvIFNhbMOhcmlvPC90ZXh0Pjx0ZXh0IHg9IjQ1IiB5PSIxMzAiIGZvbnQtZmFtaWx5PSJBcmlhbCIgZm9udC1zaXplPSIxNyIgZm9udC13ZWlnaHQ9IjcwMCIgZmlsbD0iIzMzNDE1NSI+RGF0YTwvdGV4dD48cmVjdCB4PSIyNTAiIHk9IjEwNSIgd2lkdGg9IjYwMCIgaGVpZ2h0PSIzOCIgcng9IjkiIGZpbGw9IndoaXRlIiBzdHJva2U9IiNjYmQ1ZTEiLz48dGV4dCB4PSIyNjgiIHk9IjEzMCIgZm9udC1mYW1pbHk9IkFyaWFsIiBmb250LXNpemU9IjE3IiBmaWxsPSIjMGYxNzJhIj4wNS8xMC8yMDI2PC90ZXh0Pjx0ZXh0IHg9IjQ1IiB5PSIxNzgiIGZvbnQtZmFtaWx5PSJBcmlhbCIgZm9udC1zaXplPSIxNyIgZm9udC13ZWlnaHQ9IjcwMCIgZmlsbD0iIzMzNDE1NSI+RGVzY3Jpw6fDo288L3RleHQ+PHJlY3QgeD0iMjUwIiB5PSIxNTMiIHdpZHRoPSI2MDAiIGhlaWdodD0iMzgiIHJ4PSI5IiBmaWxsPSJ3aGl0ZSIgc3Ryb2tlPSIjY2JkNWUxIi8+PHRleHQgeD0iMjY4IiB5PSIxNzgiIGZvbnQtZmFtaWx5PSJBcmlhbCIgZm9udC1zaXplPSIxNyIgZmlsbD0iIzBmMTcyYSI+U2Fsw6FyaW8gLSBkaWEgMDU8L3RleHQ+PHRleHQgeD0iNDUiIHk9IjIyNiIgZm9udC1mYW1pbHk9IkFyaWFsIiBmb250LXNpemU9IjE3IiBmb250LXdlaWdodD0iNzAwIiBmaWxsPSIjMzM0MTU1Ij5DYXRlZ29yaWE8L3RleHQ+PHJlY3QgeD0iMjUwIiB5PSIyMDEiIHdpZHRoPSI2MDAiIGhlaWdodD0iMzgiIHJ4PSI5IiBmaWxsPSJ3aGl0ZSIgc3Ryb2tlPSIjY2JkNWUxIi8+PHRleHQgeD0iMjY4IiB5PSIyMjYiIGZvbnQtZmFtaWx5PSJBcmlhbCIgZm9udC1zaXplPSIxNyIgZmlsbD0iIzBmMTcyYSI+U2Fsw6FyaW88L3RleHQ+PHRleHQgeD0iNDUiIHk9IjI3NCIgZm9udC1mYW1pbHk9IkFyaWFsIiBmb250LXNpemU9IjE3IiBmb250LXdlaWdodD0iNzAwIiBmaWxsPSIjMzM0MTU1Ij5CYW5jbzwvdGV4dD48cmVjdCB4PSIyNTAiIHk9IjI0OSIgd2lkdGg9IjYwMCIgaGVpZ2h0PSIzOCIgcng9IjkiIGZpbGw9IndoaXRlIiBzdHJva2U9IiNjYmQ1ZTEiLz48dGV4dCB4PSIyNjgiIHk9IjI3NCIgZm9udC1mYW1pbHk9IkFyaWFsIiBmb250LXNpemU9IjE3IiBmaWxsPSIjMGYxNzJhIj5JdGHDujwvdGV4dD48dGV4dCB4PSI0NSIgeT0iMzIyIiBmb250LWZhbWlseT0iQXJpYWwiIGZvbnQtc2l6ZT0iMTciIGZvbnQtd2VpZ2h0PSI3MDAiIGZpbGw9IiMzMzQxNTUiPlZhbG9yPC90ZXh0PjxyZWN0IHg9IjI1MCIgeT0iMjk3IiB3aWR0aD0iNjAwIiBoZWlnaHQ9IjM4IiByeD0iOSIgZmlsbD0id2hpdGUiIHN0cm9rZT0iI2NiZDVlMSIvPjx0ZXh0IHg9IjI2OCIgeT0iMzIyIiBmb250LWZhbWlseT0iQXJpYWwiIGZvbnQtc2l6ZT0iMTciIGZpbGw9IiMwZjE3MmEiPlIkIDQuMjMwLDAwPC90ZXh0Pjx0ZXh0IHg9IjQ1IiB5PSIzNzAiIGZvbnQtZmFtaWx5PSJBcmlhbCIgZm9udC1zaXplPSIxNyIgZm9udC13ZWlnaHQ9IjcwMCIgZmlsbD0iIzMzNDE1NSI+U3RhdHVzPC90ZXh0PjxyZWN0IHg9IjI1MCIgeT0iMzQ1IiB3aWR0aD0iNjAwIiBoZWlnaHQ9IjM4IiByeD0iOSIgZmlsbD0id2hpdGUiIHN0cm9rZT0iI2NiZDVlMSIvPjx0ZXh0IHg9IjI2OCIgeT0iMzcwIiBmb250LWZhbWlseT0iQXJpYWwiIGZvbnQtc2l6ZT0iMTciIGZpbGw9IiMwZjE3MmEiPlJlY2ViaWRvPC90ZXh0Pjwvc3ZnPg==&quot;&gt;&lt;/div&gt;
@@ -6081,28 +6090,28 @@ button,input,select,textarea{touch-action:manipulation}
 
 &lt;script src=&quot;https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2&quot;&gt;&lt;/script&gt;
 &lt;script&gt;
-&#x27;use strict&#x27;;
+'use strict';
 // Personal migration transport. Financial UI and calculations live in the original script.
 let mfClient=null, mfOpening=false;
-const mfOwner=&#x27;dae57ac1-d23d-476f-9037-4c04e0e46e7a&#x27;;
-function mfAuthMessage(message){document.getElementById(&#x27;mfAuthMessage&#x27;).textContent=message;}
-function mfRequireLogin(message=&#x27;Entre com seu acesso pessoal.&#x27;){document.getElementById(&#x27;mfAuthGate&#x27;).hidden=false;mfAuthMessage(message);}
-function mfResponse(status,data){return new Response(JSON.stringify(data),{status,headers:{&#x27;Content-Type&#x27;:&#x27;application/json&#x27;}});}
+const mfOwner='dae57ac1-d23d-476f-9037-4c04e0e46e7a';
+function mfAuthMessage(message){document.getElementById('mfAuthMessage').textContent=message;}
+function mfRequireLogin(message='Entre com seu acesso pessoal.'){document.getElementById('mfAuthGate').hidden=false;mfAuthMessage(message);}
+function mfResponse(status,data){return new Response(JSON.stringify(data),{status,headers:{'Content-Type':'application/json'}});}
 async function mfCloudFetch(_url,options={}){
- if(!mfClient)return mfResponse(503,{error:&#x27;Conexão indisponível&#x27;});
+ if(!mfClient)return mfResponse(503,{error:'Conexão indisponível'});
  const {data:auth,error:sessionError}=await mfClient.auth.getSession();
- if(sessionError||auth.session?.user.id!==mfOwner){mfRequireLogin();return mfResponse(401,{error:&#x27;Entre novamente&#x27;});}
- const write=options.method===&#x27;POST&#x27;;
+ if(sessionError||auth.session?.user.id!==mfOwner){mfRequireLogin();return mfResponse(401,{error:'Entre novamente'});}
+ const write=options.method==='POST';
  let args;
  if(write){const input=JSON.parse(options.body);args={p_data:input.data,p_revision:input.revision};}
- const {data,error}=await mfClient.rpc(write?&#x27;mf_write&#x27;:&#x27;mf_read&#x27;,args);
+ const {data,error}=await mfClient.rpc(write?'mf_write':'mf_read',args);
  if(error){
-  const denied=[&#x27;42501&#x27;,&#x27;PGRST301&#x27;,&#x27;PGRST302&#x27;,&#x27;PGRST303&#x27;].includes(error.code)||[401,403].includes(error.status);
-  if(denied)mfRequireLogin(&#x27;Sua sessão terminou. Entre novamente para sincronizar.&#x27;);
-  return mfResponse(denied?401:503,{error:&#x27;Não foi possível sincronizar&#x27;});
+  const denied=['42501','PGRST301','PGRST302','PGRST303'].includes(error.code)||[401,403].includes(error.status);
+  if(denied)mfRequireLogin('Sua sessão terminou. Entre novamente para sincronizar.');
+  return mfResponse(denied?401:503,{error:'Não foi possível sincronizar'});
  }
  if(write&amp;&amp;data?.conflict)return mfResponse(409,data);
- if(!data||!Number.isSafeInteger(data.revision)||(write&amp;&amp;data.ok!==true))return mfResponse(503,{error:&#x27;Resposta inesperada do banco&#x27;});
+ if(!data||!Number.isSafeInteger(data.revision)||(write&amp;&amp;data.ok!==true))return mfResponse(503,{error:'Resposta inesperada do banco'});
  return mfResponse(200,data);
 }
 async function mfOpenApp(){
@@ -6110,67 +6119,67 @@ async function mfOpenApp(){
  try{
   const {data,error}=await mfClient.auth.getSession();
   if(error||data.session?.user.id!==mfOwner){mfRequireLogin();return;}
-  mfAuthMessage(&#x27;Conferindo seus dados…&#x27;);
+  mfAuthMessage('Conferindo seus dados…');
   // Confirm authorization on the server before exposing financial data.
-  const verify=await mfCloudFetch(&#x27;/api/sync&#x27;);
-  if(!verify.ok){mfRequireLogin(&#x27;Não foi possível acessar o banco. Confira a conexão e tente novamente.&#x27;);return;}
+  const verify=await mfCloudFetch('/api/sync');
+  if(!verify.ok){mfRequireLogin('Não foi possível acessar o banco. Confira a conexão e tente novamente.');return;}
   if(syncDirty){syncReady=true;await flushSync();}
   else await initSync();
-  if(!syncReady){mfRequireLogin(&#x27;Não foi possível carregar os dados. Tente novamente.&#x27;);return;}
-  document.getElementById(&#x27;mfAuthGate&#x27;).hidden=true;
- }catch{mfRequireLogin(&#x27;Não foi possível conectar. Seus dados locais foram mantidos.&#x27;);}
+  if(!syncReady){mfRequireLogin('Não foi possível carregar os dados. Tente novamente.');return;}
+  document.getElementById('mfAuthGate').hidden=true;
+ }catch{mfRequireLogin('Não foi possível conectar. Seus dados locais foram mantidos.');}
  finally{mfOpening=false;}
 }
 async function mfStart(){
- if(!window.supabase?.createClient){mfRequireLogin(&#x27;Não foi possível carregar o acesso. Confira a internet e use “Tentar novamente”.&#x27;);return;}
+ if(!window.supabase?.createClient){mfRequireLogin('Não foi possível carregar o acesso. Confira a internet e use “Tentar novamente”.');return;}
  const nativeFetch=window.fetch.bind(window);
- mfClient=window.supabase.createClient(&#x27;https://tabdtuujeuwplckpzjvm.supabase.co&#x27;,&#x27;sb_publishable_1MhIIpF8npEuPrVFagdi-g_cWvBeTnR&#x27;,{
-  auth:{storageKey:&#x27;meu_financeiro_supabase_tabdt_v1&#x27;,persistSession:true,autoRefreshToken:true,detectSessionInUrl:false},
+ mfClient=window.supabase.createClient('https://tabdtuujeuwplckpzjvm.supabase.co','sb_publishable_1MhIIpF8npEuPrVFagdi-g_cWvBeTnR',{
+  auth:{storageKey:'meu_financeiro_supabase_tabdt_v1',persistSession:true,autoRefreshToken:true,detectSessionInUrl:false},
   global:{fetch:async(input,options={})=&gt;{
    const controller=new AbortController(),timer=setTimeout(()=&gt;controller.abort(),25000);
-   const cancel=()=&gt;controller.abort();options.signal?.addEventListener(&#x27;abort&#x27;,cancel,{once:true});
+   const cancel=()=&gt;controller.abort();options.signal?.addEventListener('abort',cancel,{once:true});
    if(options.signal?.aborted)cancel();
    try{return await nativeFetch(input,{...options,signal:controller.signal});}
-   finally{clearTimeout(timer);options.signal?.removeEventListener(&#x27;abort&#x27;,cancel);}
+   finally{clearTimeout(timer);options.signal?.removeEventListener('abort',cancel);}
   }}
  });
  mfClient.auth.onAuthStateChange((event)=&gt;{
-  if(event===&#x27;SIGNED_OUT&#x27;){syncReady=false;clearTimeout(syncTimer);mfRequireLogin();}
+  if(event==='SIGNED_OUT'){syncReady=false;clearTimeout(syncTimer);mfRequireLogin();}
  });
- document.getElementById(&#x27;mfLoginForm&#x27;).addEventListener(&#x27;submit&#x27;,async event=&gt;{
-  event.preventDefault();const button=document.getElementById(&#x27;mfEnter&#x27;);if(button.disabled)return;button.disabled=true;
+ document.getElementById('mfLoginForm').addEventListener('submit',async event=&gt;{
+  event.preventDefault();const button=document.getElementById('mfEnter');if(button.disabled)return;button.disabled=true;
   try{
-   mfAuthMessage(&#x27;Entrando…&#x27;);
-   const {data,error}=await mfClient.auth.signInWithPassword({email:document.getElementById(&#x27;mfEmail&#x27;).value.trim(),password:document.getElementById(&#x27;mfPassword&#x27;).value});
-   if(error){mfAuthMessage(&#x27;Não foi possível entrar. Confira o e-mail e a senha do Meu Financeiro.&#x27;);return;}
-   if(data.user?.id!==mfOwner){await mfClient.auth.signOut({scope:&#x27;local&#x27;});mfAuthMessage(&#x27;Use a sua conta pessoal configurada para este financeiro.&#x27;);return;}
+   mfAuthMessage('Entrando…');
+   const {data,error}=await mfClient.auth.signInWithPassword({email:document.getElementById('mfEmail').value.trim(),password:document.getElementById('mfPassword').value});
+   if(error){mfAuthMessage('Não foi possível entrar. Confira o e-mail e a senha do Meu Financeiro.');return;}
+   if(data.user?.id!==mfOwner){await mfClient.auth.signOut({scope:'local'});mfAuthMessage('Use a sua conta pessoal configurada para este financeiro.');return;}
    await mfOpenApp();
-  }catch{mfAuthMessage(&#x27;Não foi possível conectar. Confira a internet e tente novamente.&#x27;);}
-  finally{document.getElementById(&#x27;mfPassword&#x27;).value=&#x27;&#x27;;button.disabled=false;}
+  }catch{mfAuthMessage('Não foi possível conectar. Confira a internet e tente novamente.');}
+  finally{document.getElementById('mfPassword').value='';button.disabled=false;}
  });
  await mfOpenApp();
 }
 
 
-const KEY=&#x27;meu_financeiro_pessoal_v1&#x27;;
-const FIXED_KEY=&#x27;meu_financeiro_contas_fixas_v1&#x27;;
-const GOAL_KEY=&#x27;meu_financeiro_meta_reserva_v1&#x27;;
-const BUDGET_KEY=&#x27;meu_financeiro_limites_v1&#x27;;
-const BANK_KEY=&#x27;meu_financeiro_bancos_v1&#x27;;
+const KEY='meu_financeiro_pessoal_v1';
+const FIXED_KEY='meu_financeiro_contas_fixas_v1';
+const GOAL_KEY='meu_financeiro_meta_reserva_v1';
+const BUDGET_KEY='meu_financeiro_limites_v1';
+const BANK_KEY='meu_financeiro_bancos_v1';
 let syncReady=false, syncRevision=0, syncDirty=false, syncSaving=false, syncTimer=null, syncConflict=false;
 function setAppData(key,value){localStorage.setItem(key,value);if(syncReady){syncDirty=true;scheduleSync()}}
-function syncSnapshot(){return {lancamentos:items,contasFixas:fixed,metaReserva:reserveGoal,limites:budgets,bancos:banks,limiteChequeItau:Number(localStorage.getItem(&#x27;mf_itau_cheque_limite_v1&#x27;)||1250)}}
-function syncNotice(message, action=&#x27;&#x27;){
- const el=document.getElementById(&#x27;syncNotice&#x27;);
+function syncSnapshot(){return {lancamentos:items,contasFixas:fixed,metaReserva:reserveGoal,limites:budgets,bancos:banks,limiteChequeItau:Number(localStorage.getItem('mf_itau_cheque_limite_v1')||1250)}}
+function syncNotice(message, action=''){
+ const el=document.getElementById('syncNotice');
  el.innerHTML=`&lt;span&gt;${message}&lt;/span&gt;${action}`;
- el.style.display=&#x27;flex&#x27;;
+ el.style.display='flex';
 }
 function applyCloud(data){
  items=Array.isArray(data.lancamentos)?data.lancamentos:[];
  fixed=Array.isArray(data.contasFixas)?data.contasFixas:[];
  budgets=Array.isArray(data.limites)?data.limites:[];
- banks=Array.isArray(data.bancos)?data.bancos:[&#x27;Itaú&#x27;,&#x27;Uber Conta&#x27;];
- reserveGoal=data.metaReserva||reserveGoal; if(Number.isFinite(Number(data.limiteChequeItau)))localStorage.setItem(&#x27;mf_itau_cheque_limite_v1&#x27;,String(data.limiteChequeItau));
+ banks=Array.isArray(data.bancos)?data.bancos:['Itaú','Uber Conta'];
+ reserveGoal=data.metaReserva||reserveGoal; if(Number.isFinite(Number(data.limiteChequeItau)))localStorage.setItem('mf_itau_cheque_limite_v1',String(data.limiteChequeItau));
  localStorage.setItem(KEY,JSON.stringify(items));
  localStorage.setItem(FIXED_KEY,JSON.stringify(fixed));
  localStorage.setItem(BUDGET_KEY,JSON.stringify(budgets));
@@ -6183,38 +6192,38 @@ async function flushSync(){
  if(!syncReady||syncSaving||!syncDirty||syncConflict)return;
  syncSaving=true;syncDirty=false;
  const payload=syncSnapshot();
- syncNotice(&#x27;Salvando nos seus aparelhos…&#x27;);
+ syncNotice('Salvando nos seus aparelhos…');
  try{
-  const r=await mfCloudFetch(&#x27;/api/sync&#x27;,{method:&#x27;POST&#x27;,headers:{&#x27;Content-Type&#x27;:&#x27;application/json&#x27;,&#x27;X-Michelon-Bridge&#x27;:&#x27;1&#x27;},credentials:&#x27;same-origin&#x27;,body:JSON.stringify({data:payload,revision:syncRevision})});
+  const r=await mfCloudFetch('/api/sync',{method:'POST',headers:{'Content-Type':'application/json','X-Michelon-Bridge':'1'},credentials:'same-origin',body:JSON.stringify({data:payload,revision:syncRevision})});
   const result=await r.json();
-  if(r.status===409){syncConflict=true;syncDirty=true;syncNotice(&#x27;Houve alteração no outro aparelho. Faça um backup antes de atualizar esta página.&#x27;);return}
-  if(r.status===401){syncReady=false;syncDirty=true;syncNotice(&#x27;Sua sessão terminou. Entre novamente para sincronizar.&#x27;, &#x27;&lt;a href=&quot;#&quot; onclick=&quot;mfRequireLogin();return false&quot;&gt;Entrar&lt;/a&gt;&#x27;);return}
-  if(!r.ok)throw new Error(result.error||&#x27;Falha ao salvar&#x27;);
+  if(r.status===409){syncConflict=true;syncDirty=true;syncNotice('Houve alteração no outro aparelho. Faça um backup antes de atualizar esta página.');return}
+  if(r.status===401){syncReady=false;syncDirty=true;syncNotice('Sua sessão terminou. Entre novamente para sincronizar.', '&lt;a href=&quot;#&quot; onclick=&quot;mfRequireLogin();return false&quot;&gt;Entrar&lt;/a&gt;');return}
+  if(!r.ok)throw new Error(result.error||'Falha ao salvar');
   if(result.michelon){
    const ids=new Set(result.michelon.ids);
    items=[...items.filter(x=&gt;!ids.has(x.id)),...result.michelon.entries];
    localStorage.setItem(KEY,JSON.stringify(items));render();
   }
   syncRevision=result.revision;
-  syncNotice(&#x27;✓ Sincronizado com o celular e o PC&#x27;);
- }catch(e){syncDirty=true;syncNotice(&#x27;Sem conexão com a nuvem. Seus dados estão neste aparelho; tentarei salvar novamente.&#x27;);}
+  syncNotice('✓ Sincronizado com o celular e o PC');
+ }catch(e){syncDirty=true;syncNotice('Sem conexão com a nuvem. Seus dados estão neste aparelho; tentarei salvar novamente.');}
  finally{syncSaving=false;if(syncDirty&amp;&amp;syncReady&amp;&amp;!syncConflict){clearTimeout(syncTimer);syncTimer=setTimeout(flushSync,5000)}}
 }
 async function loadCloud(){
  if(syncSaving||syncDirty||syncConflict)return;
  try{
-  const r=await mfCloudFetch(&#x27;/api/sync&#x27;,{credentials:&#x27;same-origin&#x27;,cache:&#x27;no-store&#x27;});
+  const r=await mfCloudFetch('/api/sync',{credentials:'same-origin',cache:'no-store'});
   if(!r.ok)return;
   const result=await r.json();
-  if(result.revision&gt;syncRevision&amp;&amp;result.data){syncRevision=result.revision;applyCloud(result.data);syncNotice(&#x27;✓ Dados atualizados neste aparelho&#x27;)}
+  if(result.revision&gt;syncRevision&amp;&amp;result.data){syncRevision=result.revision;applyCloud(result.data);syncNotice('✓ Dados atualizados neste aparelho')}
  }catch{}
 }
 async function initSync(){
- syncNotice(&#x27;Conectando seus aparelhos…&#x27;);
+ syncNotice('Conectando seus aparelhos…');
  try{
-  const r=await mfCloudFetch(&#x27;/api/sync&#x27;,{credentials:&#x27;same-origin&#x27;,cache:&#x27;no-store&#x27;});
-  if(r.status===401){syncNotice(&#x27;Entre com seu acesso pessoal para sincronizar o celular e o PC.&#x27;, &#x27;&lt;a href=&quot;#&quot; onclick=&quot;mfRequireLogin();return false&quot;&gt;Entrar para sincronizar&lt;/a&gt;&#x27;);return}
-  if(!r.ok)throw new Error(&#x27;Indisponível&#x27;);
+  const r=await mfCloudFetch('/api/sync',{credentials:'same-origin',cache:'no-store'});
+  if(r.status===401){syncNotice('Entre com seu acesso pessoal para sincronizar o celular e o PC.', '&lt;a href=&quot;#&quot; onclick=&quot;mfRequireLogin();return false&quot;&gt;Entrar para sincronizar&lt;/a&gt;');return}
+  if(!r.ok)throw new Error('Indisponível');
   const result=await r.json();syncRevision=result.revision;
   if(result.data){
    const local=syncSnapshot(),remote=result.data;
@@ -6224,52 +6233,52 @@ async function initSync(){
      const fixedIds=new Set((remote.contasFixas||[]).map(x=&gt;x.id));
      const merged={...remote,lancamentos:[...(remote.lancamentos||[]),...additions],contasFixas:[...(remote.contasFixas||[]),...local.contasFixas.filter(x=&gt;!fixedIds.has(x.id))],bancos:[...new Set([...(remote.bancos||[]),...local.bancos])]};
      applyCloud(merged);syncReady=true;syncDirty=true;await flushSync();
-   }else{applyCloud(remote);syncReady=true;syncNotice(&#x27;✓ Sincronizado com o celular e o PC&#x27;)}
-  }else{syncReady=true;syncNotice(&#x27;Banco pessoal conectado. Restaure o backup antes de começar a usar este endereço.&#x27;)}
- }catch(e){syncNotice(&#x27;Sincronização indisponível. Seus dados continuam neste aparelho.&#x27;);}
+   }else{applyCloud(remote);syncReady=true;syncNotice('✓ Sincronizado com o celular e o PC')}
+  }else{syncReady=true;syncNotice('Banco pessoal conectado. Restaure o backup antes de começar a usar este endereço.')}
+ }catch(e){syncNotice('Sincronização indisponível. Seus dados continuam neste aparelho.');}
 }
-window.addEventListener(&#x27;online&#x27;,()=&gt;{if(syncDirty)scheduleSync();else loadCloud()});
-document.addEventListener(&#x27;visibilitychange&#x27;,()=&gt;{if(!document.hidden){if(syncDirty)scheduleSync();else loadCloud()}});
+window.addEventListener('online',()=&gt;{if(syncDirty)scheduleSync();else loadCloud()});
+document.addEventListener('visibilitychange',()=&gt;{if(!document.hidden){if(syncDirty)scheduleSync();else loadCloud()}});
 setInterval(loadCloud,15000);
 
-let budgets=JSON.parse(localStorage.getItem(BUDGET_KEY)||&#x27;null&#x27;)||[
- {id:&#x27;alimentacao&#x27;,categoria:&#x27;Alimentação&#x27;,limite:0},
- {id:&#x27;combustivel&#x27;,categoria:&#x27;Combustível&#x27;,limite:0},
- {id:&#x27;lazer&#x27;,categoria:&#x27;Lazer&#x27;,limite:0},
- {id:&#x27;transporte&#x27;,categoria:&#x27;Transporte&#x27;,limite:0}
+let budgets=JSON.parse(localStorage.getItem(BUDGET_KEY)||'null')||[
+ {id:'alimentacao',categoria:'Alimentação',limite:0},
+ {id:'combustivel',categoria:'Combustível',limite:0},
+ {id:'lazer',categoria:'Lazer',limite:0},
+ {id:'transporte',categoria:'Transporte',limite:0}
 ];
-let reserveGoal=JSON.parse(localStorage.getItem(GOAL_KEY)||&#x27;null&#x27;)||{name:&#x27;Reserva de emergência&#x27;,total:0,mode:&#x27;percent&#x27;,percent:10,fixed:0};
-let banks=JSON.parse(localStorage.getItem(BANK_KEY)||&#x27;null&#x27;)||[&#x27;Itaú&#x27;,&#x27;Uber Conta&#x27;];
-let fixed=JSON.parse(localStorage.getItem(FIXED_KEY)||&#x27;null&#x27;)||[
- {id:&#x27;energia&#x27;,nome:&#x27;Energia&#x27;,valor:0,dia:&#x27;&#x27;,categoria:&#x27;Moradia&#x27;,banco:(banks.includes(&#x27;Itaú&#x27;)?&#x27;Itaú&#x27;:defaultBank())},
- {id:&#x27;agua&#x27;,nome:&#x27;Água&#x27;,valor:0,dia:&#x27;&#x27;,categoria:&#x27;Moradia&#x27;,banco:(banks.includes(&#x27;Itaú&#x27;)?&#x27;Itaú&#x27;:defaultBank())},
- {id:&#x27;internet&#x27;,nome:&#x27;Internet&#x27;,valor:0,dia:&#x27;&#x27;,categoria:&#x27;Assinaturas&#x27;,banco:(banks.includes(&#x27;Itaú&#x27;)?&#x27;Itaú&#x27;:defaultBank())},
- {id:&#x27;telefone&#x27;,nome:&#x27;Telefone / Celular&#x27;,valor:0,dia:&#x27;&#x27;,categoria:&#x27;Assinaturas&#x27;,banco:(banks.includes(&#x27;Itaú&#x27;)?&#x27;Itaú&#x27;:defaultBank())}
+let reserveGoal=JSON.parse(localStorage.getItem(GOAL_KEY)||'null')||{name:'Reserva de emergência',total:0,mode:'percent',percent:10,fixed:0};
+let banks=JSON.parse(localStorage.getItem(BANK_KEY)||'null')||['Itaú','Uber Conta'];
+let fixed=JSON.parse(localStorage.getItem(FIXED_KEY)||'null')||[
+ {id:'energia',nome:'Energia',valor:0,dia:'',categoria:'Moradia',banco:(banks.includes('Itaú')?'Itaú':defaultBank())},
+ {id:'agua',nome:'Água',valor:0,dia:'',categoria:'Moradia',banco:(banks.includes('Itaú')?'Itaú':defaultBank())},
+ {id:'internet',nome:'Internet',valor:0,dia:'',categoria:'Assinaturas',banco:(banks.includes('Itaú')?'Itaú':defaultBank())},
+ {id:'telefone',nome:'Telefone / Celular',valor:0,dia:'',categoria:'Assinaturas',banco:(banks.includes('Itaú')?'Itaú':defaultBank())}
 ];
 // Migração da V10: números acima de 31 digitados no campo antigo são tratados como valor.
 fixed=fixed.map(x=&gt;{
- if((!x.valor||+x.valor===0) &amp;&amp; +x.dia&gt;31){x.valor=+x.dia;x.dia=&#x27;&#x27;;}
+ if((!x.valor||+x.valor===0) &amp;&amp; +x.dia&gt;31){x.valor=+x.dia;x.dia='';}
  if(x.valor==null)x.valor=0;
  return x;
 });
 setAppData(FIXED_KEY,JSON.stringify(fixed));
-let items=JSON.parse(localStorage.getItem(KEY)||&#x27;[]&#x27;);
+let items=JSON.parse(localStorage.getItem(KEY)||'[]');
 [...items.map(x=&gt;x.banco),...fixed.map(x=&gt;x.banco)].filter(Boolean).forEach(b=&gt;{if(!banks.includes(b))banks.push(b)});
 banks=[...new Set(banks.map(b=&gt;String(b).trim()).filter(Boolean))];
 setAppData(BANK_KEY,JSON.stringify(banks));
-const $=id=&gt;document.getElementById(id), dlg=$(&#x27;dlg&#x27;), transferDlg=$(&#x27;transferDlg&#x27;), fixedDlg=$(&#x27;fixedDlg&#x27;), managerDlg=$(&#x27;managerDlg&#x27;), reserveDlg=$(&#x27;reserveDlg&#x27;), reserveGoalDlg=$(&#x27;reserveGoalDlg&#x27;), budgetDlg=$(&#x27;budgetDlg&#x27;), dashboardDlg=$(&#x27;dashboardDlg&#x27;), attentionDlg=$(&#x27;attentionDlg&#x27;), monthMoveDlg=$(&#x27;monthMoveDlg&#x27;), bankDlg=$(&#x27;bankDlg&#x27;);
-const brl=v=&gt;Number(v||0).toLocaleString(&#x27;pt-BR&#x27;,{style:&#x27;currency&#x27;,currency:&#x27;BRL&#x27;});
-const today=()=&gt;{const d=new Date();return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,&#x27;0&#x27;)}-${String(d.getDate()).padStart(2,&#x27;0&#x27;)}`};
-const newId=()=&gt;typeof crypto!==&#x27;undefined&#x27;&amp;&amp;typeof crypto.randomUUID===&#x27;function&#x27;?crypto.randomUUID():`id-${Date.now().toString(36)}-${Math.random().toString(36).slice(2)}`;
-const esc=s=&gt;String(s??&#x27;&#x27;).replace(/[&amp;&lt;&gt;&quot;&#x27;]/g,m=&gt;({&#x27;&amp;&#x27;:&#x27;&amp;amp;&#x27;,&#x27;&lt;&#x27;:&#x27;&amp;lt;&#x27;,&#x27;&gt;&#x27;:&#x27;&amp;gt;&#x27;,&#x27;&quot;&#x27;:&#x27;&amp;quot;&#x27;,&quot;&#x27;&quot;:&#x27;&amp;#39;&#x27;}[m]));
-const parseDate=s=&gt;s?new Date(s+&#x27;T12:00:00&#x27;):null;
+const $=id=&gt;document.getElementById(id), dlg=$('dlg'), transferDlg=$('transferDlg'), fixedDlg=$('fixedDlg'), managerDlg=$('managerDlg'), reserveDlg=$('reserveDlg'), reserveGoalDlg=$('reserveGoalDlg'), budgetDlg=$('budgetDlg'), dashboardDlg=$('dashboardDlg'), attentionDlg=$('attentionDlg'), monthMoveDlg=$('monthMoveDlg'), bankDlg=$('bankDlg');
+const brl=v=&gt;Number(v||0).toLocaleString('pt-BR',{style:'currency',currency:'BRL'});
+const today=()=&gt;{const d=new Date();return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`};
+const newId=()=&gt;typeof crypto!=='undefined'&amp;&amp;typeof crypto.randomUUID==='function'?crypto.randomUUID():`id-${Date.now().toString(36)}-${Math.random().toString(36).slice(2)}`;
+const esc=s=&gt;String(s??'').replace(/[&amp;&lt;&gt;&quot;']/g,m=&gt;({'&amp;':'&amp;amp;','&lt;':'&amp;lt;','&gt;':'&amp;gt;','&quot;':'&amp;quot;',&quot;'&quot;:'&amp;#39;'}[m]));
+const parseDate=s=&gt;s?new Date(s+'T12:00:00'):null;
 
 function initMonths(){
- const sel=$(&#x27;fMes&#x27;), now=new Date(), opts=[];
- for(let i=-12;i&lt;=12;i++){let d=new Date(now.getFullYear(),now.getMonth()+i,1);if(d.getFullYear()&lt;2026)continue;let v=`${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,&#x27;0&#x27;)}`;let t=d.toLocaleDateString(&#x27;pt-BR&#x27;,{month:&#x27;long&#x27;,year:&#x27;numeric&#x27;});opts.push(`&lt;option value=&quot;${v}&quot;&gt;${t[0].toUpperCase()+t.slice(1)}&lt;/option&gt;`)}
- sel.innerHTML=opts.join(&#x27;&#x27;); goCurrentMonth(false);
+ const sel=$('fMes'), now=new Date(), opts=[];
+ for(let i=-12;i&lt;=12;i++){let d=new Date(now.getFullYear(),now.getMonth()+i,1);if(d.getFullYear()&lt;2026)continue;let v=`${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}`;let t=d.toLocaleDateString('pt-BR',{month:'long',year:'numeric'});opts.push(`&lt;option value=&quot;${v}&quot;&gt;${t[0].toUpperCase()+t.slice(1)}&lt;/option&gt;`)}
+ sel.innerHTML=opts.join(''); goCurrentMonth(false);
 }
-function goCurrentMonth(doRender=true){const n=new Date();$(&#x27;fMes&#x27;).value=`${n.getFullYear()}-${String(n.getMonth()+1).padStart(2,&#x27;0&#x27;)}`;if(doRender)render()}
+function goCurrentMonth(doRender=true){const n=new Date();$('fMes').value=`${n.getFullYear()}-${String(n.getMonth()+1).padStart(2,'0')}`;if(doRender)render()}
 function persist(){setAppData(KEY,JSON.stringify(items));refreshBankUI();render()}
 
 async function clearAllEntries(){
@@ -6280,51 +6289,51 @@ Serão apagados todos os lançamentos financeiros e também a lista de Contas Fi
 Meta da Reserva e Limites de Gastos serão mantidos.
 
 Deseja continuar?`)) return;
-  if(!confirm(&#x27;ÚLTIMA CONFIRMAÇÃO: deseja realmente zerar os lançamentos e as Contas Fixas?&#x27;)) return;
+  if(!confirm('ÚLTIMA CONFIRMAÇÃO: deseja realmente zerar os lançamentos e as Contas Fixas?')) return;
   items=[];
   fixed=[];
-  setAppData(KEY,&#x27;[]&#x27;);
-  setAppData(FIXED_KEY,&#x27;[]&#x27;);
-  if(syncReady){clearTimeout(syncTimer);await flushSync();if(syncDirty){render();alert(&#x27;Os dados foram zerados neste aparelho, mas ainda não chegaram à nuvem. Conecte-se à internet antes de sair.&#x27;);return;}}
-  alert(&#x27;Pronto! Lançamentos e Contas Fixas foram zerados. O painel ficará limpo.&#x27;);
+  setAppData(KEY,'[]');
+  setAppData(FIXED_KEY,'[]');
+  if(syncReady){clearTimeout(syncTimer);await flushSync();if(syncDirty){render();alert('Os dados foram zerados neste aparelho, mas ainda não chegaram à nuvem. Conecte-se à internet antes de sair.');return;}}
+  alert('Pronto! Lançamentos e Contas Fixas foram zerados. O painel ficará limpo.');
   location.reload();
 }
 
-function getBanks(){ return [...banks].sort((a,b)=&gt;a.localeCompare(b,&#x27;pt-BR&#x27;)); }
-function defaultBank(){return getBanks()[0]||&#x27;&#x27;}
-function bankOptions(current=&#x27;&#x27;){
+function getBanks(){ return [...banks].sort((a,b)=&gt;a.localeCompare(b,'pt-BR')); }
+function defaultBank(){return getBanks()[0]||''}
+function bankOptions(current=''){
  const arr=getBanks();
  if(current &amp;&amp; !arr.includes(current)) arr.push(current);
- return arr.map(b=&gt;`&lt;option value=&quot;${esc(b)}&quot; ${b===current?&#x27;selected&#x27;:&#x27;&#x27;}&gt;${esc(b)}&lt;/option&gt;`).join(&#x27;&#x27;);
+ return arr.map(b=&gt;`&lt;option value=&quot;${esc(b)}&quot; ${b===current?'selected':''}&gt;${esc(b)}&lt;/option&gt;`).join('');
 }
 function refreshBankUI(){
  const list=getBanks();
- [[&#x27;fBanco&#x27;,&#x27;Todos os bancos&#x27;],[&#x27;managerBank&#x27;,&#x27;Todos os bancos&#x27;]].forEach(([id,label])=&gt;{
+ [['fBanco','Todos os bancos'],['managerBank','Todos os bancos']].forEach(([id,label])=&gt;{
    const el=$(id); if(!el)return; const current=el.value;
-   el.innerHTML=`&lt;option value=&quot;&quot;&gt;${label}&lt;/option&gt;`+list.map(b=&gt;`&lt;option value=&quot;${esc(b)}&quot;&gt;${esc(b)}&lt;/option&gt;`).join(&#x27;&#x27;);
+   el.innerHTML=`&lt;option value=&quot;&quot;&gt;${label}&lt;/option&gt;`+list.map(b=&gt;`&lt;option value=&quot;${esc(b)}&quot;&gt;${esc(b)}&lt;/option&gt;`).join('');
    if(list.includes(current)) el.value=current;
  });
- [&#x27;banco&#x27;,&#x27;rBanco&#x27;,&#x27;tDe&#x27;,&#x27;tPara&#x27;].forEach(id=&gt;{const el=$(id);if(!el)return;const current=el.value;el.innerHTML=bankOptions(current);if(current&amp;&amp;list.includes(current))el.value=current;});
+ ['banco','rBanco','tDe','tPara'].forEach(id=&gt;{const el=$(id);if(!el)return;const current=el.value;el.innerHTML=bankOptions(current);if(current&amp;&amp;list.includes(current))el.value=current;});
 }
-function openBanks(){renderBanks();bankDlg.showModal();setTimeout(()=&gt;$(&#x27;newBankName&#x27;)?.focus(),50)}
+function openBanks(){renderBanks();bankDlg.showModal();setTimeout(()=&gt;$('newBankName')?.focus(),50)}
 function renderBanks(){
- const box=$(&#x27;bankManagerList&#x27;); if(!box)return;
+ const box=$('bankManagerList'); if(!box)return;
  box.innerHTML=getBanks().length?getBanks().map((b,i)=&gt;`&lt;div class=&quot;manager-row&quot; style=&quot;display:grid;grid-template-columns:1fr auto auto;gap:8px;align-items:center&quot;&gt;
    &lt;input value=&quot;${esc(b)}&quot; id=&quot;bankEdit_${i}&quot;&gt;
-   &lt;button type=&quot;button&quot; class=&quot;iconbtn&quot; onclick=&quot;renameBank(&#x27;${encodeURIComponent(b)}&#x27;,${i})&quot;&gt;Salvar&lt;/button&gt;
-   &lt;button type=&quot;button&quot; class=&quot;iconbtn danger&quot; onclick=&quot;deleteBank(&#x27;${encodeURIComponent(b)}&#x27;)&quot;&gt;Excluir&lt;/button&gt;
- &lt;/div&gt;`).join(&#x27;&#x27;):&#x27;&lt;p class=&quot;muted&quot;&gt;Nenhum banco cadastrado.&lt;/p&gt;&#x27;;
+   &lt;button type=&quot;button&quot; class=&quot;iconbtn&quot; onclick=&quot;renameBank('${encodeURIComponent(b)}',${i})&quot;&gt;Salvar&lt;/button&gt;
+   &lt;button type=&quot;button&quot; class=&quot;iconbtn danger&quot; onclick=&quot;deleteBank('${encodeURIComponent(b)}')&quot;&gt;Excluir&lt;/button&gt;
+ &lt;/div&gt;`).join(''):'&lt;p class=&quot;muted&quot;&gt;Nenhum banco cadastrado.&lt;/p&gt;';
 }
 function addBank(){
- const el=$(&#x27;newBankName&#x27;), name=(el.value||&#x27;&#x27;).trim();
- if(!name){alert(&#x27;Digite o nome do banco ou conta.&#x27;);return}
- if(banks.some(b=&gt;b.toLowerCase()===name.toLowerCase())){alert(&#x27;Esse banco já está cadastrado.&#x27;);return}
- banks.push(name);setAppData(BANK_KEY,JSON.stringify(banks));el.value=&#x27;&#x27;;refreshBankUI();renderBanks();
+ const el=$('newBankName'), name=(el.value||'').trim();
+ if(!name){alert('Digite o nome do banco ou conta.');return}
+ if(banks.some(b=&gt;b.toLowerCase()===name.toLowerCase())){alert('Esse banco já está cadastrado.');return}
+ banks.push(name);setAppData(BANK_KEY,JSON.stringify(banks));el.value='';refreshBankUI();renderBanks();
 }
 function renameBank(encoded,idx){
- const old=decodeURIComponent(encoded), input=$(`bankEdit_${idx}`), name=(input?.value||&#x27;&#x27;).trim();
- if(!name){alert(&#x27;O nome não pode ficar vazio.&#x27;);return}
- if(banks.some(b=&gt;b!==old&amp;&amp;b.toLowerCase()===name.toLowerCase())){alert(&#x27;Já existe um banco com esse nome.&#x27;);return}
+ const old=decodeURIComponent(encoded), input=$(`bankEdit_${idx}`), name=(input?.value||'').trim();
+ if(!name){alert('O nome não pode ficar vazio.');return}
+ if(banks.some(b=&gt;b!==old&amp;&amp;b.toLowerCase()===name.toLowerCase())){alert('Já existe um banco com esse nome.');return}
  banks=banks.map(b=&gt;b===old?name:b);
  items.forEach(x=&gt;{if(x.banco===old)x.banco=name});fixed.forEach(x=&gt;{if(x.banco===old)x.banco=name});
  setAppData(BANK_KEY,JSON.stringify(banks));setAppData(KEY,JSON.stringify(items));setAppData(FIXED_KEY,JSON.stringify(fixed));
@@ -6333,85 +6342,85 @@ function renameBank(encoded,idx){
 function deleteBank(encoded){
  const name=decodeURIComponent(encoded);
  const inUse=items.some(x=&gt;x.banco===name)||fixed.some(x=&gt;x.banco===name);
- if(inUse){alert(&#x27;Este banco está sendo usado em lançamentos ou contas fixas. Altere esses registros antes de excluir o banco.&#x27;);return}
+ if(inUse){alert('Este banco está sendo usado em lançamentos ou contas fixas. Altere esses registros antes de excluir o banco.');return}
  if(!confirm(`Excluir o banco &quot;${name}&quot; do cadastro?`))return;
  banks=banks.filter(b=&gt;b!==name);setAppData(BANK_KEY,JSON.stringify(banks));refreshBankUI();renderBanks();
 }
 function openForm(tipo){
- $(&#x27;editId&#x27;).value=&#x27;&#x27;; $(&#x27;deleteCurrentBtn&#x27;).style.display=&#x27;none&#x27;; $(&#x27;formTitle&#x27;).textContent=&#x27;Novo lançamento&#x27;; $(&#x27;tipo&#x27;).value=tipo; $(&#x27;data&#x27;).value=today();
- $(&#x27;descricao&#x27;).value=&#x27;&#x27;; $(&#x27;categoria&#x27;).value=tipo===&#x27;Receita&#x27;?&#x27;Salário&#x27;:&#x27;Alimentação&#x27;; $(&#x27;banco&#x27;).value=banks.includes(&#x27;Itaú&#x27;)?&#x27;Itaú&#x27;:defaultBank();
- $(&#x27;valor&#x27;).value=&#x27;&#x27;; $(&#x27;status&#x27;).value=tipo===&#x27;Receita&#x27;?&#x27;Recebido&#x27;:&#x27;Pago&#x27;; $(&#x27;vencimento&#x27;).value=&#x27;&#x27;; $(&#x27;forma&#x27;).value=&#x27;Pix&#x27;; $(&#x27;parcela&#x27;).value=&#x27;&#x27;; $(&#x27;recorrente&#x27;).value=&#x27;Não&#x27;; $(&#x27;obs&#x27;).value=&#x27;&#x27;;
+ $('editId').value=''; $('deleteCurrentBtn').style.display='none'; $('formTitle').textContent='Novo lançamento'; $('tipo').value=tipo; $('data').value=today();
+ $('descricao').value=''; $('categoria').value=tipo==='Receita'?'Salário':'Alimentação'; $('banco').value=banks.includes('Itaú')?'Itaú':defaultBank();
+ $('valor').value=''; $('status').value=tipo==='Receita'?'Recebido':'Pago'; $('vencimento').value=''; $('forma').value='Pix'; $('parcela').value=''; $('recorrente').value='Não'; $('obs').value='';
  mfUpdateInstallmentLabel();
  dlg.showModal();
 }
 function openSalary(day){
- openForm(&#x27;Receita&#x27;);
- const ym=$(&#x27;fMes&#x27;).value||today().slice(0,7), date=`${ym}-${String(day).padStart(2,&#x27;0&#x27;)}`;
- $(&#x27;data&#x27;).value=date;
- $(&#x27;vencimento&#x27;).value=date;
- $(&#x27;descricao&#x27;).value=`Salário - dia ${String(day).padStart(2,&#x27;0&#x27;)}`;
- $(&#x27;categoria&#x27;).value=&#x27;Salário&#x27;;
- $(&#x27;banco&#x27;).value=banks.includes(&#x27;Itaú&#x27;)?&#x27;Itaú&#x27;:defaultBank();
- $(&#x27;status&#x27;).value=&#x27;Pendente&#x27;;
- $(&#x27;forma&#x27;).value=&#x27;Transferência&#x27;;
- $(&#x27;recorrente&#x27;).value=&#x27;Não&#x27;;
- $(&#x27;obs&#x27;).value=&#x27;Salário previsto&#x27;;
- $(&#x27;formTitle&#x27;).textContent=`Salário previsto - dia ${String(day).padStart(2,&#x27;0&#x27;)}`;
+ openForm('Receita');
+ const ym=$('fMes').value||today().slice(0,7), date=`${ym}-${String(day).padStart(2,'0')}`;
+ $('data').value=date;
+ $('vencimento').value=date;
+ $('descricao').value=`Salário - dia ${String(day).padStart(2,'0')}`;
+ $('categoria').value='Salário';
+ $('banco').value=banks.includes('Itaú')?'Itaú':defaultBank();
+ $('status').value='Pendente';
+ $('forma').value='Transferência';
+ $('recorrente').value='Não';
+ $('obs').value='Salário previsto';
+ $('formTitle').textContent=`Salário previsto - dia ${String(day).padStart(2,'0')}`;
 }
 
-function generateSalaries(){alert(&#x27;Previsões automáticas de salário CLT desativadas. Registre somente receitas efetivamente previstas.&#x27;);}
+function generateSalaries(){alert('Previsões automáticas de salário CLT desativadas. Registre somente receitas efetivamente previstas.');}
 
 function addMonths(dateStr, n){
- const [y,m,d]=dateStr.split(&#x27;-&#x27;).map(Number);
+ const [y,m,d]=dateStr.split('-').map(Number);
  const target=new Date(y,m-1+n,1,12);
  const last=new Date(target.getFullYear(),target.getMonth()+1,0).getDate();
  const day=Math.min(d,last);
- return `${target.getFullYear()}-${String(target.getMonth()+1).padStart(2,&#x27;0&#x27;)}-${String(day).padStart(2,&#x27;0&#x27;)}`;
+ return `${target.getFullYear()}-${String(target.getMonth()+1).padStart(2,'0')}-${String(day).padStart(2,'0')}`;
 }
 // Generates remaining installments only on the first save of an installment plan.
 // Stable IDs protect retries and saves of the same existing entry on two devices.
 function mfInstallmentSpec(value,allowCount=false){
- const text=String(value||&#x27;&#x27;).trim();
+ const text=String(value||'').trim();
  const count=allowCount?text.match(/^(\d+)\s*x?$/i):null;
- const match=count?[count[0],&#x27;1&#x27;,count[1]]:text.match(/^(\d+)\s*\/\s*(\d+)$/);
+ const match=count?[count[0],'1',count[1]]:text.match(/^(\d+)\s*\/\s*(\d+)$/);
  if(!match)return null;
  const current=Number(match[1]),total=Number(match[2]);
  if(!Number.isSafeInteger(current)||!Number.isSafeInteger(total)||current&lt;1||total&lt;current||total&gt;120){
-   throw new Error(&#x27;Informe uma parcela válida, por exemplo 1/3, com até 120 parcelas.&#x27;);
+   throw new Error('Informe uma parcela válida, por exemplo 1/3, com até 120 parcelas.');
  }
  return {current,total};
 }
 function mfUpdateInstallmentLabel(){
  let spec;
- try{spec=mfInstallmentSpec($(&#x27;parcela&#x27;).value,!$(&#x27;editId&#x27;).value);}catch(_){spec=null;}
- $(&#x27;valorLabel&#x27;).textContent=spec&amp;&amp;spec.total&gt;1?($(&#x27;editId&#x27;).value?&#x27;Valor desta parcela&#x27;:&#x27;Valor total da compra&#x27;):&#x27;Valor&#x27;;
+ try{spec=mfInstallmentSpec($('parcela').value,!$('editId').value);}catch(_){spec=null;}
+ $('valorLabel').textContent=spec&amp;&amp;spec.total&gt;1?($('editId').value?'Valor desta parcela':'Valor total da compra'):'Valor';
 }
 function mfPlanInstallments(obj,previous,records){
  const spec=mfInstallmentSpec(obj.parcela,!previous);
  if(previous?.installmentGroup){
    const oldSpec=mfInstallmentSpec(previous.parcela);
    if(!spec||!oldSpec||spec.current!==oldSpec.current||spec.total!==oldSpec.total){
-     throw new Error(&#x27;As parcelas desta compra já foram geradas. Mantenha a identificação da parcela ao editar este lançamento.&#x27;);
+     throw new Error('As parcelas desta compra já foram geradas. Mantenha a identificação da parcela ao editar este lançamento.');
    }
    return {entry:obj,updates:[],added:0};
  }
  if(!spec||spec.total===1)return {entry:obj,updates:[],added:0};
- if(obj.recorrente===&#x27;Sim&#x27;)throw new Error(&#x27;Para gerar parcelas, deixe &quot;Recorrente todo mês?&quot; como Não.&#x27;);
+ if(obj.recorrente==='Sim')throw new Error('Para gerar parcelas, deixe &quot;Recorrente todo mês?&quot; como Não.');
  if(!/^\d{4}-\d{2}-\d{2}$/.test(obj.data)||!Number.isFinite(obj.valor)||obj.valor&lt;=0){
-   throw new Error(&#x27;Informe a data e o valor de cada parcela antes de salvar.&#x27;);
+   throw new Error('Informe a data e o valor de cada parcela antes de salvar.');
  }
- const group=&#x27;parcelas:&#x27;+obj.id;
+ const group='parcelas:'+obj.id;
  // Existing entries already store a per-installment amount; never divide them again.
  const cents=Math.round(obj.valor*100);
- if(!previous&amp;&amp;cents&lt;spec.total)throw new Error(&#x27;O valor total deve permitir pelo menos R$ 0,01 por parcela.&#x27;);
+ if(!previous&amp;&amp;cents&lt;spec.total)throw new Error('O valor total deve permitir pelo menos R$ 0,01 por parcela.');
  const amount=number=&gt;previous?obj.valor:(Math.floor(cents/spec.total)+(number&lt;=cents%spec.total?1:0))/100;
- const entry={...obj,valor:amount(spec.current),parcela:spec.current+&#x27;/&#x27;+spec.total,vencimento:obj.vencimento||obj.data,installmentGroup:group};
+ const entry={...obj,valor:amount(spec.current),parcela:spec.current+'/'+spec.total,vencimento:obj.vencimento||obj.data,installmentGroup:group};
  const updates=[];
  let added=0;
  for(let number=spec.current+1;number&lt;=spec.total;number++){
    const offset=number-spec.current;
    const data=addMonths(entry.data,offset),vencimento=addMonths(entry.vencimento,offset);
-   const parcela=number+&#x27;/&#x27;+spec.total,id=obj.id+&#x27;:parcela:&#x27;+number,valor=amount(number);
+   const parcela=number+'/'+spec.total,id=obj.id+':parcela:'+number,valor=amount(number);
    const candidates=records.filter(x=&gt;{
      let other;
      try{other=mfInstallmentSpec(x.parcela);}catch(_){return false;}
@@ -6420,14 +6429,14 @@ function mfPlanInstallments(obj,previous,records){
        Math.round(Number(x.valor)*100)===Math.round(valor*100)&amp;&amp;x.data===data&amp;&amp;
        (x.vencimento||x.data)===vencimento&amp;&amp;x.forma===entry.forma;
    });
-   if(candidates.length&gt;1)throw new Error(&#x27;Há mais de um lançamento que pode ser a parcela &#x27;+parcela+&#x27;. Confira os registros antes de gerar as parcelas.&#x27;);
+   if(candidates.length&gt;1)throw new Error('Há mais de um lançamento que pode ser a parcela '+parcela+'. Confira os registros antes de gerar as parcelas.');
    const occupied=records.find(x=&gt;x.id===id);
-   if(occupied&amp;&amp;occupied.installmentGroup!==group)throw new Error(&#x27;Já existe um lançamento com o identificador desta parcela. Confira os registros antes de salvar.&#x27;);
+   if(occupied&amp;&amp;occupied.installmentGroup!==group)throw new Error('Já existe um lançamento com o identificador desta parcela. Confira os registros antes de salvar.');
    if(occupied){continue;}
    if(candidates.length){
      updates.push({...candidates[0],installmentGroup:group});
    }else{
-     updates.push({...entry,id,data,vencimento,parcela,valor,status:&#x27;Pendente&#x27;,dataBaixa:&#x27;&#x27;,recorrente:&#x27;Não&#x27;});
+     updates.push({...entry,id,data,vencimento,parcela,valor,status:'Pendente',dataBaixa:'',recorrente:'Não'});
      added++;
    }
  }
@@ -6435,11 +6444,11 @@ function mfPlanInstallments(obj,previous,records){
 }
 function save(e){
  e.preventDefault();
- const editing=!!$(&#x27;editId&#x27;).value;
- const id=$(&#x27;editId&#x27;).value||newId();
+ const editing=!!$('editId').value;
+ const id=$('editId').value||newId();
  const i=items.findIndex(x=&gt;x.id===id);
- let obj={...(i&gt;=0?items[i]:{}),id,tipo:$(&#x27;tipo&#x27;).value,data:$(&#x27;data&#x27;).value,descricao:$(&#x27;descricao&#x27;).value,categoria:$(&#x27;categoria&#x27;).value,banco:$(&#x27;banco&#x27;).value,valor:+$(&#x27;valor&#x27;).value,status:$(&#x27;status&#x27;).value,vencimento:$(&#x27;vencimento&#x27;).value,forma:$(&#x27;forma&#x27;).value,parcela:$(&#x27;parcela&#x27;).value,recorrente:$(&#x27;recorrente&#x27;).value,obs:$(&#x27;obs&#x27;).value};
- if(obj.status===&#x27;Pendente&#x27;&amp;&amp;!obj.vencimento){alert(&#x27;Informe a data de vencimento para lançamentos pendentes.&#x27;);$(&#x27;vencimento&#x27;).focus();return;}
+ let obj={...(i&gt;=0?items[i]:{}),id,tipo:$('tipo').value,data:$('data').value,descricao:$('descricao').value,categoria:$('categoria').value,banco:$('banco').value,valor:+$('valor').value,status:$('status').value,vencimento:$('vencimento').value,forma:$('forma').value,parcela:$('parcela').value,recorrente:$('recorrente').value,obs:$('obs').value};
+ if(obj.status==='Pendente'&amp;&amp;!obj.vencimento){alert('Informe a data de vencimento para lançamentos pendentes.');$('vencimento').focus();return;}
  let plan;
  try{plan=mfPlanInstallments(obj,i&gt;=0?items[i]:null,items);}catch(error){alert(error.message);return;}
  obj=plan.entry;
@@ -6449,62 +6458,62 @@ function save(e){
    if(existing&gt;=0)items[existing]=next;else items.push(next);
  }
 
- if(!editing &amp;&amp; obj.recorrente===&#x27;Sim&#x27;){
+ if(!editing &amp;&amp; obj.recorrente==='Sim'){
    const group=newId();
    obj.recurringGroup=group;
    // Create 11 future copies, for 12 months total including the current entry.
    for(let n=1;n&lt;12;n++){
      const data=addMonths(obj.data,n);
-     const venc=obj.vencimento?addMonths(obj.vencimento,n):&#x27;&#x27;;
-     items.push({...obj,id:newId(),data,vencimento:venc,recurringGroup:group,status:&#x27;Pendente&#x27;,dataBaixa:&#x27;&#x27;});
+     const venc=obj.vencimento?addMonths(obj.vencimento,n):'';
+     items.push({...obj,id:newId(),data,vencimento:venc,recurringGroup:group,status:'Pendente',dataBaixa:''});
    }
-   alert(&#x27;Lançamento recorrente criado para 12 meses. Os próximos meses ficaram como Pendentes.&#x27;);
+   alert('Lançamento recorrente criado para 12 meses. Os próximos meses ficaram como Pendentes.');
  }
  persist();dlg.close();
- if(plan.added)alert(`${plan.added} parcela(s) futura(s) criada(s) como Pendentes. ${editing?&#x27;O valor das parcelas já salvas foi mantido.&#x27;:&#x27;O valor total foi dividido entre as parcelas, preservando o total da compra.&#x27;}`);
+ if(plan.added)alert(`${plan.added} parcela(s) futura(s) criada(s) como Pendentes. ${editing?'O valor das parcelas já salvas foi mantido.':'O valor total foi dividido entre as parcelas, preservando o total da compra.'}`);
 }
-function edit(id){if(items.find(x=&gt;x.id===id)?.tipo===&#x27;Ajuste&#x27;){alert(&#x27;Este é um ajuste histórico de conciliação, não uma receita ou despesa. Para revisar, use um novo backup.&#x27;);return;}
- const x=items.find(a=&gt;a.id===id);if(!x)return;$(&#x27;editId&#x27;).value=x.id;$(&#x27;deleteCurrentBtn&#x27;).style.display=&#x27;inline-block&#x27;;$(&#x27;formTitle&#x27;).textContent=&#x27;Editar lançamento&#x27;;
- [&#x27;tipo&#x27;,&#x27;data&#x27;,&#x27;descricao&#x27;,&#x27;categoria&#x27;,&#x27;banco&#x27;,&#x27;valor&#x27;,&#x27;status&#x27;,&#x27;vencimento&#x27;,&#x27;forma&#x27;,&#x27;parcela&#x27;,&#x27;recorrente&#x27;,&#x27;obs&#x27;].forEach(k=&gt;$(k).value=x[k]??(k===&#x27;recorrente&#x27;?&#x27;Não&#x27;:&#x27;&#x27;));
+function edit(id){if(items.find(x=&gt;x.id===id)?.tipo==='Ajuste'){alert('Este é um ajuste histórico de conciliação, não uma receita ou despesa. Para revisar, use um novo backup.');return;}
+ const x=items.find(a=&gt;a.id===id);if(!x)return;$('editId').value=x.id;$('deleteCurrentBtn').style.display='inline-block';$('formTitle').textContent='Editar lançamento';
+ ['tipo','data','descricao','categoria','banco','valor','status','vencimento','forma','parcela','recorrente','obs'].forEach(k=&gt;$(k).value=x[k]??(k==='recorrente'?'Não':''));
  mfUpdateInstallmentLabel();
  dlg.showModal();
 }
-function del(id){if(confirm(&#x27;Excluir este lançamento?&#x27;)){items=items.filter(x=&gt;x.id!==id);persist()}}
+function del(id){if(confirm('Excluir este lançamento?')){items=items.filter(x=&gt;x.id!==id);persist()}}
 function deleteCurrent(){
- const id=$(&#x27;editId&#x27;).value;if(!id)return;
+ const id=$('editId').value;if(!id)return;
  const x=items.find(a=&gt;a.id===id);if(!x)return;
- if(x.recurringGroup &amp;&amp; confirm(&#x27;Este lançamento faz parte de uma recorrência. Clique OK para excluir TODA a recorrência. Clique Cancelar para excluir somente este mês.&#x27;)){
+ if(x.recurringGroup &amp;&amp; confirm('Este lançamento faz parte de uma recorrência. Clique OK para excluir TODA a recorrência. Clique Cancelar para excluir somente este mês.')){
    items=items.filter(a=&gt;a.recurringGroup!==x.recurringGroup);
  } else {
-   if(!confirm(&#x27;Excluir somente este lançamento?&#x27;)) return;
+   if(!confirm('Excluir somente este lançamento?')) return;
    items=items.filter(a=&gt;a.id!==id);
  }
  persist();dlg.close();
 }
 function quickPay(id){
  const x=items.find(a=&gt;a.id===id);if(!x)return;
- x.status=x.tipo===&#x27;Receita&#x27;?&#x27;Recebido&#x27;:&#x27;Pago&#x27;;
+ x.status=x.tipo==='Receita'?'Recebido':'Pago';
  x.dataBaixa=today();
- if(x.categoria===&#x27;Salário&#x27;) x.obs=`${x.obs||&#x27;Salário previsto&#x27;} | Recebido em ${today().split(&#x27;-&#x27;).reverse().join(&#x27;/&#x27;)}`;
+ if(x.categoria==='Salário') x.obs=`${x.obs||'Salário previsto'} | Recebido em ${today().split('-').reverse().join('/')}`;
  persist();
 }
-function setPending(){$(&#x27;fStatus&#x27;).value=&#x27;Pendente&#x27;;render();document.querySelector(&#x27;.section&#x27;).scrollIntoView({behavior:&#x27;smooth&#x27;})}
+function setPending(){$('fStatus').value='Pendente';render();document.querySelector('.section').scrollIntoView({behavior:'smooth'})}
 
 
 
 function openManager(){
- $(&#x27;managerSearch&#x27;).value=&#x27;&#x27;; $(&#x27;managerBank&#x27;).value=&#x27;&#x27;; renderManager(); managerDlg.showModal();
+ $('managerSearch').value=''; $('managerBank').value=''; renderManager(); managerDlg.showModal();
 }
 function renderManager(){
- const q=$(&#x27;managerSearch&#x27;).value.toLowerCase(), bank=$(&#x27;managerBank&#x27;).value;
- const list=items.filter(x=&gt;(!bank||x.banco===bank)&amp;&amp;(!q||JSON.stringify(x).toLowerCase().includes(q))).sort((a,b)=&gt;(b.data||&#x27;&#x27;).localeCompare(a.data||&#x27;&#x27;));
- $(&#x27;managerList&#x27;).innerHTML=list.length?list.map(x=&gt;`&lt;div class=&quot;manager-row&quot;&gt;
-   &lt;div&gt;&lt;b&gt;${(x.data||&#x27;&#x27;).split(&#x27;-&#x27;).reverse().join(&#x27;/&#x27;)}&lt;/b&gt;&lt;br&gt;&lt;small&gt;${x.tipo}&lt;/small&gt;&lt;/div&gt;
+ const q=$('managerSearch').value.toLowerCase(), bank=$('managerBank').value;
+ const list=items.filter(x=&gt;(!bank||x.banco===bank)&amp;&amp;(!q||JSON.stringify(x).toLowerCase().includes(q))).sort((a,b)=&gt;(b.data||'').localeCompare(a.data||''));
+ $('managerList').innerHTML=list.length?list.map(x=&gt;`&lt;div class=&quot;manager-row&quot;&gt;
+   &lt;div&gt;&lt;b&gt;${(x.data||'').split('-').reverse().join('/')}&lt;/b&gt;&lt;br&gt;&lt;small&gt;${x.tipo}&lt;/small&gt;&lt;/div&gt;
    &lt;div class=&quot;manager-desc&quot;&gt;&lt;b&gt;${esc(x.descricao)}&lt;/b&gt;&lt;br&gt;&lt;small&gt;${esc(x.categoria)} • ${x.banco} • ${x.status}&lt;/small&gt;&lt;/div&gt;
    &lt;div&gt;&lt;b&gt;${brl(x.valor)}&lt;/b&gt;&lt;/div&gt;
-   &lt;button class=&quot;iconbtn&quot; onclick=&quot;managerEdit(&#x27;${x.id}&#x27;)&quot;&gt;✏️ Editar&lt;/button&gt;
-   &lt;button class=&quot;iconbtn danger&quot; onclick=&quot;managerDelete(&#x27;${x.id}&#x27;)&quot;&gt;🗑 Excluir&lt;/button&gt;
- &lt;/div&gt;`).join(&#x27;&#x27;):&#x27;&lt;div class=&quot;empty&quot;&gt;Nenhum lançamento encontrado.&lt;/div&gt;&#x27;;
+   &lt;button class=&quot;iconbtn&quot; onclick=&quot;managerEdit('${x.id}')&quot;&gt;✏️ Editar&lt;/button&gt;
+   &lt;button class=&quot;iconbtn danger&quot; onclick=&quot;managerDelete('${x.id}')&quot;&gt;🗑 Excluir&lt;/button&gt;
+ &lt;/div&gt;`).join(''):'&lt;div class=&quot;empty&quot;&gt;Nenhum lançamento encontrado.&lt;/div&gt;';
 }
 function managerDelete(id){
  const x=items.find(a=&gt;a.id===id); if(!x)return;
@@ -6518,53 +6527,53 @@ function managerEdit(id){
 function saveFixed(){setAppData(FIXED_KEY,JSON.stringify(fixed));renderFixed()}
 function openFixed(){renderFixed();fixedDlg.showModal()}
 function fixedCalendarDate(day){
- const n=Number(day);if(!Number.isInteger(n)||n&lt;1||n&gt;31)return &#x27;&#x27;;
- const ym=$(&#x27;fMes&#x27;).value||today().slice(0,7);
- const [y,m]=ym.split(&#x27;-&#x27;).map(Number);
+ const n=Number(day);if(!Number.isInteger(n)||n&lt;1||n&gt;31)return '';
+ const ym=$('fMes').value||today().slice(0,7);
+ const [y,m]=ym.split('-').map(Number);
  const last=new Date(y,m,0).getDate();
- return `${ym}-${String(Math.min(n,last)).padStart(2,&#x27;0&#x27;)}`;
+ return `${ym}-${String(Math.min(n,last)).padStart(2,'0')}`;
 }
 function updateFixedCalendar(i,date){
- if(!date){fixed[i].dia=&#x27;&#x27;;saveFixed();return;}
+ if(!date){fixed[i].dia='';saveFixed();return;}
  const n=Number(date.slice(-2));
- if(!Number.isInteger(n)||n&lt;1||n&gt;31){alert(&#x27;Escolha uma data válida.&#x27;);return;}
+ if(!Number.isInteger(n)||n&lt;1||n&gt;31){alert('Escolha uma data válida.');return;}
  fixed[i].dia=n;saveFixed();
 }
 function renderFixed(){
  const t05=fixed.filter(x=&gt;+x.dia&gt;=1&amp;&amp;+x.dia&lt;=15).reduce((a,x)=&gt;a+(+x.valor||0),0);
  const t20=fixed.filter(x=&gt;+x.dia&gt;=16&amp;&amp;+x.dia&lt;=31).reduce((a,x)=&gt;a+(+x.valor||0),0);
  const tg=fixed.reduce((a,x)=&gt;a+(+x.valor||0),0);
- if($(&#x27;fixedTotal05&#x27;))$(&#x27;fixedTotal05&#x27;).textContent=brl(t05);
- if($(&#x27;fixedTotal20&#x27;))$(&#x27;fixedTotal20&#x27;).textContent=brl(t20);
- if($(&#x27;fixedTotalGeral&#x27;))$(&#x27;fixedTotalGeral&#x27;).textContent=brl(tg);
- const box=$(&#x27;fixedList&#x27;);
+ if($('fixedTotal05'))$('fixedTotal05').textContent=brl(t05);
+ if($('fixedTotal20'))$('fixedTotal20').textContent=brl(t20);
+ if($('fixedTotalGeral'))$('fixedTotalGeral').textContent=brl(tg);
+ const box=$('fixedList');
  box.innerHTML=fixed.length?fixed.map((x,i)=&gt;`&lt;div class=&quot;fixed-row&quot;&gt;
    &lt;input class=&quot;wide&quot; value=&quot;${esc(x.nome)}&quot; onchange=&quot;fixed[${i}].nome=this.value;saveFixed()&quot; placeholder=&quot;Nome da conta&quot;&gt;
-   &lt;input type=&quot;number&quot; min=&quot;0&quot; step=&quot;0.01&quot; value=&quot;${+x.valor||&#x27;&#x27;}&quot; onchange=&quot;fixed[${i}].valor=+this.value;saveFixed()&quot; placeholder=&quot;R$&quot;&gt;
+   &lt;input type=&quot;number&quot; min=&quot;0&quot; step=&quot;0.01&quot; value=&quot;${+x.valor||''}&quot; onchange=&quot;fixed[${i}].valor=+this.value;saveFixed()&quot; placeholder=&quot;R$&quot;&gt;
    &lt;input type=&quot;date&quot; aria-label=&quot;Data de vencimento mensal&quot; title=&quot;Selecione uma data; somente o dia será repetido a cada mês&quot; value=&quot;${fixedCalendarDate(x.dia)}&quot; onchange=&quot;updateFixedCalendar(${i},this.value)&quot; /&gt;
    &lt;select onchange=&quot;fixed[${i}].categoria=this.value;saveFixed()&quot;&gt;
-    ${[&#x27;Moradia&#x27;,&#x27;Alimentação&#x27;,&#x27;Transporte&#x27;,&#x27;Combustível&#x27;,&#x27;Saúde&#x27;,&#x27;Lazer&#x27;,&#x27;Assinaturas&#x27;,&#x27;Impostos&#x27;,&#x27;Outras Despesas&#x27;].map(v=&gt;`&lt;option ${x.categoria===v?&#x27;selected&#x27;:&#x27;&#x27;}&gt;${v}&lt;/option&gt;`).join(&#x27;&#x27;)}
+    ${['Moradia','Alimentação','Transporte','Combustível','Saúde','Lazer','Assinaturas','Impostos','Outras Despesas'].map(v=&gt;`&lt;option ${x.categoria===v?'selected':''}&gt;${v}&lt;/option&gt;`).join('')}
    &lt;/select&gt;
-   &lt;select onchange=&quot;fixed[${i}].banco=this.value;saveFixed()&quot;&gt;${bankOptions(x.banco||&#x27;&#x27;)}&lt;/select&gt;
+   &lt;select onchange=&quot;fixed[${i}].banco=this.value;saveFixed()&quot;&gt;${bankOptions(x.banco||'')}&lt;/select&gt;
    &lt;button class=&quot;iconbtn danger&quot; onclick=&quot;removeFixed(${i})&quot;&gt;Excluir&lt;/button&gt;
- &lt;/div&gt;`).join(&#x27;&#x27;):&#x27;&lt;div class=&quot;empty&quot;&gt;Nenhuma conta fixa cadastrada.&lt;/div&gt;&#x27;;
+ &lt;/div&gt;`).join(''):'&lt;div class=&quot;empty&quot;&gt;Nenhuma conta fixa cadastrada.&lt;/div&gt;';
 }
 function addFixed(){
- fixed.push({id:newId(),nome:&#x27;Nova conta&#x27;,valor:0,dia:&#x27;&#x27;,categoria:&#x27;Moradia&#x27;,banco:(banks.includes(&#x27;Itaú&#x27;)?&#x27;Itaú&#x27;:defaultBank())});saveFixed();
+ fixed.push({id:newId(),nome:'Nova conta',valor:0,dia:'',categoria:'Moradia',banco:(banks.includes('Itaú')?'Itaú':defaultBank())});saveFixed();
 }
-function removeFixed(i){if(confirm(&#x27;Excluir esta conta fixa?&#x27;)){fixed.splice(i,1);saveFixed()}}
+function removeFixed(i){if(confirm('Excluir esta conta fixa?')){fixed.splice(i,1);saveFixed()}}
 function generateFixed(){
- const ym=$(&#x27;fMes&#x27;).value||today().slice(0,7); let added=0,missing=0;
+ const ym=$('fMes').value||today().slice(0,7); let added=0,missing=0;
  fixed.forEach(x=&gt;{
    const n=+x.dia;
    if(!n || n&lt;1 || n&gt;31){missing++;return;}
-   const [yy,mm]=ym.split(&#x27;-&#x27;).map(Number), last=new Date(yy,mm,0).getDate();
-   const day=String(Math.min(n,last)).padStart(2,&#x27;0&#x27;), due=`${ym}-${day}`;
+   const [yy,mm]=ym.split('-').map(Number), last=new Date(yy,mm,0).getDate();
+   const day=String(Math.min(n,last)).padStart(2,'0'), due=`${ym}-${day}`;
    const exists=items.some(a=&gt;a.fixedId===x.id &amp;&amp; (a.vencimento||a.data).startsWith(ym));
-   if(!exists){items.push({id:newId(),fixedId:x.id,tipo:&#x27;Despesa&#x27;,data:due,descricao:x.nome,categoria:x.categoria,banco:x.banco,valor:+x.valor||0,status:&#x27;Pendente&#x27;,vencimento:due,forma:&#x27;Pix&#x27;,parcela:&#x27;&#x27;,recorrente:&#x27;Sim&#x27;,obs:&#x27;Conta fixa mensal&#x27;});added++}
+   if(!exists){items.push({id:newId(),fixedId:x.id,tipo:'Despesa',data:due,descricao:x.nome,categoria:x.categoria,banco:x.banco,valor:+x.valor||0,status:'Pendente',vencimento:due,forma:'Pix',parcela:'',recorrente:'Sim',obs:'Conta fixa mensal'});added++}
  });
  persist();renderFixed();
- let msg=added?`${added} conta(s) fixa(s) criada(s) como pendente(s).`:&#x27;Nenhuma nova conta foi gerada.&#x27;;
+ let msg=added?`${added} conta(s) fixa(s) criada(s) como pendente(s).`:'Nenhuma nova conta foi gerada.';
  if(missing)msg+=` ${missing} conta(s) ainda estão sem dia de pagamento.`;
  alert(msg); fixedDlg.close();
 }
@@ -6575,179 +6584,179 @@ function generateFixed(){
 
 
 function openMonthMove(){
- const current=$(&#x27;fMes&#x27;).value||today().slice(0,7);
- $(&#x27;moveFrom&#x27;).value=current;
- const [y,m]=current.split(&#x27;-&#x27;).map(Number), n=new Date(y,m,1);
- $(&#x27;moveTo&#x27;).value=`${n.getFullYear()}-${String(n.getMonth()+1).padStart(2,&#x27;0&#x27;)}`;
+ const current=$('fMes').value||today().slice(0,7);
+ $('moveFrom').value=current;
+ const [y,m]=current.split('-').map(Number), n=new Date(y,m,1);
+ $('moveTo').value=`${n.getFullYear()}-${String(n.getMonth()+1).padStart(2,'0')}`;
  updateMovePreview();
- $(&#x27;moveFrom&#x27;).onchange=updateMovePreview;
- $(&#x27;moveTo&#x27;).onchange=updateMovePreview;
+ $('moveFrom').onchange=updateMovePreview;
+ $('moveTo').onchange=updateMovePreview;
  monthMoveDlg.showModal();
 }
 function updateMovePreview(){
- const from=$(&#x27;moveFrom&#x27;).value;
- const count=items.filter(x=&gt;(x.data||&#x27;&#x27;).startsWith(from)||(x.vencimento||&#x27;&#x27;).startsWith(from)).length;
- $(&#x27;movePreview&#x27;).textContent=`${count} lançamento(s) encontrado(s) no mês de origem.`;
+ const from=$('moveFrom').value;
+ const count=items.filter(x=&gt;(x.data||'').startsWith(from)||(x.vencimento||'').startsWith(from)).length;
+ $('movePreview').textContent=`${count} lançamento(s) encontrado(s) no mês de origem.`;
 }
 function changeYM(dateStr,toYM){
  if(!dateStr)return dateStr;
- const day=+dateStr.slice(8,10)||1,[yy,mm]=toYM.split(&#x27;-&#x27;).map(Number);
+ const day=+dateStr.slice(8,10)||1,[yy,mm]=toYM.split('-').map(Number);
  const last=new Date(yy,mm,0).getDate();
- return `${toYM}-${String(Math.min(day,last)).padStart(2,&#x27;0&#x27;)}`;
+ return `${toYM}-${String(Math.min(day,last)).padStart(2,'0')}`;
 }
 function moveMonthEntries(){
- const from=$(&#x27;moveFrom&#x27;).value,to=$(&#x27;moveTo&#x27;).value;
- if(!from||!to||from===to){alert(&#x27;Escolha meses diferentes.&#x27;);return}
- const affected=items.filter(x=&gt;(x.data||&#x27;&#x27;).startsWith(from)||(x.vencimento||&#x27;&#x27;).startsWith(from));
- if(!affected.length){alert(&#x27;Não há lançamentos nesse mês.&#x27;);return}
- if(!confirm(`Mover ${affected.length} lançamento(s) de ${from.split(&#x27;-&#x27;).reverse().join(&#x27;/&#x27;)} para ${to.split(&#x27;-&#x27;).reverse().join(&#x27;/&#x27;)}?`))return;
+ const from=$('moveFrom').value,to=$('moveTo').value;
+ if(!from||!to||from===to){alert('Escolha meses diferentes.');return}
+ const affected=items.filter(x=&gt;(x.data||'').startsWith(from)||(x.vencimento||'').startsWith(from));
+ if(!affected.length){alert('Não há lançamentos nesse mês.');return}
+ if(!confirm(`Mover ${affected.length} lançamento(s) de ${from.split('-').reverse().join('/')} para ${to.split('-').reverse().join('/')}?`))return;
  affected.forEach(x=&gt;{
-   if((x.data||&#x27;&#x27;).startsWith(from))x.data=changeYM(x.data,to);
-   if((x.vencimento||&#x27;&#x27;).startsWith(from))x.vencimento=changeYM(x.vencimento,to);
+   if((x.data||'').startsWith(from))x.data=changeYM(x.data,to);
+   if((x.vencimento||'').startsWith(from))x.vencimento=changeYM(x.vencimento,to);
  });
- persist();$(&#x27;fMes&#x27;).value=to;render();monthMoveDlg.close();
- alert(&#x27;Lançamentos movidos com sucesso.&#x27;);
+ persist();$('fMes').value=to;render();monthMoveDlg.close();
+ alert('Lançamentos movidos com sucesso.');
 }
 function getAttentions(){
- const ym=$(&#x27;fMes&#x27;).value||today().slice(0,7), now=new Date();now.setHours(0,0,0,0);
+ const ym=$('fMes').value||today().slice(0,7), now=new Date();now.setHours(0,0,0,0);
  const out=[];
- const overdue=items.filter(x=&gt;x.status===&#x27;Pendente&#x27;&amp;&amp;x.vencimento&amp;&amp;parseDate(x.vencimento)&lt;now);
- if(overdue.length) out.push({level:&#x27;danger&#x27;,text:`${overdue.length} conta(s) vencida(s)`,detail:`Total vencido: ${brl(overdue.reduce((a,x)=&gt;a+x.valor,0))}`});
+ const overdue=items.filter(x=&gt;x.status==='Pendente'&amp;&amp;x.vencimento&amp;&amp;parseDate(x.vencimento)&lt;now);
+ if(overdue.length) out.push({level:'danger',text:`${overdue.length} conta(s) vencida(s)`,detail:`Total vencido: ${brl(overdue.reduce((a,x)=&gt;a+x.valor,0))}`});
  const in7=new Date(now);in7.setDate(in7.getDate()+7);
- const upcoming=items.filter(x=&gt;x.status===&#x27;Pendente&#x27;&amp;&amp;x.vencimento&amp;&amp;parseDate(x.vencimento)&gt;=now&amp;&amp;parseDate(x.vencimento)&lt;=in7);
- if(upcoming.length) out.push({level:&#x27;warn&#x27;,text:`${upcoming.length} conta(s) vencem nos próximos 7 dias`,detail:`Total a vencer: ${brl(upcoming.reduce((a,x)=&gt;a+x.valor,0))}`});
+ const upcoming=items.filter(x=&gt;x.status==='Pendente'&amp;&amp;x.vencimento&amp;&amp;parseDate(x.vencimento)&gt;=now&amp;&amp;parseDate(x.vencimento)&lt;=in7);
+ if(upcoming.length) out.push({level:'warn',text:`${upcoming.length} conta(s) vencem nos próximos 7 dias`,detail:`Total a vencer: ${brl(upcoming.reduce((a,x)=&gt;a+x.valor,0))}`});
  const noDay=fixed.filter(x=&gt;!+x.dia||+x.dia&lt;1||+x.dia&gt;31);
- if(noDay.length) out.push({level:&#x27;warn&#x27;,text:`${noDay.length} conta(s) fixa(s) sem dia de pagamento`,detail:noDay.slice(0,4).map(x=&gt;x.nome).join(&#x27;, &#x27;)});
+ if(noDay.length) out.push({level:'warn',text:`${noDay.length} conta(s) fixa(s) sem dia de pagamento`,detail:noDay.slice(0,4).map(x=&gt;x.nome).join(', ')});
  const noValue=fixed.filter(x=&gt;!(+x.valor&gt;0));
- if(noValue.length) out.push({level:&#x27;warn&#x27;,text:`${noValue.length} conta(s) fixa(s) sem valor`,detail:noValue.slice(0,4).map(x=&gt;x.nome).join(&#x27;, &#x27;)});
- const month=items.filter(x=&gt;(x.data||&#x27;&#x27;).startsWith(ym));
- const sal05=month.filter(x=&gt;x.tipo===&#x27;Receita&#x27;&amp;&amp;x.categoria===&#x27;Salário&#x27;&amp;&amp;x.descricao.includes(&#x27;05&#x27;)).reduce((a,x)=&gt;a+x.valor,0);
- const sal20=month.filter(x=&gt;x.tipo===&#x27;Receita&#x27;&amp;&amp;x.categoria===&#x27;Salário&#x27;&amp;&amp;x.descricao.includes(&#x27;20&#x27;)).reduce((a,x)=&gt;a+x.valor,0);
- const exp05=month.filter(x=&gt;x.tipo===&#x27;Despesa&#x27;&amp;&amp;x.vencimento&amp;&amp;+x.vencimento.slice(8,10)===5).reduce((a,x)=&gt;a+x.valor,0);
- const exp20=month.filter(x=&gt;x.tipo===&#x27;Despesa&#x27;&amp;&amp;x.vencimento&amp;&amp;+x.vencimento.slice(8,10)===20).reduce((a,x)=&gt;a+x.valor,0);
- if(sal05&gt;0&amp;&amp;exp05&gt;sal05)out.push({level:&#x27;danger&#x27;,text:&#x27;Contas do dia 05 acima da receita&#x27;,detail:`Faltam ${brl(exp05-sal05)}`});
- if(sal20&gt;0&amp;&amp;exp20&gt;sal20)out.push({level:&#x27;danger&#x27;,text:&#x27;Contas do dia 20 acima da receita&#x27;,detail:`Faltam ${brl(exp20-sal20)}`});
- const pendNoValue=month.filter(x=&gt;x.status===&#x27;Pendente&#x27;&amp;&amp;+x.valor===0);
- if(pendNoValue.length)out.push({level:&#x27;warn&#x27;,text:`${pendNoValue.length} pendência(s) do mês com valor zerado`,detail:&#x27;Edite o lançamento quando souber o valor.&#x27;});
+ if(noValue.length) out.push({level:'warn',text:`${noValue.length} conta(s) fixa(s) sem valor`,detail:noValue.slice(0,4).map(x=&gt;x.nome).join(', ')});
+ const month=items.filter(x=&gt;(x.data||'').startsWith(ym));
+ const sal05=month.filter(x=&gt;x.tipo==='Receita'&amp;&amp;x.categoria==='Salário'&amp;&amp;x.descricao.includes('05')).reduce((a,x)=&gt;a+x.valor,0);
+ const sal20=month.filter(x=&gt;x.tipo==='Receita'&amp;&amp;x.categoria==='Salário'&amp;&amp;x.descricao.includes('20')).reduce((a,x)=&gt;a+x.valor,0);
+ const exp05=month.filter(x=&gt;x.tipo==='Despesa'&amp;&amp;x.vencimento&amp;&amp;+x.vencimento.slice(8,10)===5).reduce((a,x)=&gt;a+x.valor,0);
+ const exp20=month.filter(x=&gt;x.tipo==='Despesa'&amp;&amp;x.vencimento&amp;&amp;+x.vencimento.slice(8,10)===20).reduce((a,x)=&gt;a+x.valor,0);
+ if(sal05&gt;0&amp;&amp;exp05&gt;sal05)out.push({level:'danger',text:'Contas do dia 05 acima da receita',detail:`Faltam ${brl(exp05-sal05)}`});
+ if(sal20&gt;0&amp;&amp;exp20&gt;sal20)out.push({level:'danger',text:'Contas do dia 20 acima da receita',detail:`Faltam ${brl(exp20-sal20)}`});
+ const pendNoValue=month.filter(x=&gt;x.status==='Pendente'&amp;&amp;+x.valor===0);
+ if(pendNoValue.length)out.push({level:'warn',text:`${pendNoValue.length} pendência(s) do mês com valor zerado`,detail:'Edite o lançamento quando souber o valor.'});
  return out;
 }
 function openAttention(){renderAttention();attentionDlg.showModal()}
 function renderAttention(){
  const a=getAttentions();
- $(&#x27;attentionList&#x27;).innerHTML=a.length?a.map(x=&gt;`&lt;div class=&quot;dash-item&quot;&gt;&lt;span class=&quot;${x.level===&#x27;danger&#x27;?&#x27;budget-over&#x27;:&#x27;budget-warn&#x27;}&quot;&gt;&lt;b&gt;${esc(x.text)}&lt;/b&gt;&lt;br&gt;&lt;small&gt;${esc(x.detail)}&lt;/small&gt;&lt;/span&gt;&lt;/div&gt;`).join(&#x27;&#x27;):&#x27;&lt;div class=&quot;dash-item&quot;&gt;&lt;span class=&quot;budget-ok&quot;&gt;&lt;b&gt;✓ Tudo certo&lt;/b&gt;&lt;br&gt;&lt;small&gt;Nenhuma atenção importante no momento.&lt;/small&gt;&lt;/span&gt;&lt;/div&gt;&#x27;;
+ $('attentionList').innerHTML=a.length?a.map(x=&gt;`&lt;div class=&quot;dash-item&quot;&gt;&lt;span class=&quot;${x.level==='danger'?'budget-over':'budget-warn'}&quot;&gt;&lt;b&gt;${esc(x.text)}&lt;/b&gt;&lt;br&gt;&lt;small&gt;${esc(x.detail)}&lt;/small&gt;&lt;/span&gt;&lt;/div&gt;`).join(''):'&lt;div class=&quot;dash-item&quot;&gt;&lt;span class=&quot;budget-ok&quot;&gt;&lt;b&gt;✓ Tudo certo&lt;/b&gt;&lt;br&gt;&lt;small&gt;Nenhuma atenção importante no momento.&lt;/small&gt;&lt;/span&gt;&lt;/div&gt;';
 }
 function openDashboard(){renderDashboard();dashboardDlg.showModal()}
 function renderDashboard(){
- const ym=$(&#x27;fMes&#x27;).value||today().slice(0,7);
- const [yy,mm]=ym.split(&#x27;-&#x27;).map(Number);
- const label=new Date(yy,mm-1,1).toLocaleDateString(&#x27;pt-BR&#x27;,{month:&#x27;long&#x27;,year:&#x27;numeric&#x27;});
- $(&#x27;dashMonthLabel&#x27;).textContent=`Resumo de ${label[0].toUpperCase()+label.slice(1)}`;
+ const ym=$('fMes').value||today().slice(0,7);
+ const [yy,mm]=ym.split('-').map(Number);
+ const label=new Date(yy,mm-1,1).toLocaleDateString('pt-BR',{month:'long',year:'numeric'});
+ $('dashMonthLabel').textContent=`Resumo de ${label[0].toUpperCase()+label.slice(1)}`;
 
- const month=items.filter(x=&gt;(x.data||&#x27;&#x27;).startsWith(ym));
- const receitas=month.filter(x=&gt;x.tipo===&#x27;Receita&#x27;&amp;&amp;x.categoria!==&#x27;Transferência&#x27;).reduce((a,x)=&gt;a+x.valor,0);
- const despesas=month.filter(x=&gt;x.tipo===&#x27;Despesa&#x27;&amp;&amp;x.categoria!==&#x27;Transferência&#x27;).reduce((a,x)=&gt;a+x.valor,0);
- const reserva=items.filter(x=&gt;x.tipo===&#x27;Reserva&#x27;).reduce((a,x)=&gt;a+x.valor,0);
- $(&#x27;dReceitas&#x27;).textContent=brl(receitas);$(&#x27;dDespesas&#x27;).textContent=brl(despesas);$(&#x27;dReserva&#x27;).textContent=brl(reserva);
+ const month=items.filter(x=&gt;(x.data||'').startsWith(ym));
+ const receitas=month.filter(x=&gt;x.tipo==='Receita'&amp;&amp;x.categoria!=='Transferência').reduce((a,x)=&gt;a+x.valor,0);
+ const despesas=month.filter(x=&gt;x.tipo==='Despesa'&amp;&amp;x.categoria!=='Transferência').reduce((a,x)=&gt;a+x.valor,0);
+ const reserva=items.filter(x=&gt;x.tipo==='Reserva').reduce((a,x)=&gt;a+x.valor,0);
+ $('dReceitas').textContent=brl(receitas);$('dDespesas').textContent=brl(despesas);$('dReserva').textContent=brl(reserva);
  const resultado=receitas-despesas;
- $(&#x27;dBalance&#x27;).textContent=brl(resultado);
- $(&#x27;dBalance&#x27;).className=resultado&gt;=0?&#x27;budget-ok&#x27;:&#x27;budget-over&#x27;;
- $(&#x27;dBalanceTxt&#x27;).textContent=resultado&gt;=0?&#x27;✓ Você está positivo neste mês.&#x27;:&#x27;⚠ Suas despesas estão acima das receitas.&#x27;;
+ $('dBalance').textContent=brl(resultado);
+ $('dBalance').className=resultado&gt;=0?'budget-ok':'budget-over';
+ $('dBalanceTxt').textContent=resultado&gt;=0?'✓ Você está positivo neste mês.':'⚠ Suas despesas estão acima das receitas.';
 
- const pending=month.filter(x=&gt;x.tipo===&#x27;Despesa&#x27;&amp;&amp;x.status===&#x27;Pendente&#x27;);
- const paid=month.filter(x=&gt;x.tipo===&#x27;Despesa&#x27;&amp;&amp;x.status===&#x27;Pago&#x27;);
- $(&#x27;dPendente&#x27;).textContent=brl(pending.reduce((a,x)=&gt;a+x.valor,0));
- $(&#x27;dPago&#x27;).textContent=brl(paid.reduce((a,x)=&gt;a+x.valor,0));
- $(&#x27;dProjetado&#x27;).textContent=brl(receitas-despesas);
+ const pending=month.filter(x=&gt;x.tipo==='Despesa'&amp;&amp;x.status==='Pendente');
+ const paid=month.filter(x=&gt;x.tipo==='Despesa'&amp;&amp;x.status==='Pago');
+ $('dPendente').textContent=brl(pending.reduce((a,x)=&gt;a+x.valor,0));
+ $('dPago').textContent=brl(paid.reduce((a,x)=&gt;a+x.valor,0));
+ $('dProjetado').textContent=brl(receitas-despesas);
 
  function group(day){
-   return month.filter(x=&gt;x.tipo===&#x27;Despesa&#x27; &amp;&amp; x.vencimento &amp;&amp; (+x.vencimento.slice(8,10)===day));
+   return month.filter(x=&gt;x.tipo==='Despesa' &amp;&amp; x.vencimento &amp;&amp; (+x.vencimento.slice(8,10)===day));
  }
  const g05=group(5),g20=group(20);
  const ids=new Set([...g05,...g20].map(x=&gt;x.id));
- const other=month.filter(x=&gt;x.tipo===&#x27;Despesa&#x27;&amp;&amp;x.vencimento&amp;&amp;!ids.has(x.id));
+ const other=month.filter(x=&gt;x.tipo==='Despesa'&amp;&amp;x.vencimento&amp;&amp;!ids.has(x.id));
  const fill=(arr,totalId,listId)=&gt;{
    $(totalId).textContent=brl(arr.reduce((a,x)=&gt;a+x.valor,0));
-   $(listId).innerHTML=arr.length?arr.map(x=&gt;`&lt;div class=&quot;dash-item&quot;&gt;&lt;span&gt;${esc(x.descricao)} &lt;small&gt;(${x.status})&lt;/small&gt;&lt;/span&gt;&lt;b&gt;${brl(x.valor)}&lt;/b&gt;&lt;/div&gt;`).join(&#x27;&#x27;):&#x27;&lt;small&gt;Nenhuma conta.&lt;/small&gt;&#x27;;
+   $(listId).innerHTML=arr.length?arr.map(x=&gt;`&lt;div class=&quot;dash-item&quot;&gt;&lt;span&gt;${esc(x.descricao)} &lt;small&gt;(${x.status})&lt;/small&gt;&lt;/span&gt;&lt;b&gt;${brl(x.valor)}&lt;/b&gt;&lt;/div&gt;`).join(''):'&lt;small&gt;Nenhuma conta.&lt;/small&gt;';
  };
- fill(g05,&#x27;dDia05&#x27;,&#x27;dList05&#x27;);fill(g20,&#x27;dDia20&#x27;,&#x27;dList20&#x27;);fill(other,&#x27;dOutros&#x27;,&#x27;dListOutros&#x27;);
- const sal05=month.filter(x=&gt;x.tipo===&#x27;Receita&#x27;&amp;&amp;x.categoria===&#x27;Salário&#x27;&amp;&amp;x.descricao.includes(&#x27;05&#x27;)).reduce((a,x)=&gt;a+x.valor,0);
- const sal20=month.filter(x=&gt;x.tipo===&#x27;Receita&#x27;&amp;&amp;x.categoria===&#x27;Salário&#x27;&amp;&amp;x.descricao.includes(&#x27;20&#x27;)).reduce((a,x)=&gt;a+x.valor,0);
+ fill(g05,'dDia05','dList05');fill(g20,'dDia20','dList20');fill(other,'dOutros','dListOutros');
+ const sal05=month.filter(x=&gt;x.tipo==='Receita'&amp;&amp;x.categoria==='Salário'&amp;&amp;x.descricao.includes('05')).reduce((a,x)=&gt;a+x.valor,0);
+ const sal20=month.filter(x=&gt;x.tipo==='Receita'&amp;&amp;x.categoria==='Salário'&amp;&amp;x.descricao.includes('20')).reduce((a,x)=&gt;a+x.valor,0);
  const tot05=g05.reduce((a,x)=&gt;a+x.valor,0),tot20=g20.reduce((a,x)=&gt;a+x.valor,0);
  const bal05=sal05-tot05,bal20=sal20-tot20;
- $(&#x27;dSaldo05&#x27;).innerHTML=`Receita: &lt;b&gt;${brl(sal05)}&lt;/b&gt;&lt;br&gt;&lt;span class=&quot;${bal05&gt;=0?&#x27;budget-ok&#x27;:&#x27;budget-over&#x27;}&quot;&gt;&lt;b&gt;${bal05&gt;=0?&#x27;✓ Sobra&#x27;:&#x27;⚠ Falta&#x27;}: ${brl(Math.abs(bal05))}&lt;/b&gt;&lt;/span&gt;`;
- $(&#x27;dSaldo20&#x27;).innerHTML=`Receita: &lt;b&gt;${brl(sal20)}&lt;/b&gt;&lt;br&gt;&lt;span class=&quot;${bal20&gt;=0?&#x27;budget-ok&#x27;:&#x27;budget-over&#x27;}&quot;&gt;&lt;b&gt;${bal20&gt;=0?&#x27;✓ Sobra&#x27;:&#x27;⚠ Falta&#x27;}: ${brl(Math.abs(bal20))}&lt;/b&gt;&lt;/span&gt;`;
+ $('dSaldo05').innerHTML=`Receita: &lt;b&gt;${brl(sal05)}&lt;/b&gt;&lt;br&gt;&lt;span class=&quot;${bal05&gt;=0?'budget-ok':'budget-over'}&quot;&gt;&lt;b&gt;${bal05&gt;=0?'✓ Sobra':'⚠ Falta'}: ${brl(Math.abs(bal05))}&lt;/b&gt;&lt;/span&gt;`;
+ $('dSaldo20').innerHTML=`Receita: &lt;b&gt;${brl(sal20)}&lt;/b&gt;&lt;br&gt;&lt;span class=&quot;${bal20&gt;=0?'budget-ok':'budget-over'}&quot;&gt;&lt;b&gt;${bal20&gt;=0?'✓ Sobra':'⚠ Falta'}: ${brl(Math.abs(bal20))}&lt;/b&gt;&lt;/span&gt;`;
 
  const bankRows=getBanks().map(b=&gt;{
    const bm=month.filter(x=&gt;x.banco===b);
-   const entradas=bm.filter(x=&gt;x.tipo===&#x27;Receita&#x27;).reduce((a,x)=&gt;a+x.valor,0);
-   const saidas=bm.filter(x=&gt;x.tipo===&#x27;Despesa&#x27;||x.tipo===&#x27;Reserva&#x27;).reduce((a,x)=&gt;a+x.valor,0);
+   const entradas=bm.filter(x=&gt;x.tipo==='Receita').reduce((a,x)=&gt;a+x.valor,0);
+   const saidas=bm.filter(x=&gt;x.tipo==='Despesa'||x.tipo==='Reserva').reduce((a,x)=&gt;a+x.valor,0);
    const saldo=entradas-saidas;
    return {b,entradas,saidas,saldo};
  }).filter(r=&gt;r.entradas||r.saidas);
- $(&#x27;dBancos&#x27;).innerHTML=bankRows.length?bankRows.map(r=&gt;`&lt;div class=&quot;dash-item&quot;&gt;&lt;span&gt;&lt;b&gt;${esc(r.b)}&lt;/b&gt;&lt;br&gt;&lt;small&gt;Entradas: ${brl(r.entradas)} • Saídas: ${brl(r.saidas)}&lt;/small&gt;&lt;/span&gt;&lt;b class=&quot;${r.saldo&gt;=0?&#x27;budget-ok&#x27;:&#x27;budget-over&#x27;}&quot;&gt;${brl(r.saldo)}&lt;/b&gt;&lt;/div&gt;`).join(&#x27;&#x27;):&#x27;&lt;small&gt;Nenhuma movimentação por banco neste mês.&lt;/small&gt;&#x27;;
+ $('dBancos').innerHTML=bankRows.length?bankRows.map(r=&gt;`&lt;div class=&quot;dash-item&quot;&gt;&lt;span&gt;&lt;b&gt;${esc(r.b)}&lt;/b&gt;&lt;br&gt;&lt;small&gt;Entradas: ${brl(r.entradas)} • Saídas: ${brl(r.saidas)}&lt;/small&gt;&lt;/span&gt;&lt;b class=&quot;${r.saldo&gt;=0?'budget-ok':'budget-over'}&quot;&gt;${brl(r.saldo)}&lt;/b&gt;&lt;/div&gt;`).join(''):'&lt;small&gt;Nenhuma movimentação por banco neste mês.&lt;/small&gt;';
 
  const cats={};
- month.filter(x=&gt;x.tipo===&#x27;Despesa&#x27;&amp;&amp;x.categoria!==&#x27;Transferência&#x27;).forEach(x=&gt;cats[x.categoria]=(cats[x.categoria]||0)+x.valor);
+ month.filter(x=&gt;x.tipo==='Despesa'&amp;&amp;x.categoria!=='Transferência').forEach(x=&gt;cats[x.categoria]=(cats[x.categoria]||0)+x.valor);
  const entries=Object.entries(cats).sort((a,b)=&gt;b[1]-a[1]), max=entries[0]?.[1]||1;
- $(&#x27;dCategorias&#x27;).innerHTML=entries.length?entries.map(([c,v])=&gt;`&lt;div&gt;&lt;div class=&quot;dash-item&quot;&gt;&lt;span&gt;${esc(c)}&lt;/span&gt;&lt;b&gt;${brl(v)}&lt;/b&gt;&lt;/div&gt;&lt;div class=&quot;dash-bar&quot;&gt;&lt;span style=&quot;width:${Math.min(100,v/max*100)}%&quot;&gt;&lt;/span&gt;&lt;/div&gt;&lt;/div&gt;`).join(&#x27;&#x27;):&#x27;&lt;small&gt;Nenhuma despesa no mês.&lt;/small&gt;&#x27;;
+ $('dCategorias').innerHTML=entries.length?entries.map(([c,v])=&gt;`&lt;div&gt;&lt;div class=&quot;dash-item&quot;&gt;&lt;span&gt;${esc(c)}&lt;/span&gt;&lt;b&gt;${brl(v)}&lt;/b&gt;&lt;/div&gt;&lt;div class=&quot;dash-bar&quot;&gt;&lt;span style=&quot;width:${Math.min(100,v/max*100)}%&quot;&gt;&lt;/span&gt;&lt;/div&gt;&lt;/div&gt;`).join(''):'&lt;small&gt;Nenhuma despesa no mês.&lt;/small&gt;';
 }
-const budgetCategories=[&#x27;Moradia&#x27;,&#x27;Alimentação&#x27;,&#x27;Transporte&#x27;,&#x27;Combustível&#x27;,&#x27;Saúde&#x27;,&#x27;Lazer&#x27;,&#x27;Assinaturas&#x27;,&#x27;Impostos&#x27;,&#x27;Outras Despesas&#x27;];
+const budgetCategories=['Moradia','Alimentação','Transporte','Combustível','Saúde','Lazer','Assinaturas','Impostos','Outras Despesas'];
 function saveBudgets(){setAppData(BUDGET_KEY,JSON.stringify(budgets));renderBudgets();render()}
 function openBudgets(){renderBudgets();budgetDlg.showModal()}
 function renderBudgets(){
- const ym=$(&#x27;fMes&#x27;).value||today().slice(0,7), box=$(&#x27;budgetList&#x27;);
+ const ym=$('fMes').value||today().slice(0,7), box=$('budgetList');
  box.innerHTML=budgets.length?budgets.map((b,i)=&gt;{
-   const spent=items.filter(x=&gt;x.tipo===&#x27;Despesa&#x27;&amp;&amp;x.categoria===b.categoria&amp;&amp;x.data.startsWith(ym)&amp;&amp;x.categoria!==&#x27;Transferência&#x27;).reduce((a,x)=&gt;a+x.valor,0);
+   const spent=items.filter(x=&gt;x.tipo==='Despesa'&amp;&amp;x.categoria===b.categoria&amp;&amp;x.data.startsWith(ym)&amp;&amp;x.categoria!=='Transferência').reduce((a,x)=&gt;a+x.valor,0);
    const lim=+b.limite||0,pct=lim&gt;0?Math.min(100,(spent/lim)*100):0;
-   const cls=lim&gt;0&amp;&amp;spent&gt;lim?&#x27;budget-over&#x27;:lim&gt;0&amp;&amp;spent&gt;=lim*.8?&#x27;budget-warn&#x27;:&#x27;budget-ok&#x27;;
+   const cls=lim&gt;0&amp;&amp;spent&gt;lim?'budget-over':lim&gt;0&amp;&amp;spent&gt;=lim*.8?'budget-warn':'budget-ok';
    const msg=lim&gt;0?`${brl(spent)} de ${brl(lim)} (${Math.round(spent/lim*100)}%)`:`${brl(spent)} gasto • limite não definido`;
    return `&lt;div class=&quot;budget-row&quot;&gt;
     &lt;div class=&quot;budget-top&quot;&gt;
-      &lt;select onchange=&quot;budgets[${i}].categoria=this.value;saveBudgets()&quot;&gt;${budgetCategories.map(v=&gt;`&lt;option ${b.categoria===v?&#x27;selected&#x27;:&#x27;&#x27;}&gt;${v}&lt;/option&gt;`).join(&#x27;&#x27;)}&lt;/select&gt;
-      &lt;input type=&quot;number&quot; min=&quot;0&quot; step=&quot;0.01&quot; value=&quot;${lim||&#x27;&#x27;}&quot; placeholder=&quot;Limite R$&quot; onchange=&quot;budgets[${i}].limite=+this.value;saveBudgets()&quot;&gt;
+      &lt;select onchange=&quot;budgets[${i}].categoria=this.value;saveBudgets()&quot;&gt;${budgetCategories.map(v=&gt;`&lt;option ${b.categoria===v?'selected':''}&gt;${v}&lt;/option&gt;`).join('')}&lt;/select&gt;
+      &lt;input type=&quot;number&quot; min=&quot;0&quot; step=&quot;0.01&quot; value=&quot;${lim||''}&quot; placeholder=&quot;Limite R$&quot; onchange=&quot;budgets[${i}].limite=+this.value;saveBudgets()&quot;&gt;
       &lt;button class=&quot;iconbtn danger&quot; onclick=&quot;removeBudget(${i})&quot;&gt;Excluir&lt;/button&gt;
     &lt;/div&gt;
     &lt;div class=&quot;summaryline ${cls}&quot;&gt;${msg}&lt;/div&gt;
-    ${lim&gt;0?`&lt;div class=&quot;progress&quot;&gt;&lt;span style=&quot;width:${pct}%&quot;&gt;&lt;/span&gt;&lt;/div&gt;`:&#x27;&#x27;}
+    ${lim&gt;0?`&lt;div class=&quot;progress&quot;&gt;&lt;span style=&quot;width:${pct}%&quot;&gt;&lt;/span&gt;&lt;/div&gt;`:''}
    &lt;/div&gt;`;
- }).join(&#x27;&#x27;):&#x27;&lt;div class=&quot;empty&quot;&gt;Nenhum limite cadastrado.&lt;/div&gt;&#x27;;
+ }).join(''):'&lt;div class=&quot;empty&quot;&gt;Nenhum limite cadastrado.&lt;/div&gt;';
 }
-function addBudget(){budgets.push({id:newId(),categoria:&#x27;Outras Despesas&#x27;,limite:0});saveBudgets()}
-function removeBudget(i){if(confirm(&#x27;Excluir este limite?&#x27;)){budgets.splice(i,1);saveBudgets()}}
+function addBudget(){budgets.push({id:newId(),categoria:'Outras Despesas',limite:0});saveBudgets()}
+function removeBudget(i){if(confirm('Excluir este limite?')){budgets.splice(i,1);saveBudgets()}}
 function openReserveGoal(){
- $(&#x27;goalTotal&#x27;).value=reserveGoal.total||&#x27;&#x27;;
- $(&#x27;goalMode&#x27;).value=reserveGoal.mode||&#x27;percent&#x27;;
- $(&#x27;goalPercent&#x27;).value=reserveGoal.percent||10;
- $(&#x27;goalFixed&#x27;).value=reserveGoal.fixed||&#x27;&#x27;;
- $(&#x27;goalName&#x27;).value=reserveGoal.name||&#x27;Reserva de emergência&#x27;;
+ $('goalTotal').value=reserveGoal.total||'';
+ $('goalMode').value=reserveGoal.mode||'percent';
+ $('goalPercent').value=reserveGoal.percent||10;
+ $('goalFixed').value=reserveGoal.fixed||'';
+ $('goalName').value=reserveGoal.name||'Reserva de emergência';
  reserveGoalDlg.showModal();
 }
 function saveReserveGoal(e){
  e.preventDefault();
- reserveGoal={name:$(&#x27;goalName&#x27;).value.trim()||&#x27;Reserva&#x27;,total:+$(&#x27;goalTotal&#x27;).value||0,mode:$(&#x27;goalMode&#x27;).value,percent:+$(&#x27;goalPercent&#x27;).value||10,fixed:+$(&#x27;goalFixed&#x27;).value||0};
+ reserveGoal={name:$('goalName').value.trim()||'Reserva',total:+$('goalTotal').value||0,mode:$('goalMode').value,percent:+$('goalPercent').value||10,fixed:+$('goalFixed').value||0};
  setAppData(GOAL_KEY,JSON.stringify(reserveGoal));
  reserveGoalDlg.close();render();
 }
 function applySuggestedReserve(){
- const value=Number($(&#x27;sugestaoReserva&#x27;).dataset.value||0);
- if(value&lt;=0){alert(&#x27;No momento não há valor sugerido para reservar.&#x27;);return}
- openReserve();$(&#x27;rValor&#x27;).value=value.toFixed(2);$(&#x27;rNome&#x27;).value=reserveGoal.name||&#x27;Reserva&#x27;;
+ const value=Number($('sugestaoReserva').dataset.value||0);
+ if(value&lt;=0){alert('No momento não há valor sugerido para reservar.');return}
+ openReserve();$('rValor').value=value.toFixed(2);$('rNome').value=reserveGoal.name||'Reserva';
 }
 function openReserve(){
- $(&#x27;rData&#x27;).value=today();$(&#x27;rValor&#x27;).value=&#x27;&#x27;;$(&#x27;rBanco&#x27;).value=banks.includes(&#x27;Itaú&#x27;)?&#x27;Itaú&#x27;:defaultBank();$(&#x27;rNome&#x27;).value=&#x27;Reserva&#x27;;$(&#x27;rObs&#x27;).value=&#x27;&#x27;;reserveDlg.showModal();
+ $('rData').value=today();$('rValor').value='';$('rBanco').value=banks.includes('Itaú')?'Itaú':defaultBank();$('rNome').value='Reserva';$('rObs').value='';reserveDlg.showModal();
 }
 function saveReserve(e){
  e.preventDefault();
- const v=+$(&#x27;rValor&#x27;).value, d=$(&#x27;rData&#x27;).value, banco=$(&#x27;rBanco&#x27;).value, nome=$(&#x27;rNome&#x27;).value.trim()||&#x27;Reserva&#x27;;
- items.push({id:newId(),tipo:&#x27;Reserva&#x27;,data:d,descricao:nome,categoria:&#x27;Reserva / Investimento&#x27;,banco,valor:v,status:&#x27;Aplicado&#x27;,vencimento:&#x27;&#x27;,forma:&#x27;Transferência&#x27;,parcela:&#x27;&#x27;,recorrente:&#x27;Não&#x27;,obs:$(&#x27;rObs&#x27;).value});
+ const v=+$('rValor').value, d=$('rData').value, banco=$('rBanco').value, nome=$('rNome').value.trim()||'Reserva';
+ items.push({id:newId(),tipo:'Reserva',data:d,descricao:nome,categoria:'Reserva / Investimento',banco,valor:v,status:'Aplicado',vencimento:'',forma:'Transferência',parcela:'',recorrente:'Não',obs:$('rObs').value});
  persist();reserveDlg.close();
 }
-function openTransfer(){refreshBankUI();$(&#x27;tData&#x27;).value=today();$(&#x27;tValor&#x27;).value=&#x27;&#x27;;const bs=getBanks();$(&#x27;tDe&#x27;).value=bs[0]||&#x27;&#x27;;$(&#x27;tPara&#x27;).value=bs[1]||bs[0]||&#x27;&#x27;;transferDlg.showModal()}
+function openTransfer(){refreshBankUI();$('tData').value=today();$('tValor').value='';const bs=getBanks();$('tDe').value=bs[0]||'';$('tPara').value=bs[1]||bs[0]||'';transferDlg.showModal()}
 function saveTransfer(e){
- e.preventDefault();if($(&#x27;tDe&#x27;).value===$(&#x27;tPara&#x27;).value){alert(&#x27;Escolha contas diferentes.&#x27;);return}
- const id=newId(),v=+$(&#x27;tValor&#x27;).value,d=$(&#x27;tData&#x27;).value,de=$(&#x27;tDe&#x27;).value,para=$(&#x27;tPara&#x27;).value;
- items.push({id:id+&#x27;a&#x27;,tipo:&#x27;Despesa&#x27;,data:d,descricao:`Transferência para ${para}`,categoria:&#x27;Transferência&#x27;,banco:de,valor:v,status:&#x27;Pago&#x27;,vencimento:&#x27;&#x27;,forma:&#x27;Transferência&#x27;,parcela:&#x27;&#x27;,recorrente:&#x27;Não&#x27;,obs:&#x27;Transferência entre contas&#x27;});
- items.push({id:id+&#x27;b&#x27;,tipo:&#x27;Receita&#x27;,data:d,descricao:`Transferência de ${de}`,categoria:&#x27;Transferência&#x27;,banco:para,valor:v,status:&#x27;Recebido&#x27;,vencimento:&#x27;&#x27;,forma:&#x27;Transferência&#x27;,parcela:&#x27;&#x27;,recorrente:&#x27;Não&#x27;,obs:&#x27;Transferência entre contas&#x27;});
+ e.preventDefault();if($('tDe').value===$('tPara').value){alert('Escolha contas diferentes.');return}
+ const id=newId(),v=+$('tValor').value,d=$('tData').value,de=$('tDe').value,para=$('tPara').value;
+ items.push({id:id+'a',tipo:'Despesa',data:d,descricao:`Transferência para ${para}`,categoria:'Transferência',banco:de,valor:v,status:'Pago',vencimento:'',forma:'Transferência',parcela:'',recorrente:'Não',obs:'Transferência entre contas'});
+ items.push({id:id+'b',tipo:'Receita',data:d,descricao:`Transferência de ${de}`,categoria:'Transferência',banco:para,valor:v,status:'Recebido',vencimento:'',forma:'Transferência',parcela:'',recorrente:'Não',obs:'Transferência entre contas'});
  persist();transferDlg.close();
 }
 
@@ -6756,169 +6765,169 @@ function nextSalaryDate(){
  if(d&lt;5)return new Date(y,m,5,12); if(d&lt;20)return new Date(y,m,20,12); return new Date(y,m+1,5,12);
 }
 function bankBadge(name){
- const n=(name||&#x27;&#x27;).toLowerCase(); let cls=&#x27;generic&#x27;,txt=(name||&#x27;🏦&#x27;).slice(0,2).toUpperCase();
- if(n.includes(&#x27;itaú&#x27;)||n.includes(&#x27;itau&#x27;)){cls=&#x27;itau&#x27;;txt=&#x27;Itaú&#x27;} else if(n.includes(&#x27;uber&#x27;)){cls=&#x27;uber&#x27;;txt=&#x27;Uber&#x27;} else if(n.includes(&#x27;santander&#x27;)){cls=&#x27;santander&#x27;;txt=&#x27;S&#x27;} else if(n.includes(&#x27;nubank&#x27;)||n===&#x27;nu&#x27;){cls=&#x27;nubank&#x27;;txt=&#x27;nu&#x27;}
+ const n=(name||'').toLowerCase(); let cls='generic',txt=(name||'🏦').slice(0,2).toUpperCase();
+ if(n.includes('itaú')||n.includes('itau')){cls='itau';txt='Itaú'} else if(n.includes('uber')){cls='uber';txt='Uber'} else if(n.includes('santander')){cls='santander';txt='S'} else if(n.includes('nubank')||n==='nu'){cls='nubank';txt='nu'}
  return `&lt;span class=&quot;bank-logo ${cls}&quot;&gt;${esc(txt)}&lt;/span&gt;`;
 }
-function toggleValues(){document.body.classList.toggle(&#x27;hidden-values&#x27;);$(&#x27;privacyTxt&#x27;).textContent=document.body.classList.contains(&#x27;hidden-values&#x27;)?&#x27;Mostrar valores&#x27;:&#x27;Ocultar valores&#x27;}
+function toggleValues(){document.body.classList.toggle('hidden-values');$('privacyTxt').textContent=document.body.classList.contains('hidden-values')?'Mostrar valores':'Ocultar valores'}
 function renderHomeAnalytics(){
- const ym=$(&#x27;fMes&#x27;).value||today().slice(0,7), [yy,mm]=ym.split(&#x27;-&#x27;).map(Number);
- const months=[];for(let i=8;i&gt;=0;i--){const d=new Date(yy,mm-1-i,1), key=`${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,&#x27;0&#x27;)}`;months.push({key,label:d.toLocaleDateString(&#x27;pt-BR&#x27;,{month:&#x27;short&#x27;}).replace(&#x27;.&#x27;,&#x27;&#x27;)});}
- const vals=months.map(m=&gt;({m,inc:items.filter(x=&gt;x.tipo===&#x27;Receita&#x27;&amp;&amp;x.categoria!==&#x27;Transferência&#x27;&amp;&amp;(x.data||&#x27;&#x27;).startsWith(m.key)).reduce((a,x)=&gt;a+x.valor,0),out:items.filter(x=&gt;x.tipo===&#x27;Despesa&#x27;&amp;&amp;x.categoria!==&#x27;Transferência&#x27;&amp;&amp;(x.data||&#x27;&#x27;).startsWith(m.key)).reduce((a,x)=&gt;a+x.valor,0)}));
- const mx=Math.max(1,...vals.flatMap(v=&gt;[v.inc,v.out])); if($(&#x27;homeBarChart&#x27;))$(&#x27;homeBarChart&#x27;).innerHTML=vals.map(v=&gt;`&lt;div class=&quot;bar-month&quot;&gt;&lt;i class=&quot;bar in&quot; title=&quot;Entradas ${brl(v.inc)}&quot; style=&quot;height:${Math.max(2,v.inc/mx*145)}px&quot;&gt;&lt;/i&gt;&lt;i class=&quot;bar out&quot; title=&quot;Saídas ${brl(v.out)}&quot; style=&quot;height:${Math.max(2,v.out/mx*145)}px&quot;&gt;&lt;/i&gt;&lt;span class=&quot;bar-label&quot;&gt;${v.m.label}&lt;/span&gt;&lt;/div&gt;`).join(&#x27;&#x27;);
- const cats={};items.filter(x=&gt;x.tipo===&#x27;Despesa&#x27;&amp;&amp;x.categoria!==&#x27;Transferência&#x27;&amp;&amp;(x.data||&#x27;&#x27;).startsWith(ym)).forEach(x=&gt;cats[x.categoria||&#x27;Outros&#x27;]=(cats[x.categoria||&#x27;Outros&#x27;]||0)+x.valor);const cr=Object.entries(cats).sort((a,b)=&gt;b[1]-a[1]).slice(0,6),ct=cr.reduce((a,x)=&gt;a+x[1],0)||1;if($(&#x27;homeCategories&#x27;))$(&#x27;homeCategories&#x27;).innerHTML=cr.length?cr.map(([n,v])=&gt;`&lt;div class=&quot;cat-row&quot;&gt;&lt;span&gt;${esc(n)}&lt;/span&gt;&lt;b&gt;${Math.round(v/ct*100)}%&lt;/b&gt;&lt;div class=&quot;cat-track&quot;&gt;&lt;div class=&quot;cat-fill&quot; style=&quot;width:${v/ct*100}%&quot;&gt;&lt;/div&gt;&lt;/div&gt;&lt;/div&gt;`).join(&#x27;&#x27;):&#x27;&lt;small&gt;Sem despesas neste mês.&lt;/small&gt;&#x27;;
- const reserveTotal=items.filter(x=&gt;x.tipo===&#x27;Reserva&#x27;).reduce((a,x)=&gt;a+x.valor,0),total=reserveGoal.total||0,pct=total?Math.min(100,reserveTotal/total*100):0,missing=Math.max(0,total-reserveTotal);if($(&#x27;homeGoalRing&#x27;))$(&#x27;homeGoalRing&#x27;).style.setProperty(&#x27;--goal&#x27;,pct+&#x27;%&#x27;);if($(&#x27;homeGoalPct&#x27;))$(&#x27;homeGoalPct&#x27;).textContent=Math.round(pct)+&#x27;%&#x27;;if($(&#x27;homeGoalValue&#x27;))$(&#x27;homeGoalValue&#x27;).textContent=brl(reserveTotal);if($(&#x27;homeGoalTotal&#x27;))$(&#x27;homeGoalTotal&#x27;).textContent=total?`de ${brl(total)}`:&#x27;Meta não definida&#x27;;if($(&#x27;homeGoalMissing&#x27;))$(&#x27;homeGoalMissing&#x27;).textContent=total?(missing?`🏆 Falta ${brl(missing)} para atingir sua meta`:&#x27;🏆 Meta atingida!&#x27;):&#x27;Defina sua meta de reserva&#x27;;
- const pendingDue=items.filter(x=&gt;x.tipo===&#x27;Despesa&#x27;&amp;&amp;x.status===&#x27;Pendente&#x27;&amp;&amp;(x.vencimento||x.data||&#x27;&#x27;).startsWith(ym)).sort((a,b)=&gt;(a.vencimento||a.data).localeCompare(b.vencimento||b.data));if($(&#x27;nextSalarySummary&#x27;))$(&#x27;nextSalarySummary&#x27;).textContent=pendingDue.length?`${pendingDue.length} conta(s) • próxima: ${(pendingDue[0].vencimento||pendingDue[0].data).split(&#x27;-&#x27;).reverse().join(&#x27;/&#x27;)}`:&#x27;Nenhuma pendência neste mês&#x27;;
+ const ym=$('fMes').value||today().slice(0,7), [yy,mm]=ym.split('-').map(Number);
+ const months=[];for(let i=8;i&gt;=0;i--){const d=new Date(yy,mm-1-i,1), key=`${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}`;months.push({key,label:d.toLocaleDateString('pt-BR',{month:'short'}).replace('.','')});}
+ const vals=months.map(m=&gt;({m,inc:items.filter(x=&gt;x.tipo==='Receita'&amp;&amp;x.categoria!=='Transferência'&amp;&amp;(x.data||'').startsWith(m.key)).reduce((a,x)=&gt;a+x.valor,0),out:items.filter(x=&gt;x.tipo==='Despesa'&amp;&amp;x.categoria!=='Transferência'&amp;&amp;(x.data||'').startsWith(m.key)).reduce((a,x)=&gt;a+x.valor,0)}));
+ const mx=Math.max(1,...vals.flatMap(v=&gt;[v.inc,v.out])); if($('homeBarChart'))$('homeBarChart').innerHTML=vals.map(v=&gt;`&lt;div class=&quot;bar-month&quot;&gt;&lt;i class=&quot;bar in&quot; title=&quot;Entradas ${brl(v.inc)}&quot; style=&quot;height:${Math.max(2,v.inc/mx*145)}px&quot;&gt;&lt;/i&gt;&lt;i class=&quot;bar out&quot; title=&quot;Saídas ${brl(v.out)}&quot; style=&quot;height:${Math.max(2,v.out/mx*145)}px&quot;&gt;&lt;/i&gt;&lt;span class=&quot;bar-label&quot;&gt;${v.m.label}&lt;/span&gt;&lt;/div&gt;`).join('');
+ const cats={};items.filter(x=&gt;x.tipo==='Despesa'&amp;&amp;x.categoria!=='Transferência'&amp;&amp;(x.data||'').startsWith(ym)).forEach(x=&gt;cats[x.categoria||'Outros']=(cats[x.categoria||'Outros']||0)+x.valor);const cr=Object.entries(cats).sort((a,b)=&gt;b[1]-a[1]).slice(0,6),ct=cr.reduce((a,x)=&gt;a+x[1],0)||1;if($('homeCategories'))$('homeCategories').innerHTML=cr.length?cr.map(([n,v])=&gt;`&lt;div class=&quot;cat-row&quot;&gt;&lt;span&gt;${esc(n)}&lt;/span&gt;&lt;b&gt;${Math.round(v/ct*100)}%&lt;/b&gt;&lt;div class=&quot;cat-track&quot;&gt;&lt;div class=&quot;cat-fill&quot; style=&quot;width:${v/ct*100}%&quot;&gt;&lt;/div&gt;&lt;/div&gt;&lt;/div&gt;`).join(''):'&lt;small&gt;Sem despesas neste mês.&lt;/small&gt;';
+ const reserveTotal=items.filter(x=&gt;x.tipo==='Reserva').reduce((a,x)=&gt;a+x.valor,0),total=reserveGoal.total||0,pct=total?Math.min(100,reserveTotal/total*100):0,missing=Math.max(0,total-reserveTotal);if($('homeGoalRing'))$('homeGoalRing').style.setProperty('--goal',pct+'%');if($('homeGoalPct'))$('homeGoalPct').textContent=Math.round(pct)+'%';if($('homeGoalValue'))$('homeGoalValue').textContent=brl(reserveTotal);if($('homeGoalTotal'))$('homeGoalTotal').textContent=total?`de ${brl(total)}`:'Meta não definida';if($('homeGoalMissing'))$('homeGoalMissing').textContent=total?(missing?`🏆 Falta ${brl(missing)} para atingir sua meta`:'🏆 Meta atingida!'):'Defina sua meta de reserva';
+ const pendingDue=items.filter(x=&gt;x.tipo==='Despesa'&amp;&amp;x.status==='Pendente'&amp;&amp;(x.vencimento||x.data||'').startsWith(ym)).sort((a,b)=&gt;(a.vencimento||a.data).localeCompare(b.vencimento||b.data));if($('nextSalarySummary'))$('nextSalarySummary').textContent=pendingDue.length?`${pendingDue.length} conta(s) • próxima: ${(pendingDue[0].vencimento||pendingDue[0].data).split('-').reverse().join('/')}`:'Nenhuma pendência neste mês';
 }
 function renderModernHome(){
- const ym=$(&#x27;fMes&#x27;).value||today().slice(0,7), settled=items.filter(x=&gt;x.status!==&#x27;Pendente&#x27;);
- const net=a=&gt;a.reduce((s,x)=&gt;s+(x.tipo===&#x27;Receita&#x27;?x.valor:x.tipo===&#x27;Despesa&#x27;?-x.valor:x.tipo===&#x27;Reserva&#x27;?-x.valor:x.tipo===&#x27;Ajuste&#x27;?Number(x.valor||0):0),0);
- const pendMonth=items.filter(x=&gt;x.status===&#x27;Pendente&#x27;&amp;&amp;x.tipo===&#x27;Despesa&#x27;&amp;&amp;(x.vencimento||x.data||&#x27;&#x27;).startsWith(ym)).reduce((a,x)=&gt;a+x.valor,0);
- const proj=net(settled)-pendMonth; if($(&#x27;projectedHome&#x27;)){$(&#x27;projectedHome&#x27;).textContent=brl(proj);$(&#x27;projectedHome&#x27;).className=&#x27;money-value &#x27;+(proj&gt;=0?&#x27;money-pos&#x27;:&#x27;money-neg&#x27;)}
- const bankBox=$(&#x27;homeBankCards&#x27;); if(bankBox){const rows=getBanks().map(b=&gt;({b,s:net(settled.filter(x=&gt;x.banco===b))}));bankBox.innerHTML=rows.map(r=&gt;`&lt;div class=&quot;bank-mini&quot;&gt;${bankBadge(r.b)}&lt;div&gt;&lt;b&gt;${esc(r.b)}&lt;/b&gt;&lt;strong class=&quot;money-value&quot;&gt;${brl(r.s)}&lt;/strong&gt;&lt;/div&gt;&lt;/div&gt;`).join(&#x27;&#x27;)+`&lt;div class=&quot;bank-mini bank-add&quot; onclick=&quot;openBanks()&quot;&gt;➕ Adicionar nova conta&lt;/div&gt;`}
- const recent=items.filter(x=&gt;(x.data||&#x27;&#x27;).startsWith(ym)).sort((a,b)=&gt;b.data.localeCompare(a.data)).slice(0,5); if($(&#x27;homeRecent&#x27;))$(&#x27;homeRecent&#x27;).innerHTML=recent.length?recent.map(x=&gt;`&lt;div class=&quot;recent-row&quot;&gt;&lt;span&gt;${x.data.split(&#x27;-&#x27;).reverse().join(&#x27;/&#x27;).slice(0,5)}&lt;/span&gt;&lt;span&gt;${bankBadge(x.banco)} &lt;b&gt;${esc(x.descricao)}&lt;/b&gt;&lt;br&gt;&lt;small&gt;${esc(x.banco)} • ${esc(x.categoria)}&lt;/small&gt;&lt;/span&gt;&lt;span class=&quot;money-value ${x.tipo===&#x27;Receita&#x27;?&#x27;money-pos&#x27;:&#x27;money-neg&#x27;}&quot;&gt;${x.tipo===&#x27;Ajuste&#x27;?(x.valor&gt;=0?&#x27;+ &#x27;:&#x27;− &#x27;):x.tipo===&#x27;Receita&#x27;?&#x27;+ &#x27;:&#x27;- &#x27;}${brl(Math.abs(x.valor))}&lt;/span&gt;&lt;/div&gt;`).join(&#x27;&#x27;):&#x27;&lt;small&gt;Nenhum lançamento neste mês.&lt;/small&gt;&#x27;;
- const now=new Date();now.setHours(0,0,0,0);const in7=new Date(now);in7.setDate(in7.getDate()+7);const due=items.filter(x=&gt;x.status===&#x27;Pendente&#x27;&amp;&amp;x.tipo===&#x27;Despesa&#x27;&amp;&amp;x.vencimento&amp;&amp;parseDate(x.vencimento)&gt;=now&amp;&amp;parseDate(x.vencimento)&lt;=in7).sort((a,b)=&gt;a.vencimento.localeCompare(b.vencimento)).slice(0,5);if($(&#x27;homeDue&#x27;))$(&#x27;homeDue&#x27;).innerHTML=due.length?due.map(x=&gt;`&lt;div class=&quot;due-row&quot;&gt;&lt;span&gt;${x.vencimento.split(&#x27;-&#x27;).reverse().join(&#x27;/&#x27;).slice(0,5)}&lt;/span&gt;&lt;span&gt;${bankBadge(x.banco)} &lt;b&gt;${esc(x.descricao)}&lt;/b&gt;&lt;br&gt;&lt;small&gt;${esc(x.banco)}&lt;/small&gt;&lt;/span&gt;&lt;span class=&quot;money-value money-neg&quot;&gt;${brl(x.valor)}&lt;/span&gt;&lt;/div&gt;`).join(&#x27;&#x27;):&#x27;&lt;small&gt;Nenhuma conta vencendo nos próximos 7 dias.&lt;/small&gt;&#x27;;
+ const ym=$('fMes').value||today().slice(0,7), settled=items.filter(x=&gt;x.status!=='Pendente');
+ const net=a=&gt;a.reduce((s,x)=&gt;s+(x.tipo==='Receita'?x.valor:x.tipo==='Despesa'?-x.valor:x.tipo==='Reserva'?-x.valor:x.tipo==='Ajuste'?Number(x.valor||0):0),0);
+ const pendMonth=items.filter(x=&gt;x.status==='Pendente'&amp;&amp;x.tipo==='Despesa'&amp;&amp;(x.vencimento||x.data||'').startsWith(ym)).reduce((a,x)=&gt;a+x.valor,0);
+ const proj=net(settled)-pendMonth; if($('projectedHome')){$('projectedHome').textContent=brl(proj);$('projectedHome').className='money-value '+(proj&gt;=0?'money-pos':'money-neg')}
+ const bankBox=$('homeBankCards'); if(bankBox){const rows=getBanks().map(b=&gt;({b,s:net(settled.filter(x=&gt;x.banco===b))}));bankBox.innerHTML=rows.map(r=&gt;`&lt;div class=&quot;bank-mini&quot;&gt;${bankBadge(r.b)}&lt;div&gt;&lt;b&gt;${esc(r.b)}&lt;/b&gt;&lt;strong class=&quot;money-value&quot;&gt;${brl(r.s)}&lt;/strong&gt;&lt;/div&gt;&lt;/div&gt;`).join('')+`&lt;div class=&quot;bank-mini bank-add&quot; onclick=&quot;openBanks()&quot;&gt;➕ Adicionar nova conta&lt;/div&gt;`}
+ const recent=items.filter(x=&gt;(x.data||'').startsWith(ym)).sort((a,b)=&gt;b.data.localeCompare(a.data)).slice(0,5); if($('homeRecent'))$('homeRecent').innerHTML=recent.length?recent.map(x=&gt;`&lt;div class=&quot;recent-row&quot;&gt;&lt;span&gt;${x.data.split('-').reverse().join('/').slice(0,5)}&lt;/span&gt;&lt;span&gt;${bankBadge(x.banco)} &lt;b&gt;${esc(x.descricao)}&lt;/b&gt;&lt;br&gt;&lt;small&gt;${esc(x.banco)} • ${esc(x.categoria)}&lt;/small&gt;&lt;/span&gt;&lt;span class=&quot;money-value ${x.tipo==='Receita'?'money-pos':'money-neg'}&quot;&gt;${x.tipo==='Ajuste'?(x.valor&gt;=0?'+ ':'− '):x.tipo==='Receita'?'+ ':'- '}${brl(Math.abs(x.valor))}&lt;/span&gt;&lt;/div&gt;`).join(''):'&lt;small&gt;Nenhum lançamento neste mês.&lt;/small&gt;';
+ const now=new Date();now.setHours(0,0,0,0);const in7=new Date(now);in7.setDate(in7.getDate()+7);const due=items.filter(x=&gt;x.status==='Pendente'&amp;&amp;x.tipo==='Despesa'&amp;&amp;x.vencimento&amp;&amp;parseDate(x.vencimento)&gt;=now&amp;&amp;parseDate(x.vencimento)&lt;=in7).sort((a,b)=&gt;a.vencimento.localeCompare(b.vencimento)).slice(0,5);if($('homeDue'))$('homeDue').innerHTML=due.length?due.map(x=&gt;`&lt;div class=&quot;due-row&quot;&gt;&lt;span&gt;${x.vencimento.split('-').reverse().join('/').slice(0,5)}&lt;/span&gt;&lt;span&gt;${bankBadge(x.banco)} &lt;b&gt;${esc(x.descricao)}&lt;/b&gt;&lt;br&gt;&lt;small&gt;${esc(x.banco)}&lt;/small&gt;&lt;/span&gt;&lt;span class=&quot;money-value money-neg&quot;&gt;${brl(x.valor)}&lt;/span&gt;&lt;/div&gt;`).join(''):'&lt;small&gt;Nenhuma conta vencendo nos próximos 7 dias.&lt;/small&gt;';
  renderHomeAnalytics();
 }
 function saveOverdraftLimit(){
- const el=$(&#x27;odLimit&#x27;);if(!el)return;
- const v=Number(el.value);if(!Number.isFinite(v)||v&lt;0){alert(&#x27;Informe um limite válido.&#x27;);return;}
- try{localStorage.setItem(&#x27;mf_itau_cheque_limite_v1&#x27;,String(v));if(syncReady){syncDirty=true;scheduleSync();}}catch(e){}
+ const el=$('odLimit');if(!el)return;
+ const v=Number(el.value);if(!Number.isFinite(v)||v&lt;0){alert('Informe um limite válido.');return;}
+ try{localStorage.setItem('mf_itau_cheque_limite_v1',String(v));if(syncReady){syncDirty=true;scheduleSync();}}catch(e){}
  renderOverdraft();
 }
 function renderReconciliationReference(){
- const netBank=b=&gt;items.filter(x=&gt;x.banco===b&amp;&amp;x.status!==&#x27;Pendente&#x27;).reduce((sum,x)=&gt;sum+(x.tipo===&#x27;Receita&#x27;?Number(x.valor||0):x.tipo===&#x27;Despesa&#x27;||x.tipo===&#x27;Reserva&#x27;?-Number(x.valor||0):x.tipo===&#x27;Ajuste&#x27;?Number(x.valor||0):0),0);
- const uber=netBank(&#x27;Uber Conta&#x27;),itau=netBank(&#x27;Itaú&#x27;);
- $(&#x27;recUberLedger&#x27;).textContent=brl(uber);$(&#x27;recItauLedger&#x27;).textContent=brl(itau);
- $(&#x27;recUberDiff&#x27;).textContent=brl(512.98-uber);$(&#x27;recItauDiff&#x27;).textContent=brl(-715.39-itau);
+ const netBank=b=&gt;items.filter(x=&gt;x.banco===b&amp;&amp;x.status!=='Pendente').reduce((sum,x)=&gt;sum+(x.tipo==='Receita'?Number(x.valor||0):x.tipo==='Despesa'||x.tipo==='Reserva'?-Number(x.valor||0):x.tipo==='Ajuste'?Number(x.valor||0):0),0);
+ const uber=netBank('Uber Conta'),itau=netBank('Itaú');
+ $('recUberLedger').textContent=brl(uber);$('recItauLedger').textContent=brl(itau);
+ $('recUberDiff').textContent=brl(512.98-uber);$('recItauDiff').textContent=brl(-715.39-itau);
 }
 function renderOverdraft(){
- const limitEl=$(&#x27;odLimit&#x27;);if(!limitEl)return;
- let limit=1250;try{const raw=localStorage.getItem(&#x27;mf_itau_cheque_limite_v1&#x27;);if(raw!==null&amp;&amp;Number.isFinite(+raw)&amp;&amp;+raw&gt;=0)limit=+raw;}catch(e){}
+ const limitEl=$('odLimit');if(!limitEl)return;
+ let limit=1250;try{const raw=localStorage.getItem('mf_itau_cheque_limite_v1');if(raw!==null&amp;&amp;Number.isFinite(+raw)&amp;&amp;+raw&gt;=0)limit=+raw;}catch(e){}
  if(document.activeElement!==limitEl)limitEl.value=limit;
- const balance=items.filter(x=&gt;x.banco===&#x27;Itaú&#x27;&amp;&amp;x.status!==&#x27;Pendente&#x27;).reduce((v,x)=&gt;v+(x.tipo===&#x27;Receita&#x27;?x.valor:x.tipo===&#x27;Despesa&#x27;?-x.valor:x.tipo===&#x27;Reserva&#x27;?-x.valor:x.tipo===&#x27;Ajuste&#x27;?Number(x.valor||0):0),0);
+ const balance=items.filter(x=&gt;x.banco==='Itaú'&amp;&amp;x.status!=='Pendente').reduce((v,x)=&gt;v+(x.tipo==='Receita'?x.valor:x.tipo==='Despesa'?-x.valor:x.tipo==='Reserva'?-x.valor:x.tipo==='Ajuste'?Number(x.valor||0):0),0);
  const used=Math.max(0,-balance),available=Math.max(0,limit-used),pct=limit&gt;0?100*used/limit:0;
- $(&#x27;odBalance&#x27;).textContent=brl(balance);$(&#x27;odUsed&#x27;).textContent=brl(used);$(&#x27;odAvailable&#x27;).textContent=brl(available);
- $(&#x27;odPercent&#x27;).textContent=limit&gt;0?pct.toFixed(1).replace(&#x27;.&#x27;,&#x27;,&#x27;)+&#x27;%&#x27;:&#x27;—&#x27;;
- $(&#x27;odBar&#x27;).style.width=Math.min(100,pct)+&#x27;%&#x27;;
- $(&#x27;odMessage&#x27;).textContent=used&gt;limit?&#x27;Atenção: o saldo negativo supera o limite informado. Confira o extrato.&#x27;:used&gt;0?&#x27;Cheque especial em uso. O limite restante é crédito do banco, não lucro nem receita.&#x27;:&#x27;Cheque especial não utilizado. Valores dependem da conciliação dos lançamentos.&#x27;;
+ $('odBalance').textContent=brl(balance);$('odUsed').textContent=brl(used);$('odAvailable').textContent=brl(available);
+ $('odPercent').textContent=limit&gt;0?pct.toFixed(1).replace('.',',')+'%':'—';
+ $('odBar').style.width=Math.min(100,pct)+'%';
+ $('odMessage').textContent=used&gt;limit?'Atenção: o saldo negativo supera o limite informado. Confira o extrato.':used&gt;0?'Cheque especial em uso. O limite restante é crédito do banco, não lucro nem receita.':'Cheque especial não utilizado. Valores dependem da conciliação dos lançamentos.';
 }
 function renderWorkPlan(){
- const ym=$(&#x27;fMes&#x27;).value||today().slice(0,7), now=today(),[year,month]=ym.split(&#x27;-&#x27;).map(Number);
- const pend=items.filter(x=&gt;x.tipo===&#x27;Despesa&#x27;&amp;&amp;x.status===&#x27;Pendente&#x27;&amp;&amp;(x.vencimento||x.data||&#x27;&#x27;).startsWith(ym)).reduce((sum,x)=&gt;sum+(+x.valor||0),0);
+ const ym=$('fMes').value||today().slice(0,7), now=today(),[year,month]=ym.split('-').map(Number);
+ const pend=items.filter(x=&gt;x.tipo==='Despesa'&amp;&amp;x.status==='Pendente'&amp;&amp;(x.vencimento||x.data||'').startsWith(ym)).reduce((sum,x)=&gt;sum+(+x.valor||0),0);
  const last=new Date(year,month,0).getDate();let days=0;
- for(let d=1;d&lt;=last;d++){const day=`${ym}-${String(d).padStart(2,&#x27;0&#x27;)}`,week=new Date(year,month-1,d).getDay();if(day&gt;=now&amp;&amp;week!==0&amp;&amp;week!==6)days++;}
- const uber=items.filter(x=&gt;x.tipo===&#x27;Receita&#x27;&amp;&amp;x.status!==&#x27;Pendente&#x27;&amp;&amp;(x.data||&#x27;&#x27;).startsWith(ym)&amp;&amp;(/uber/i.test((x.categoria||&#x27;&#x27;)+&#x27; &#x27;+(x.descricao||&#x27;&#x27;)))).reduce((sum,x)=&gt;sum+(+x.valor||0),0);
- $(&#x27;planPending&#x27;).textContent=brl(pend);$(&#x27;planDays&#x27;).textContent=days;$(&#x27;planDaily&#x27;).textContent=days?brl(pend/days):&#x27;—&#x27;;$(&#x27;planUber&#x27;).textContent=brl(uber);
- $(&#x27;planNote&#x27;).textContent=days?`Estimativa: ${brl(pend)} ÷ ${days} dias úteis. Não inclui despesas operacionais futuras nem valores já pagos.`:&#x27;Sem dias úteis restantes neste mês; revise as pendências.&#x27;;
+ for(let d=1;d&lt;=last;d++){const day=`${ym}-${String(d).padStart(2,'0')}`,week=new Date(year,month-1,d).getDay();if(day&gt;=now&amp;&amp;week!==0&amp;&amp;week!==6)days++;}
+ const uber=items.filter(x=&gt;x.tipo==='Receita'&amp;&amp;x.status!=='Pendente'&amp;&amp;(x.data||'').startsWith(ym)&amp;&amp;(/uber/i.test((x.categoria||'')+' '+(x.descricao||'')))).reduce((sum,x)=&gt;sum+(+x.valor||0),0);
+ $('planPending').textContent=brl(pend);$('planDays').textContent=days;$('planDaily').textContent=days?brl(pend/days):'—';$('planUber').textContent=brl(uber);
+ $('planNote').textContent=days?`Estimativa: ${brl(pend)} ÷ ${days} dias úteis. Não inclui despesas operacionais futuras nem valores já pagos.`:'Sem dias úteis restantes neste mês; revise as pendências.';
 }
 function render(){
  refreshBankUI();
- const q=$(&#x27;busca&#x27;).value.toLowerCase(),fb=$(&#x27;fBanco&#x27;).value,fs=$(&#x27;fStatus&#x27;).value,ym=$(&#x27;fMes&#x27;).value;
+ const q=$('busca').value.toLowerCase(),fb=$('fBanco').value,fs=$('fStatus').value,ym=$('fMes').value;
  const list=items.filter(x=&gt;(!ym||x.data.startsWith(ym))&amp;&amp;(!fb||x.banco===fb)&amp;&amp;(!fs||x.status===fs)&amp;&amp;(!q||JSON.stringify(x).toLowerCase().includes(q))).sort((a,b)=&gt;b.data.localeCompare(a.data));
  const now=new Date();now.setHours(0,0,0,0);
- $(&#x27;tbody&#x27;).innerHTML=list.length?list.map(x=&gt;{
-   let due=&#x27;&#x27;,cls=&#x27;&#x27;; if(x.status===&#x27;Pendente&#x27;&amp;&amp;x.vencimento){const dd=parseDate(x.vencimento),days=Math.ceil((dd-now)/86400000);cls=days&lt;0?&#x27;overdue&#x27;:days&lt;=7?&#x27;soon&#x27;:&#x27;&#x27;;due=`&lt;br&gt;&lt;small class=&quot;${cls}&quot;&gt;${days&lt;0?&#x27;Vencida&#x27;:&#x27;Vence&#x27;}: ${x.vencimento.split(&#x27;-&#x27;).reverse().join(&#x27;/&#x27;)}&lt;/small&gt;`}
-   return `&lt;tr&gt;&lt;td&gt;${x.data.split(&#x27;-&#x27;).reverse().join(&#x27;/&#x27;)}${x.dataBaixa?`&lt;br&gt;&lt;small&gt;Baixa: ${x.dataBaixa.split(&#x27;-&#x27;).reverse().join(&#x27;/&#x27;)}&lt;/small&gt;`:&#x27;&#x27;}&lt;/td&gt;&lt;td&gt;${x.tipo}&lt;/td&gt;&lt;td&gt;&lt;b&gt;${esc(x.descricao)}&lt;/b&gt;${due}${x.categoria===&#x27;Salário&#x27;&amp;&amp;x.status===&#x27;Pendente&#x27;?&#x27;&lt;br&gt;&lt;small&gt;💰 Salário previsto&lt;/small&gt;&#x27;:&#x27;&#x27;}${x.recorrente===&#x27;Sim&#x27;?&#x27;&lt;br&gt;&lt;small&gt;🔁 Recorrente&lt;/small&gt;&#x27;:&#x27;&#x27;}&lt;/td&gt;&lt;td&gt;${esc(x.categoria)}&lt;/td&gt;&lt;td&gt;${x.banco}&lt;/td&gt;&lt;td&gt;&lt;b&gt;${brl(x.valor)}&lt;/b&gt;&lt;/td&gt;&lt;td&gt;&lt;span class=&quot;tag ${x.status}&quot;&gt;${x.status}&lt;/span&gt;&lt;/td&gt;&lt;td&gt;${x.status===&#x27;Pendente&#x27;?`&lt;button class=&quot;iconbtn quickpay&quot; onclick=&quot;quickPay(&#x27;${x.id}&#x27;)&quot;&gt;${x.tipo===&#x27;Receita&#x27;?&#x27;Recebi&#x27;:&#x27;Pagar&#x27;}&lt;/button&gt; `:&#x27;&#x27;}&lt;button class=&quot;iconbtn&quot; onclick=&quot;edit(&#x27;${x.id}&#x27;)&quot;&gt;Editar&lt;/button&gt; &lt;button class=&quot;iconbtn danger&quot; onclick=&quot;del(&#x27;${x.id}&#x27;)&quot;&gt;Excluir&lt;/button&gt;&lt;/td&gt;&lt;/tr&gt;`
- }).join(&#x27;&#x27;):`&lt;tr&gt;&lt;td colspan=&quot;8&quot; class=&quot;empty&quot;&gt;Nenhum lançamento neste mês.&lt;/td&gt;&lt;/tr&gt;`;
+ $('tbody').innerHTML=list.length?list.map(x=&gt;{
+   let due='',cls=''; if(x.status==='Pendente'&amp;&amp;x.vencimento){const dd=parseDate(x.vencimento),days=Math.ceil((dd-now)/86400000);cls=days&lt;0?'overdue':days&lt;=7?'soon':'';due=`&lt;br&gt;&lt;small class=&quot;${cls}&quot;&gt;${days&lt;0?'Vencida':'Vence'}: ${x.vencimento.split('-').reverse().join('/')}&lt;/small&gt;`}
+   return `&lt;tr&gt;&lt;td&gt;${x.data.split('-').reverse().join('/')}${x.dataBaixa?`&lt;br&gt;&lt;small&gt;Baixa: ${x.dataBaixa.split('-').reverse().join('/')}&lt;/small&gt;`:''}&lt;/td&gt;&lt;td&gt;${x.tipo}&lt;/td&gt;&lt;td&gt;&lt;b&gt;${esc(x.descricao)}&lt;/b&gt;${due}${x.categoria==='Salário'&amp;&amp;x.status==='Pendente'?'&lt;br&gt;&lt;small&gt;💰 Salário previsto&lt;/small&gt;':''}${x.recorrente==='Sim'?'&lt;br&gt;&lt;small&gt;🔁 Recorrente&lt;/small&gt;':''}&lt;/td&gt;&lt;td&gt;${esc(x.categoria)}&lt;/td&gt;&lt;td&gt;${x.banco}&lt;/td&gt;&lt;td&gt;&lt;b&gt;${brl(x.valor)}&lt;/b&gt;&lt;/td&gt;&lt;td&gt;&lt;span class=&quot;tag ${x.status}&quot;&gt;${x.status}&lt;/span&gt;&lt;/td&gt;&lt;td&gt;${x.status==='Pendente'?`&lt;button class=&quot;iconbtn quickpay&quot; onclick=&quot;quickPay('${x.id}')&quot;&gt;${x.tipo==='Receita'?'Recebi':'Pagar'}&lt;/button&gt; `:''}&lt;button class=&quot;iconbtn&quot; onclick=&quot;edit('${x.id}')&quot;&gt;Editar&lt;/button&gt; &lt;button class=&quot;iconbtn danger&quot; onclick=&quot;del('${x.id}')&quot;&gt;Excluir&lt;/button&gt;&lt;/td&gt;&lt;/tr&gt;`
+ }).join(''):`&lt;tr&gt;&lt;td colspan=&quot;8&quot; class=&quot;empty&quot;&gt;Nenhum lançamento neste mês.&lt;/td&gt;&lt;/tr&gt;`;
 
- const settled=items.filter(x=&gt;x.status!==&#x27;Pendente&#x27;);
- const net=a=&gt;a.reduce((s,x)=&gt;s+(x.tipo===&#x27;Receita&#x27;?x.valor:x.tipo===&#x27;Despesa&#x27;?-x.valor:x.tipo===&#x27;Reserva&#x27;?-x.valor:x.tipo===&#x27;Ajuste&#x27;?Number(x.valor||0):0),0);
- const reserveTotal=items.filter(x=&gt;x.tipo===&#x27;Reserva&#x27;).reduce((a,x)=&gt;a+x.valor,0);
- $(&#x27;saldo&#x27;).textContent=brl(net(settled));$(&#x27;itau&#x27;).textContent=brl(net(settled.filter(x=&gt;x.banco===&#x27;Itaú&#x27;)));$(&#x27;uber&#x27;).textContent=brl(net(settled.filter(x=&gt;x.banco===&#x27;Uber Conta&#x27;)));$(&#x27;reserva&#x27;).textContent=brl(reserveTotal);
- $(&#x27;receitas&#x27;).textContent=brl(items.filter(x=&gt;x.tipo===&#x27;Receita&#x27;&amp;&amp;x.data.startsWith(ym)&amp;&amp;x.categoria!==&#x27;Transferência&#x27;).reduce((s,x)=&gt;s+x.valor,0));
- $(&#x27;despesas&#x27;).textContent=brl(items.filter(x=&gt;x.tipo===&#x27;Despesa&#x27;&amp;&amp;x.data.startsWith(ym)&amp;&amp;x.categoria!==&#x27;Transferência&#x27;).reduce((s,x)=&gt;s+x.valor,0));
- const pend=items.filter(x=&gt;x.status===&#x27;Pendente&#x27;);
- const pendMes=pend.filter(x=&gt;(x.vencimento||x.data||&#x27;&#x27;).startsWith(ym));
- $(&#x27;pendencias&#x27;).textContent=brl(pendMes.reduce((s,x)=&gt;s+x.valor,0));
- const pendFuture=pend.filter(x=&gt;(x.vencimento||x.data||&#x27;&#x27;).slice(0,7)&gt;ym);
- $(&#x27;pendFuturas&#x27;).textContent=brl(pendFuture.reduce((s,x)=&gt;s+x.valor,0));
- const overdue=pendMes.filter(x=&gt;x.vencimento&amp;&amp;parseDate(x.vencimento)&lt;now);$(&#x27;vencidas&#x27;).textContent=overdue.length;
- const in7=new Date(now);in7.setDate(in7.getDate()+7);$(&#x27;proximas&#x27;).textContent=pend.filter(x=&gt;x.vencimento&amp;&amp;parseDate(x.vencimento)&gt;=now&amp;&amp;parseDate(x.vencimento)&lt;=in7).length;
+ const settled=items.filter(x=&gt;x.status!=='Pendente');
+ const net=a=&gt;a.reduce((s,x)=&gt;s+(x.tipo==='Receita'?x.valor:x.tipo==='Despesa'?-x.valor:x.tipo==='Reserva'?-x.valor:x.tipo==='Ajuste'?Number(x.valor||0):0),0);
+ const reserveTotal=items.filter(x=&gt;x.tipo==='Reserva').reduce((a,x)=&gt;a+x.valor,0);
+ $('saldo').textContent=brl(net(settled));$('itau').textContent=brl(net(settled.filter(x=&gt;x.banco==='Itaú')));$('uber').textContent=brl(net(settled.filter(x=&gt;x.banco==='Uber Conta')));$('reserva').textContent=brl(reserveTotal);
+ $('receitas').textContent=brl(items.filter(x=&gt;x.tipo==='Receita'&amp;&amp;x.data.startsWith(ym)&amp;&amp;x.categoria!=='Transferência').reduce((s,x)=&gt;s+x.valor,0));
+ $('despesas').textContent=brl(items.filter(x=&gt;x.tipo==='Despesa'&amp;&amp;x.data.startsWith(ym)&amp;&amp;x.categoria!=='Transferência').reduce((s,x)=&gt;s+x.valor,0));
+ const pend=items.filter(x=&gt;x.status==='Pendente');
+ const pendMes=pend.filter(x=&gt;(x.vencimento||x.data||'').startsWith(ym));
+ $('pendencias').textContent=brl(pendMes.reduce((s,x)=&gt;s+x.valor,0));
+ const pendFuture=pend.filter(x=&gt;(x.vencimento||x.data||'').slice(0,7)&gt;ym);
+ $('pendFuturas').textContent=brl(pendFuture.reduce((s,x)=&gt;s+x.valor,0));
+ const overdue=pendMes.filter(x=&gt;x.vencimento&amp;&amp;parseDate(x.vencimento)&lt;now);$('vencidas').textContent=overdue.length;
+ const in7=new Date(now);in7.setDate(in7.getDate()+7);$('proximas').textContent=pend.filter(x=&gt;x.vencimento&amp;&amp;parseDate(x.vencimento)&gt;=now&amp;&amp;parseDate(x.vencimento)&lt;=in7).length;
 
- const before=pend.filter(x=&gt;x.tipo===&#x27;Despesa&#x27;).reduce((a,x)=&gt;a+x.valor,0);
+ const before=pend.filter(x=&gt;x.tipo==='Despesa').reduce((a,x)=&gt;a+x.valor,0);
  const available=net(settled)-before;
- $(&#x27;disponivel&#x27;).textContent=brl(available);$(&#x27;proximoSalario&#x27;).textContent=`Saldo estimado após ${brl(before)} em pendências (todas as datas)`;
+ $('disponivel').textContent=brl(available);$('proximoSalario').textContent=`Saldo estimado após ${brl(before)} em pendências (todas as datas)`;
 
  const remaining=Math.max(0,(reserveGoal.total||0)-reserveTotal);
- const baseSuggestion=reserveGoal.mode===&#x27;fixed&#x27;?(reserveGoal.fixed||0):(available*((reserveGoal.percent||10)/100));
+ const baseSuggestion=reserveGoal.mode==='fixed'?(reserveGoal.fixed||0):(available*((reserveGoal.percent||10)/100));
  const suggestion=Math.max(0,Math.min(remaining,baseSuggestion,available));
- $(&#x27;sugestaoReserva&#x27;).textContent=brl(suggestion);$(&#x27;sugestaoReserva&#x27;).dataset.value=suggestion;
+ $('sugestaoReserva').textContent=brl(suggestion);$('sugestaoReserva').dataset.value=suggestion;
  if(reserveGoal.total&gt;0){
    const pct=Math.min(100,(reserveTotal/reserveGoal.total)*100);
-   $(&#x27;metaReservaTxt&#x27;).innerHTML=`${esc(reserveGoal.name)}: ${pct.toFixed(0)}% da meta • faltam ${brl(remaining)}&lt;div class=&quot;progress&quot;&gt;&lt;span style=&quot;width:${pct}%&quot;&gt;&lt;/span&gt;&lt;/div&gt;`;
-   $(&#x27;sugestaoReservaTxt&#x27;).textContent=remaining&lt;=0?&#x27;Meta atingida!&#x27;:`Sugestão baseada em ${reserveGoal.mode===&#x27;fixed&#x27;?&#x27;valor fixo&#x27;:(reserveGoal.percent||10)+&#x27;% do disponível&#x27;} até o próximo salário.`;
+   $('metaReservaTxt').innerHTML=`${esc(reserveGoal.name)}: ${pct.toFixed(0)}% da meta • faltam ${brl(remaining)}&lt;div class=&quot;progress&quot;&gt;&lt;span style=&quot;width:${pct}%&quot;&gt;&lt;/span&gt;&lt;/div&gt;`;
+   $('sugestaoReservaTxt').textContent=remaining&lt;=0?'Meta atingida!':`Sugestão baseada em ${reserveGoal.mode==='fixed'?'valor fixo':(reserveGoal.percent||10)+'% do disponível'} até o próximo salário.`;
  }else{
-   $(&#x27;metaReservaTxt&#x27;).textContent=&#x27;Meta não definida&#x27;;
-   $(&#x27;sugestaoReservaTxt&#x27;).textContent=&#x27;Defina sua meta de reserva.&#x27;;
+   $('metaReservaTxt').textContent='Meta não definida';
+   $('sugestaoReservaTxt').textContent='Defina sua meta de reserva.';
  }
  const activeBudgets=budgets.filter(b=&gt;+b.limite&gt;0);
  let warn=0,over=0,closest=null;
  activeBudgets.forEach(b=&gt;{
-   const spent=items.filter(x=&gt;x.tipo===&#x27;Despesa&#x27;&amp;&amp;x.categoria===b.categoria&amp;&amp;x.data.startsWith(ym)&amp;&amp;x.categoria!==&#x27;Transferência&#x27;).reduce((a,x)=&gt;a+x.valor,0);
+   const spent=items.filter(x=&gt;x.tipo==='Despesa'&amp;&amp;x.categoria===b.categoria&amp;&amp;x.data.startsWith(ym)&amp;&amp;x.categoria!=='Transferência').reduce((a,x)=&gt;a+x.valor,0);
    const ratio=spent/(+b.limite);
    if(ratio&gt;1)over++; else if(ratio&gt;=.8)warn++;
    if(!closest||ratio&gt;closest.ratio)closest={categoria:b.categoria,ratio,spent,limite:+b.limite};
  });
- if(over){$(&#x27;budgetAlert&#x27;).textContent=`${over} acima do limite`;$(&#x27;budgetAlert&#x27;).className=&#x27;budget-over&#x27;;$(&#x27;budgetAlertTxt&#x27;).textContent=&#x27;Abra Limites de Gastos para revisar.&#x27;}
- else if(warn){$(&#x27;budgetAlert&#x27;).textContent=`${warn} perto do limite`;$(&#x27;budgetAlert&#x27;).className=&#x27;budget-warn&#x27;;$(&#x27;budgetAlertTxt&#x27;).textContent=closest?`${closest.categoria}: ${Math.round(closest.ratio*100)}% utilizado.`:&#x27;Atenção aos gastos.&#x27;}
- else if(activeBudgets.length){$(&#x27;budgetAlert&#x27;).textContent=&#x27;Tudo certo&#x27;;$(&#x27;budgetAlert&#x27;).className=&#x27;budget-ok&#x27;;$(&#x27;budgetAlertTxt&#x27;).textContent=closest?`${closest.categoria}: ${Math.round(closest.ratio*100)}% utilizado.`:&#x27;Dentro dos limites.&#x27;}
- else {$(&#x27;budgetAlert&#x27;).textContent=&#x27;Configurar&#x27;;$(&#x27;budgetAlert&#x27;).className=&#x27;&#x27;;$(&#x27;budgetAlertTxt&#x27;).textContent=&#x27;Defina seus limites por categoria.&#x27;}
+ if(over){$('budgetAlert').textContent=`${over} acima do limite`;$('budgetAlert').className='budget-over';$('budgetAlertTxt').textContent='Abra Limites de Gastos para revisar.'}
+ else if(warn){$('budgetAlert').textContent=`${warn} perto do limite`;$('budgetAlert').className='budget-warn';$('budgetAlertTxt').textContent=closest?`${closest.categoria}: ${Math.round(closest.ratio*100)}% utilizado.`:'Atenção aos gastos.'}
+ else if(activeBudgets.length){$('budgetAlert').textContent='Tudo certo';$('budgetAlert').className='budget-ok';$('budgetAlertTxt').textContent=closest?`${closest.categoria}: ${Math.round(closest.ratio*100)}% utilizado.`:'Dentro dos limites.'}
+ else {$('budgetAlert').textContent='Configurar';$('budgetAlert').className='';$('budgetAlertTxt').textContent='Defina seus limites por categoria.'}
  const attentions=getAttentions();
- $(&#x27;attentionCount&#x27;).textContent=attentions.length;
- $(&#x27;attentionTxt&#x27;).textContent=attentions.length?attentions.slice(0,2).map(x=&gt;x.text).join(&#x27; • &#x27;):&#x27;Nenhuma atenção no momento.&#x27;;
+ $('attentionCount').textContent=attentions.length;
+ $('attentionTxt').textContent=attentions.length?attentions.slice(0,2).map(x=&gt;x.text).join(' • '):'Nenhuma atenção no momento.';
  renderWorkPlan();renderOverdraft();renderReconciliationReference();renderModernHome();
 }
 function backupJSON(){
- const blob=new Blob([JSON.stringify({versao:5,data:new Date().toISOString(),lancamentos:items,contasFixas:fixed,metaReserva:reserveGoal,limites:budgets,bancos:banks,limiteChequeItau:Number(localStorage.getItem(&#x27;mf_itau_cheque_limite_v1&#x27;)||1250)},null,2)],{type:&#x27;application/json&#x27;});
- const a=document.createElement(&#x27;a&#x27;);a.href=URL.createObjectURL(blob);a.download=`backup-meu-financeiro-${today()}.json`;a.click();URL.revokeObjectURL(a.href);
+ const blob=new Blob([JSON.stringify({versao:5,data:new Date().toISOString(),lancamentos:items,contasFixas:fixed,metaReserva:reserveGoal,limites:budgets,bancos:banks,limiteChequeItau:Number(localStorage.getItem('mf_itau_cheque_limite_v1')||1250)},null,2)],{type:'application/json'});
+ const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=`backup-meu-financeiro-${today()}.json`;a.click();URL.revokeObjectURL(a.href);
 }
 function restoreJSON(e){
  const f=e.target.files[0];if(!f)return;const r=new FileReader();r.onload=()=&gt;{try{const d=JSON.parse(r.result),arr=Array.isArray(d)?d:d.lancamentos;if(!Array.isArray(arr))throw 0;if(confirm(`Restaurar ${arr.length} lançamentos? Isso substituirá os dados atuais.`)){items=arr;if(Array.isArray(d.contasFixas)){
- fixed=d.contasFixas.map(x=&gt;{if((!x.valor||+x.valor===0)&amp;&amp;+x.dia&gt;31){x.valor=+x.dia;x.dia=&#x27;&#x27;;}if(x.valor==null)x.valor=0;return x;});
+ fixed=d.contasFixas.map(x=&gt;{if((!x.valor||+x.valor===0)&amp;&amp;+x.dia&gt;31){x.valor=+x.dia;x.dia='';}if(x.valor==null)x.valor=0;return x;});
  setAppData(FIXED_KEY,JSON.stringify(fixed));
-}if(Number.isFinite(Number(d.limiteChequeItau)))localStorage.setItem(&#x27;mf_itau_cheque_limite_v1&#x27;,String(d.limiteChequeItau));if(d.metaReserva){reserveGoal=d.metaReserva;setAppData(GOAL_KEY,JSON.stringify(reserveGoal));}if(Array.isArray(d.limites)){budgets=d.limites;setAppData(BUDGET_KEY,JSON.stringify(budgets));}if(Array.isArray(d.bancos)){banks=[...new Set(d.bancos.map(b=&gt;String(b).trim()).filter(Boolean))];setAppData(BANK_KEY,JSON.stringify(banks));}persist();alert(&#x27;Backup restaurado com sucesso.&#x27;)}}catch{alert(&#x27;Arquivo de backup inválido.&#x27;)}e.target.value=&#x27;&#x27;};r.readAsText(f);
+}if(Number.isFinite(Number(d.limiteChequeItau)))localStorage.setItem('mf_itau_cheque_limite_v1',String(d.limiteChequeItau));if(d.metaReserva){reserveGoal=d.metaReserva;setAppData(GOAL_KEY,JSON.stringify(reserveGoal));}if(Array.isArray(d.limites)){budgets=d.limites;setAppData(BUDGET_KEY,JSON.stringify(budgets));}if(Array.isArray(d.bancos)){banks=[...new Set(d.bancos.map(b=&gt;String(b).trim()).filter(Boolean))];setAppData(BANK_KEY,JSON.stringify(banks));}persist();alert('Backup restaurado com sucesso.')}}catch{alert('Arquivo de backup inválido.')}e.target.value=''};r.readAsText(f);
 }
 function exportCSV(){
- const cols=[&#x27;data&#x27;,&#x27;tipo&#x27;,&#x27;descricao&#x27;,&#x27;categoria&#x27;,&#x27;banco&#x27;,&#x27;valor&#x27;,&#x27;status&#x27;,&#x27;dataBaixa&#x27;,&#x27;vencimento&#x27;,&#x27;forma&#x27;,&#x27;parcela&#x27;,&#x27;recorrente&#x27;,&#x27;obs&#x27;];
- const rows=[cols,...items.map(x=&gt;cols.map(c=&gt;x[c]??&#x27;&#x27;))],csv=rows.map(r=&gt;r.map(v=&gt;`&quot;${String(v).replaceAll(&#x27;&quot;&#x27;,&#x27;&quot;&quot;&#x27;)}&quot;`).join(&#x27;;&#x27;)).join(&#x27;\n&#x27;);
- const blob=new Blob([&#x27;\ufeff&#x27;+csv],{type:&#x27;text/csv;charset=utf-8&#x27;}),a=document.createElement(&#x27;a&#x27;);a.href=URL.createObjectURL(blob);a.download=&#x27;meu-financeiro.csv&#x27;;a.click();URL.revokeObjectURL(a.href);
+ const cols=['data','tipo','descricao','categoria','banco','valor','status','dataBaixa','vencimento','forma','parcela','recorrente','obs'];
+ const rows=[cols,...items.map(x=&gt;cols.map(c=&gt;x[c]??''))],csv=rows.map(r=&gt;r.map(v=&gt;`&quot;${String(v).replaceAll('&quot;','&quot;&quot;')}&quot;`).join(';')).join('\n');
+ const blob=new Blob(['\ufeff'+csv],{type:'text/csv;charset=utf-8'}),a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='meu-financeiro.csv';a.click();URL.revokeObjectURL(a.href);
 }
 initMonths();refreshBankUI();render();mfStart();
 &lt;/script&gt;
 
 &lt;script id=&quot;michelon-import-bridge-v1&quot;&gt;
 (function(){
-  &#x27;use strict&#x27;;
-  const cutoff=&#x27;2026-11-01&#x27;;
+  'use strict';
+  const cutoff='2026-11-01';
   function importRecords(records,commit){
-    if(!Array.isArray(records))throw Error(&#x27;Formato inválido&#x27;);
-    const cutoff=&#x27;2026-11-01&#x27;;
+    if(!Array.isArray(records))throw Error('Formato inválido');
+    const cutoff='2026-11-01';
     const existing=new Map();
     for(const x of items){
-      const ids=[String(x.id||&#x27;&#x27;),...(String(x.obs||&#x27;&#x27;).match(/michelon:(?:finance|uber):[\w.:-]+/g)||[])];
-      for(const id of ids)if(id.startsWith(&#x27;michelon:&#x27;))existing.set(id,x);
+      const ids=[String(x.id||''),...(String(x.obs||'').match(/michelon:(?:finance|uber):[\w.:-]+/g)||[])];
+      for(const id of ids)if(id.startsWith('michelon:'))existing.set(id,x);
     }
     const additions=[],updates=[],seen=new Set();
     for(const r of records){
-      if(!r||typeof r.origem_id!==&#x27;string&#x27;||!/^michelon:(finance|uber):[\w.:-]+$/.test(r.origem_id)||seen.has(r.origem_id))continue;
+      if(!r||typeof r.origem_id!=='string'||!/^michelon:(finance|uber):[\w.:-]+$/.test(r.origem_id)||seen.has(r.origem_id))continue;
       seen.add(r.origem_id);
-      if(!/^2026-\d\d-\d\d$/.test(r.data||&#x27;&#x27;)||r.data&lt;cutoff)continue;
-      const d=new Date(r.data+&#x27;T12:00:00Z&#x27;);
+      if(!/^2026-\d\d-\d\d$/.test(r.data||'')||r.data&lt;cutoff)continue;
+      const d=new Date(r.data+'T12:00:00Z');
       if(Number.isNaN(d.getTime())||d.toISOString().slice(0,10)!==r.data)continue;
       const value=Number(r.valor);
-      if(!Number.isFinite(value)||value&lt;=0||![&#x27;entrada&#x27;,&#x27;saida&#x27;].includes(r.tipo))continue;
+      if(!Number.isFinite(value)||value&lt;=0||!['entrada','saida'].includes(r.tipo))continue;
       const old=existing.get(r.origem_id);
       if(old){
         // Atualizar somente lançamentos gerados pela ponte, nunca lançamentos manuais.
         // Recebimentos parciais usam a mesma origem e crescem até o valor pago.
-        if(String(old.id)===r.origem_id &amp;&amp; old.tipo===(r.tipo===&#x27;entrada&#x27;?&#x27;Receita&#x27;:&#x27;Despesa&#x27;) &amp;&amp;
-           old.status===(r.tipo===&#x27;entrada&#x27;?&#x27;Recebido&#x27;:&#x27;Pago&#x27;) &amp;&amp; Number(old.valor)!==value){
+        if(String(old.id)===r.origem_id &amp;&amp; old.tipo===(r.tipo==='entrada'?'Receita':'Despesa') &amp;&amp;
+           old.status===(r.tipo==='entrada'?'Recebido':'Pago') &amp;&amp; Number(old.valor)!==value){
           updates.push({item:old,valor:value});
         }
         continue;
       }
-      additions.push({id:r.origem_id,tipo:r.tipo===&#x27;entrada&#x27;?&#x27;Receita&#x27;:&#x27;Despesa&#x27;,data:r.data,vencimento:r.data,dataBaixa:r.data,descricao:String(r.descricao||&#x27;Lançamento Michelon&#x27;).slice(0,160),categoria:r.fonte===&#x27;uber_viagens&#x27;?&#x27;Uber / Corridas&#x27;:&#x27;Viagens Executivas&#x27;,banco:(typeof defaultBank===&#x27;function&#x27;?defaultBank():&#x27;Itaú&#x27;),valor:value,status:r.tipo===&#x27;entrada&#x27;?&#x27;Recebido&#x27;:&#x27;Pago&#x27;,forma:&#x27;Outros&#x27;,parcela:&#x27;&#x27;,recorrente:&#x27;Não&#x27;,obs:&#x27;Importado do DRE Michelon · &#x27;+r.origem_id});
+      additions.push({id:r.origem_id,tipo:r.tipo==='entrada'?'Receita':'Despesa',data:r.data,vencimento:r.data,dataBaixa:r.data,descricao:String(r.descricao||'Lançamento Michelon').slice(0,160),categoria:r.fonte==='uber_viagens'?'Uber / Corridas':'Viagens Executivas',banco:(typeof defaultBank==='function'?defaultBank():'Itaú'),valor:value,status:r.tipo==='entrada'?'Recebido':'Pago',forma:'Outros',parcela:'',recorrente:'Não',obs:'Importado do DRE Michelon · '+r.origem_id});
     }
     if(commit&amp;&amp;(additions.length||updates.length)){
       const before=items.slice(),previous=updates.map(u=&gt;({item:u.item,valor:u.item.valor}));
@@ -6928,7 +6937,7 @@ initMonths();refreshBankUI();render();mfStart();
       }catch(err){
         for(const u of previous)u.item.valor=u.valor;
         items.splice(0,items.length,...before);
-        throw Error(&#x27;Não foi possível gravar no Financeiro: &#x27;+(err&amp;&amp;err.message||err));
+        throw Error('Não foi possível gravar no Financeiro: '+(err&amp;&amp;err.message||err));
       }
     }
     return {novos:additions.length,atualizados:updates.length,duplicados:records.length-additions.length-updates.length,registros:additions};
@@ -7933,4 +7942,10 @@ file.onchange=async()=>{
  alert('Backup restaurado neste navegador. O DRE será recarregado.');location.reload();
 };
 })();
-</script></body></html>
+</script><script>(function(){
+ const nav=document.getElementById('dreMainNav'),btn=document.getElementById('dreModulesToggle');
+ if(!nav||!btn)return;
+ function toggle(force){const open=typeof force==='boolean'?force:!nav.classList.contains('dre-open');nav.classList.toggle('dre-open',open);btn.setAttribute('aria-expanded',String(open));}
+ btn.addEventListener('click',()=>toggle());
+ nav.addEventListener('click',e=>{if(e.target.closest('button[id="bv"],button[id="bf"],button[id="bc"]'))toggle(false)});
+})();</script></body></html>
