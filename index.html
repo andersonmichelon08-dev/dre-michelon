@@ -3024,12 +3024,15 @@ function iniciarCorrida(id){const h=getHist(),x=h.find(v=&gt;v.id===id);if(!x||x
 function reciboReserva(x){const emp=(typeof getEmpresa==='function'?getEmpresa():{})||{},fim=x.finalizadaEm?new Date(x.finalizadaEm):new Date(),dt=fim.toLocaleDateString('pt-BR'),hr=fim.toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'});return `🚗 *${(emp.nome||'MICHELON VIAGENS EXECUTIVAS').toUpperCase()}*\n_Conforto e segurança em cada destino._\n\n*RECIBO DE VIAGEM*\n\n👤 Cliente: ${x.cliente||'Cliente'}\n📅 Data da viagem: ${dataBR(x.data)}${x.horaSaida?`\n🕐 Horário: ${x.horaSaida}`:''}\n📍 Origem: ${x.origem||'-'}\n🏁 Destino: ${x.destino||'-'}\n🚘 Serviço: ${x.tipoServico||'Viagem executiva'}\n💵 Valor da viagem: *${brl(+x.valor||0)}*\n💰 Valor recebido: *${brl(+x.recebido||0)}*\n💳 Pagamento: ${(+x.recebido||0)&gt;0 ? (x.forma||'Informado') : 'Pendente'}\n\n🏁 Viagem finalizada em ${dt} às ${hr}.\n\nAnderson Michelon\nMICHELON Viagens Executivas`}
 function enviarRecibo(id){const x=michelonFind(id);if(!x)return;let n=String(x.fone||'').replace(/\D/g,'');if(n&amp;&amp;!n.startsWith('55'))n='55'+n;window.open('https://wa.me/'+n+'?text='+encodeURIComponent(reciboReserva(x)),'_blank')}
 function finalizarCorrida(id){const h=getHist(),x=h.find(v=&gt;v.id===id);if(!x)return;if(!confirm('Finalizar esta viagem e gerar o recibo?'))return;x.concluida=true;x.finalizadaEm=new Date().toISOString();x.status=(+x.recebido||0)&gt;=(+x.valor||0)?'pago':'confirmada';setHist(h);if(confirm('Viagem finalizada. Deseja enviar o recibo pelo WhatsApp agora?'))enviarRecibo(id)}
+function getAgendaHist(){
+ const h=getHist().slice();
+ const found=h.some(x=&gt;x.numero==='MV-2026-0001'||(x.data==='2026-12-03'&amp;&amp;String(x.cliente||'').trim().toLowerCase()==='bruno campos de oliveira'));
+ if(!found)h.push({id:-20261203,numero:'MV-2026-0001',data:'2026-12-03',dataRetorno:'2026-12-03',horaSaida:'08:00',horaRetorno:'22:00',cliente:'Bruno Campos de Oliveira',origem:'São Paulo',destino:'Atibaia (ida e volta)',passageiros:1,valor:1450.44,recebido:0,status:'confirmada',referenciaLegada:true});
+ return h;
+}
 function renderAgenda(){
  const box=$('agendaLista');if(!box)return;
- let h=getHist().slice();
- // Reserva legada de referência: exibida na agenda, sem alterar o histórico financeiro.
- const existeLegada=h.some(x=&gt;x.numero==='MV-2026-0001'||(x.data==='2026-12-03'&amp;&amp;String(x.cliente||'').trim().toLowerCase()==='bruno campos de oliveira'));
- if(!existeLegada)h.push({id:-20261203,numero:'MV-2026-0001',data:'2026-12-03',dataRetorno:'2026-12-03',horaSaida:'08:00',horaRetorno:'22:00',cliente:'Bruno Campos de Oliveira',origem:'São Paulo',destino:'Atibaia (ida e volta)',passageiros:1,valor:1450.44,recebido:0,status:'confirmada',referenciaLegada:true});
+ let h=getAgendaHist();
  const f=$('agendaFiltro')?$('agendaFiltro').value:'proximas',hoje=new Date().toISOString().slice(0,10);
  if(f==='proximas')h=h.filter(x=&gt;(x.status==='confirmada'||x.status==='pago'||x.status==='em_andamento')&amp;&amp;(x.data||'')&gt;=hoje);
  else if(f!=='todas')h=h.filter(x=&gt;x.status===f);
@@ -3056,11 +3059,17 @@ function renderAgenda(){
       ${x.concluida?`&lt;button class=&quot;mini secondary&quot; onclick=&quot;enviarRecibo(${x.id})&quot;&gt;🧾 ENVIAR RECIBO&lt;/button&gt;`:''}
       ${!x.concluida?`&lt;button class=&quot;mini danger&quot; onclick=&quot;cancelarReserva(${x.id})&quot;&gt;Cancelar&lt;/button&gt;`:''}
     &lt;/div&gt;`:''}
-    ${!x.referenciaLegada?`&lt;div style=&quot;margin-top:7px&quot;&gt;&lt;button class=&quot;mini danger&quot; onclick=&quot;excluirReserva(${x.id})&quot;&gt;🗑️ Excluir reserva&lt;/button&gt;&lt;/div&gt;`:&#x27;&#x27;}
+    ${!x.referenciaLegada?`&lt;div style=&quot;margin-top:7px&quot;&gt;&lt;button class=&quot;mini danger&quot; onclick=&quot;excluirReserva(${x.id})&quot;&gt;🗑️ Excluir reserva&lt;/button&gt;&lt;/div&gt;`:''}
    &lt;/div&gt;`
  }).join(''):'&lt;div class=&quot;note&quot;&gt;Nenhum agendamento para este filtro.&lt;/div&gt;'
 }
-function consultarDisponibilidade(){const d=$('consultaData').value;if(!d)return;const reservas=getHist().filter(x=&gt;x.status==='confirmada'&amp;&amp;x.data===d);if(d==='2026-12-03'&amp;&amp;!reservas.some(x=&gt;x.numero==='MV-2026-0001'||String(x.cliente||'').trim().toLowerCase()==='bruno campos de oliveira'))reservas.push({numero:'MV-2026-0001',data:d,status:'confirmada',referenciaLegada:true});$('dispStatus').className='status '+(reservas.length?'warn':'ok');$('dispStatus').textContent=reservas.length?`Há ${reservas.length} reserva(s) confirmada(s) nesta data. Veja os horários abaixo.`:'✅ Data sem reservas confirmadas no momento.';$('agendaFiltro').value='todas';renderAgenda()}
+function consultarDisponibilidade(){
+ const d=$('consultaData').value;if(!d)return;
+ const reservas=getAgendaHist().filter(x=&gt;x.data===d&amp;&amp;['confirmada','pago','em_andamento'].includes(x.status));
+ $('dispStatus').className='status '+(reservas.length?'warn':'ok');
+ $('dispStatus').textContent=reservas.length?`Há ${reservas.length} reserva(s) nesta data. Veja os horários abaixo.`:'✅ Data sem reservas confirmadas no momento.';
+ $('agendaFiltro').value='todas';renderAgenda();
+}
 
 
 
