@@ -7991,4 +7991,24 @@ document.getElementById('dreMenuSafe').onclick=function(){
 };
 })();
 </script>
+
+<style id="dre-iphone-viewport-final">
+/* O iframe deve ocupar a altura REAL da tela, não a altura de um painel antigo. */
+html,body{margin:0!important;width:100%!important;min-height:100%!important;overflow-x:hidden!important}
+body>iframe,body>iframe.active{width:100%!important;height:100dvh!important;min-height:0!important;max-height:none!important;border:0!important;display:none}
+body>iframe.active{display:block!important}
+#dreVoltarBar,#dreShellToggle{display:none!important}
+body>nav#dreMainNav{display:none!important}
+body>nav#dreMainNav.dre-open{display:grid!important;position:fixed!important;top:12px!important;left:12px!important;right:12px!important;z-index:2147483000!important;max-height:70dvh!important;overflow:auto!important;box-shadow:0 8px 30px #0003}
+</style>
+<script id="dre-iphone-viewport-js">
+(function(){
+ function fit(){
+  var h=window.innerHeight;
+  document.querySelectorAll('body > iframe').forEach(function(f){f.style.setProperty('height',h+'px','important');});
+ }
+ window.addEventListener('resize',fit);window.addEventListener('orientationchange',fit);
+ if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',fit);else fit();
+})();
+</script>
 </body></html>
