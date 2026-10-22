@@ -7559,20 +7559,31 @@ const norm=t=&gt;String(t).normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLow
 const known={'limeira, sp':[-47.4017,-22.5646],'santa gertrudes, sp':[-47.5303,-22.4567],'aeroporto internacional de viracopos, campinas, sp':[-47.1345,-23.0074],'viracopos':[-47.1345,-23.0074]};
 async function json(url){const ctrl=new AbortController(),timer=setTimeout(()=&gt;ctrl.abort(),20000);try{const r=await fetch(url,{signal:ctrl.signal});if(!r.ok)throw Error('Serviço de rotas indisponível');return await r.json()}finally{clearTimeout(timer)}}
 async function locate(t){
- const k=norm(t).replace(/[^a-z0-9]+/g,' ').trim();
- // O nome apresentado pelo autocomplete deve ser reconhecido pelo calculador.
+ const raw=String(t||'').trim();
+ const k=norm(raw).replace(/[^a-z0-9]+/g,' ').trim();
+ if(!raw)throw Error('Informe origem e destino.');
+ // Aeroportos: reconhecer o texto completo devolvido pelo autocomplete,
+ // inclusive quando a cidade e o estado aparecem no final.
  if(/viracopos|\bvcp\b/.test(k))return [-47.1345,-23.0074];
- if(/cumbica|\bgru\b|aeroporto.*guarulhos/.test(k))return [-46.4731,-23.4356];
+ if(/guarulhos|cumbica|\bgru\b/.test(k) &amp;&amp; /aeroporto|airport|cumbica|\bgru\b/.test(k))return [-46.4731,-23.4356];
  if(/congonhas|\bcgh\b/.test(k))return [-46.6566,-23.6261];
- if(known[norm(t)])return known[norm(t)];
- const clean=String(t).trim();
- const queries=[clean,/brasil$/i.test(clean)?clean:clean+', Brasil'];
+ if(known[norm(raw)])return known[norm(raw)];
+ // O serviço de autocomplete pode retornar uma coordenada já confirmada.
+ const fields=[...document.querySelectorAll('#origem,#destino,#paradasMichelon input')];
+ const field=fields.find(el=&gt;el.value.trim()===raw);
+ if(field){const lon=Number(field.dataset.lon),lat=Number(field.dataset.lat);
+   if(field.dataset.lon &amp;&amp; field.dataset.lat &amp;&amp; Number.isFinite(lon)&amp;&amp;Number.isFinite(lat))return [lon,lat];}
+ const queries=[raw];
+ if(!/brasil/i.test(raw))queries.push(raw+', Brasil');
+ if(!/\b(?:SP|RJ|MG|PR|SC|RS)\b/i.test(raw))queries.push(raw+', São Paulo, Brasil');
+ let falhaServico=false;
  for(const q of [...new Set(queries)]){
-  try{const d=await json('https://nominatim.openstreetmap.org/search?format=jsonv2&amp;limit=3&amp;countrycodes=br&amp;q='+encodeURIComponent(q));
-   if(d.length&&Number.isFinite(+d[0].lon)&&Number.isFinite(+d[0].lat))return [+d[0].lon,+d[0].lat];
-  }catch(e){}
+  try{const d=await json('https://nominatim.openstreetmap.org/search?format=jsonv2&amp;limit=5&amp;countrycodes=br&amp;q='+encodeURIComponent(q));
+   const x=Array.isArray(d)?d.find(x=&gt;Number.isFinite(+x.lon)&amp;&amp;Number.isFinite(+x.lat)):null;
+   if(x)return [+x.lon,+x.lat];
+  }catch(e){falhaServico=true;}
  }
- throw Error('Não encontrei '+t+'. Confira o endereço, cidade e estado.');
+ throw Error((falhaServico?'Serviço de localização indisponível ou endereço não localizado: ':'Endereço não localizado: ')+raw+'. Confira a origem e o destino.');
 }
 function line(parent,label,val){const r=document.createElement('div');r.className='mini';const a=document.createElement('span'),b=document.createElement('strong');a.textContent=label;b.textContent=val;r.append(a,b);parent.append(r)}
 let active=null;
