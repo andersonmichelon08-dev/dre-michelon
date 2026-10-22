@@ -97,17 +97,6 @@ header{height:58px!important;background:linear-gradient(110deg,#063568,#0865ab)!
 const defaults={routes:[],trips:[],finance:[],uber:[],cfg:{ida:2.1,vazio:1.5,volta:3,margem:10}};
 let db;try{db=JSON.parse(localStorage.getItem(KEY))||structuredClone(defaults)}catch{db=structuredClone(defaults)};for(const k of Object.keys(defaults))if(!(k in db))db[k]=structuredClone(defaults[k]);
 if(!db.routes.length){try{const legacy=JSON.parse(localStorage.getItem(LEGACY)||'[]');if(Array.isArray(legacy)){db.routes=legacy.filter(r=>Number(r.ida)>0&&Number(r.volta)>0).map(r=>({id:crypto.randomUUID(),origem:'Limeira, SP',destino:r.nome,aliases:'',rodovia:r.rodovia||'',ida:Number(r.ida),volta:Number(r.volta),pedStatus:r.tipoIda==='nenhum'&&r.tipoVolta==='nenhum'?'nenhum':r.tipoIda==='valor'&&r.tipoVolta==='valor'?'valor':'pendente',pedIda:Number(r.pedIda)||0,pedVolta:Number(r.pedVolta)||0}))}}catch{}}
-// Reserva confirmada recuperada do arquivo DRE Michelon de 22/10/2026.
-// Não altera db.finance nem cria receita antes de pagamento efetivo.
-if(!Array.isArray(db.trips))db.trips=[];
-const reserva03Existe=db.trips.some(t=>t.numero==='MV-2026-0001'||(String(t.date||'').includes('03/12/2026')||String(t.date||'').includes('2026-12-03'))&&String(t.cliente||'').toLowerCase().trim()==='bruno campos de oliveira');
-if(!reserva03Existe)db.trips.push({
- id:'reserva-mv-2026-0001',numero:'MV-2026-0001',date:'03/12/2026',
- dataISO:'2026-12-03',dataRetorno:'2026-12-03',horaSaida:'08:00',horaRetorno:'22:00',
- cliente:'Bruno Campos de Oliveira',origin:'São Paulo',dest:'Atibaia (ida e volta)',
- passageiros:1,total:1450.44,recebido:0,status:'Reserva confirmada',
- origemRecuperacao:'Arquivo DRE Michelon de 22/10/2026'
-});
 const save=()=>localStorage.setItem(KEY,JSON.stringify(db));save();let quote=null;
 function go(page){document.querySelectorAll('.page').forEach(p=>p.classList.toggle('active',p.id===page));document.querySelectorAll('.nav button').forEach(b=>b.classList.toggle('active',b.dataset.page===page));if(page==='inicio')stats();if(page==='rotas')renderRoutes();if(page==='financeiro')renderFin();if(page==='viagens'||page==='agenda')renderTrips();if(page==='uber')renderUber();document.activeElement.blur()}
 document.querySelectorAll('[data-page]').forEach(b=>b.onclick=()=>go(b.dataset.page));document.querySelectorAll('[data-go]').forEach(b=>b.onclick=()=>go(b.dataset.go));
@@ -120,6 +109,16 @@ function row(tbody,values,button){const tr=document.createElement('tr');values.f
 function btn(label,fn){const b=document.createElement('button');b.className='secondary';b.textContent=label;b.onclick=fn;return b}
 function renderTrips(){
  for(const id of ['listaViagens','listaAgenda'])$(id).replaceChildren();
+ // Reserva histórica comprovada na versão anterior. Somente leitura, sem receita automática.
+ const legacy={id:'MV-2026-0001',date:'03/12/2026',origin:'São Paulo',dest:'Atibaia (ida e volta)',status:'Reserva confirmada · pagamento pendente',name:'Bruno Campos de Oliveira',total:1450.4375};
+ const hasLegacy=db.trips.some(t=>t.id===legacy.id || (String(t.date).includes('03/12/2026')||String(t.date).includes('2026-12-03')) && /bruno campos/i.test(String(t.name||t.client||'')));
+ if(!hasLegacy){
+  row($('listaAgenda'),[legacy.date,legacy.origin,legacy.dest,legacy.status+' · '+money(legacy.total)]);
+  const tr=document.createElement('tr');
+  for(const v of [legacy.date,legacy.origin+' → '+legacy.dest,money(legacy.total)+' · '+legacy.status]){const td=document.createElement('td');td.textContent=v;tr.append(td)}
+  const td=document.createElement('td');td.textContent='Cliente: '+legacy.name+' · Saída 08:00 · Retorno 22:00 · 1 passageiro · PIX · Registro histórico (somente leitura)';tr.append(td);$('listaViagens').append(tr);
+ }
+
  db.trips.forEach(t=>{
   // Conciliação somente informativa: nunca altera dados financeiros automaticamente.
   const linkedPayments=db.finance.filter(f=>f.origemId==='reserva:'+t.id);
@@ -150,7 +149,7 @@ function renderTrips(){
   for(const v of [t.date,t.origin+' → '+t.dest,money(t.total)+' · '+(t.status||'Cotação')]){const td=document.createElement('td');td.textContent=v;tr.append(td)}
   if(mismatch){const warn=document.createElement('span');warn.textContent='⚠ Conferir pagamento';warn.title='Divergência entre status da viagem e lançamentos financeiros. Nenhum dado foi modificado.';warn.style.cssText='color:#9a5700;font-weight:700;font-size:12px';actions.prepend(warn)}
   const td=document.createElement('td');td.append(actions);tr.append(td);$('listaViagens').append(tr);
-  row($('listaAgenda'),[t.date+(t.horaSaida?' · '+t.horaSaida:''),t.origin,t.dest,(t.cliente?t.cliente+' · ':'')+(t.status||'Cotação')+' · '+money(t.total)+(t.status==='Reserva confirmada'?' · Aguardando pagamento':'')]);
+  row($('listaAgenda'),[t.date,t.origin,t.dest,(t.status||'Cotação')+' · '+money(t.total)]);
  });
 }
 function renderRoutes(){$('rLista').replaceChildren();db.routes.forEach(r=>row($('rLista'),[r.origem+' → '+r.destino,`${r.ida} / ${r.volta}`],btn('Editar',()=>{for(const [id,key] of [['rOrigem','origem'],['rDestino','destino'],['rAliases','aliases'],['rRodovia','rodovia'],['rIda','ida'],['rVolta','volta'],['rPedStatus','pedStatus'],['rPedIda','pedIda'],['rPedVolta','pedVolta']])$(id).value=r[key]??'';$('rSalvar').dataset.edit=r.id})));$('statRoutes').textContent=db.routes.length;suggest()}
