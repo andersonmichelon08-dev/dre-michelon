@@ -5507,6 +5507,56 @@ body .mcBottom,body:not(.michelon-interativo) .mcBottom,body.michelon-interativo
 })();
 
 &lt;/script&gt;
+&lt;style id=&quot;dre-driver-home-v1&quot;&gt;
+#dreDriverPanel{margin:0 0 12px;background:#fff;border:1px solid #dce7e8;border-radius:16px;padding:13px;box-shadow:0 4px 14px #142c4710}
+#dreDriverPanel .dre-heading{display:flex;justify-content:space-between;align-items:center;gap:8px;font-weight:900;color:#142c47}
+#dreDriverPanel .dre-tag{font-size:11px;border-radius:30px;background:#e3f5ec;color:#166534;padding:5px 8px}
+#dreDriverPanel .dre-name{font-size:17px;font-weight:900;margin:9px 0 4px}
+#dreDriverPanel .dre-info{font-size:13px;line-height:1.5;color:#43546a}
+#dreDriverPanel .dre-buttons{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:11px}
+#dreDriverPanel button{min-height:45px;padding:9px 6px;font-size:13px;background:#0f766e;color:#fff;border-radius:11px}
+#dreDriverPanel button:nth-child(2){background:#e8eef5;color:#142c47}
+#mxAgenda{scroll-margin-top:12px}
+#dreDriverPanel .dre-empty{margin:9px 0 0;color:#526174;font-size:13px}
+&lt;/style&gt;
+&lt;script id=&quot;dre-driver-home-js-v1&quot;&gt;
+(function(){
+ function goAgenda(){
+  var a=document.getElementById(&#x27;mxAgenda&#x27;);if(!a)return;
+  a.querySelectorAll(&#x27;details&#x27;).forEach(function(d){d.open=true});
+  if(typeof renderAgenda===&#x27;function&#x27;)try{renderAgenda()}catch(e){}
+  if(typeof mcActivateNav===&#x27;function&#x27;)mcActivateNav(&#x27;mxAgenda&#x27;);
+  a.scrollIntoView({behavior:&#x27;auto&#x27;,block:&#x27;start&#x27;});
+ }
+ function refresh(){
+  var home=document.getElementById(&#x27;mcHomeDash&#x27;);if(!home)return;
+  var box=document.getElementById(&#x27;dreDriverPanel&#x27;);
+  if(!box){box=document.createElement(&#x27;section&#x27;);box.id=&#x27;dreDriverPanel&#x27;;box.setAttribute(&#x27;aria-label&#x27;,&#x27;Próxima reserva e agenda rápida&#x27;);home.insertBefore(box,home.firstChild);}
+  var records=[];
+  try{if(typeof getAgendaHist===&#x27;function&#x27;)records=getAgendaHist()}catch(e){}
+  var now=new Date(),today=[now.getFullYear(),String(now.getMonth()+1).padStart(2,&#x27;0&#x27;),String(now.getDate()).padStart(2,&#x27;0&#x27;)].join(&#x27;-&#x27;);
+  var future=records.filter(function(r){return r&amp;&amp;r.data&gt;=today&amp;&amp;![&#x27;cancelada&#x27;,&#x27;cancelado&#x27;,&#x27;concluida&#x27;,&#x27;concluída&#x27;].includes(String(r.status||&#x27;&#x27;).toLowerCase())}).sort(function(a,b){return (a.data+&#x27; &#x27;+(a.horaSaida||&#x27;&#x27;)).localeCompare(b.data+&#x27; &#x27;+(b.horaSaida||&#x27;&#x27;))});
+  var r=future[0];var signature=r?[r.id,r.data,r.horaSaida,r.cliente,r.origem,r.destino,r.status].join(&#x27;|&#x27;):&#x27;none&#x27;;
+  if(box.dataset.signature===signature)return;box.dataset.signature=signature;
+  box.replaceChildren();
+  var head=document.createElement(&#x27;div&#x27;);head.className=&#x27;dre-heading&#x27;;
+  var heading=document.createElement(&#x27;span&#x27;);heading.textContent=&#x27;📅 PRÓXIMA RESERVA&#x27;;
+  var tag=document.createElement(&#x27;span&#x27;);tag.className=&#x27;dre-tag&#x27;;tag.textContent=r?&#x27;Agendada&#x27;:&#x27;Agenda livre&#x27;;head.append(heading,tag);box.append(head);
+  if(r){
+   var name=document.createElement(&#x27;div&#x27;);name.className=&#x27;dre-name&#x27;;name.textContent=r.cliente||&#x27;Cliente&#x27;;box.append(name);
+   var info=document.createElement(&#x27;div&#x27;);info.className=&#x27;dre-info&#x27;;
+   var dt=String(r.data).split(&#x27;-&#x27;);info.textContent=dt.reverse().join(&#x27;/&#x27;)+&#x27; • &#x27;+(r.horaSaida||&#x27;Horário a confirmar&#x27;)+&#x27; — &#x27;+(r.horaRetorno||&#x27;&#x27;)+&#x27; | &#x27;+(r.origem||&#x27;Origem&#x27;)+&#x27; → &#x27;+(r.destino||&#x27;Destino&#x27;);box.append(info);
+  }else{var empty=document.createElement(&#x27;div&#x27;);empty.className=&#x27;dre-empty&#x27;;empty.textContent=&#x27;Nenhuma reserva futura encontrada.&#x27;;box.append(empty)}
+  var actions=document.createElement(&#x27;div&#x27;);actions.className=&#x27;dre-buttons&#x27;;
+  var agenda=document.createElement(&#x27;button&#x27;);agenda.type=&#x27;button&#x27;;agenda.textContent=&#x27;📅 Abrir agenda&#x27;;agenda.addEventListener(&#x27;click&#x27;,goAgenda);
+  var details=document.createElement(&#x27;button&#x27;);details.type=&#x27;button&#x27;;details.textContent=r?&#x27;🔎 Ver reserva&#x27;:&#x27;➕ Consultar datas&#x27;;details.addEventListener(&#x27;click&#x27;,function(){goAgenda();if(r){var f=document.getElementById(&#x27;consultaData&#x27;);if(f){f.value=r.data;if(typeof consultarDisponibilidade===&#x27;function&#x27;)consultarDisponibilidade()}}});
+  actions.append(agenda,details);box.append(actions);
+ }
+ if(document.readyState===&#x27;loading&#x27;)document.addEventListener(&#x27;DOMContentLoaded&#x27;,refresh);else refresh();
+ window.addEventListener(&#x27;pageshow&#x27;,refresh);window.addEventListener(&#x27;focus&#x27;,refresh);window.addEventListener(&#x27;storage&#x27;,refresh);
+ setInterval(refresh,4000);
+})();
+&lt;/script&gt;
 &lt;/body&gt;
 &lt;/html&gt;
 " title="Minhas Viagens e Uber"></iframe><iframe allow="clipboard-write; web-share" class="" id="f" loading="eager" srcdoc="&lt;!doctype html&gt;
