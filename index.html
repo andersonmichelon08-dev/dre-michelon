@@ -1076,7 +1076,7 @@ window.seqAtiva=function(){return false};
 #mcHomeDash .mcNextTitle{font-size:15px!important;margin-top:6px!important}
 #mcHomeDash .mcNextInfo{font-size:12px!important;margin-top:4px!important}
 #mcHomeDash .mcNextBtn{min-height:40px!important;margin-top:7px!important}
-&lt;/style&gt;&lt;style id=&quot;dre-clean-navigation-20261022&quot;&gt;#dreQuickNavFix{top:auto!important;bottom:calc(76px + env(safe-area-inset-bottom))!important;right:10px!important;max-width:calc(100vw - 20px)!important}#dreQuickNavFix button{background:#fff!important}&lt;/style&gt;&lt;/head&gt;
+&lt;/style&gt;&lt;style id=&quot;dre-clean-navigation-20261022&quot;&gt;#dreQuickNavFix{top:auto!important;bottom:calc(76px + env(safe-area-inset-bottom))!important;right:10px!important;max-width:calc(100vw - 20px)!important}#dreQuickNavFix button{background:#fff!important}&lt;/style&gt;&lt;style id=&quot;dre-navigation-single-instance&quot;&gt;#dreQuickNavFix{display:none!important} .dre-diagnostic-integration{display:none!important} #dreDriverPanel{max-width:100%;} html{scroll-padding-top:12px}&lt;/style&gt;&lt;/head&gt;
 &lt;body&gt;
 &lt;noscript&gt;&lt;div class=&quot;seq-aviso-previa&quot;&gt;Este arquivo está em modo de visualização. Para importar, adicionar paradas e calcular, abra a versão publicada do sistema no Safari.&lt;/div&gt;&lt;/noscript&gt;
 &lt;nav aria-label=&quot;Navegação principal&quot; class=&quot;mcBottom&quot;&gt;&lt;div class=&quot;mcNav&quot;&gt;
@@ -5404,21 +5404,7 @@ body .mcBottom,body:not(.michelon-interativo) .mcBottom,body.michelon-interativo
  setInterval(refresh,4000);
 })();
 &lt;/script&gt;
-&lt;script id=&quot;dre-agenda-cleanup-20261022&quot;&gt;
-(function(){
- function clean(){
-  var buttons=Array.from(document.querySelectorAll('button'));
-  var seen=false;
-  buttons.forEach(function(b){
-   if((b.textContent||'').includes('Conferir integração Viagens/Uber')){
-    if(seen){b.style.display='none';}else{seen=true;}
-   }
-  });
- }
- if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',clean);else clean();
- setTimeout(clean,700);
-})();
-&lt;/script&gt;&lt;/div&gt;&lt;script id=&quot;dre-agenda-ux-fix&quot;&gt;(function(){function init(){var a=document.getElementById('mxAgenda');if(!a)return;var d=a.querySelector('details');if(d)d.open=false;document.querySelectorAll('[data-mc-section=&quot;mxAgenda&quot;],a[href=&quot;#mxAgenda&quot;]').forEach(function(b){b.addEventListener('click',function(){if(d)d.open=true;});});}if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',init);else init();})();&lt;/script&gt;
+&lt;/div&gt;&lt;script id=&quot;dre-agenda-ux-fix&quot;&gt;(function(){function init(){var a=document.getElementById('mxAgenda');if(!a)return;var d=a.querySelector('details');if(d)d.open=false;document.querySelectorAll('[data-mc-section=&quot;mxAgenda&quot;],a[href=&quot;#mxAgenda&quot;]').forEach(function(b){b.addEventListener('click',function(){if(d)d.open=true;});});}if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',init);else init();})();&lt;/script&gt;
 &lt;style id=&quot;dre-final-mobile-correction&quot;&gt;
 /* Tela única: sem faixas vazias e sem barras repetidas. */
 html{scroll-padding-top:14px} body{overflow-x:hidden!important}
@@ -5429,55 +5415,31 @@ html{scroll-padding-top:14px} body{overflow-x:hidden!important}
 #dreQuickNavFix button{width:auto!important;min-width:0!important;padding:9px 10px!important;font-size:12px!important;background:#fff!important;color:#173e63!important;border:1px solid #d5e1ed!important;border-radius:11px!important;box-shadow:0 2px 8px #0002!important}
 @media(max-width:420px){#dreQuickNavFix button{padding:8px 7px!important;font-size:11px!important}}
 &lt;/style&gt;
-&lt;script id=&quot;dre-final-mobile-correction-js&quot;&gt;
-(function(){
- function home(){try{if(typeof mcCloseCard==='function')mcCloseCard()}catch(e){};var el=document.getElementById('mxHero')||document.getElementById('mcHomeDash');if(el)el.scrollIntoView({block:'start'});else window.scrollTo(0,0);}
- var last=null;
- document.addEventListener('click',function(e){var a=e.target.closest('a[href^=&quot;#&quot;],button');if(!a)return;var label=(a.textContent||'').trim();if(a.closest('#dreQuickNavFix'))return;if(/^(←|⬅|↩)\s*Voltar/i.test(label)){e.preventDefault();if(last&amp;&amp;document.getElementById(last)){document.getElementById(last).scrollIntoView({block:'start'});}else home();return;}if(/^(⌂|🏠)\s*In[ií]cio/i.test(label)){e.preventDefault();home();return;}var id=a.getAttribute('href');if(id&amp;&amp;id.charAt(0)==='#'&amp;&amp;id.length&gt;1)last=id.slice(1);},true);
- function setup(){if(!document.getElementById('dreQuickNavFix')){var bar=document.createElement('div');bar.id='dreQuickNavFix';bar.innerHTML='&lt;button type=&quot;button&quot; id=&quot;dreBackFix&quot;&gt;← Voltar&lt;/button&gt;&lt;button type=&quot;button&quot; id=&quot;dreHomeFix&quot;&gt;⌂ Início&lt;/button&gt;&lt;button type=&quot;button&quot; id=&quot;dreMenuFix&quot;&gt;☰&lt;/button&gt;';document.body.appendChild(bar);bar.querySelector('#dreBackFix').onclick=function(){if(last&amp;&amp;document.getElementById(last))document.getElementById(last).scrollIntoView({block:'start'});else home()};bar.querySelector('#dreHomeFix').onclick=home;bar.querySelector('#dreMenuFix').onclick=function(){var nav=document.querySelector('.mcBottom');if(nav){nav.scrollIntoView({block:'end'});nav.style.display='block';}else{var menu=document.getElementById('dreMainNav');if(menu)menu.classList.toggle('dre-visible');else home();}};}
- // O diagnóstico de integração não deve ocupar o conteúdo da agenda ou do financeiro.
- document.querySelectorAll('button').forEach(function(b){if((b.textContent||'').includes('Conferir integração Viagens/Uber')){b.style.display='none';b.setAttribute('aria-hidden','true');}});
- }
- if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',setup);else setup();
- setTimeout(setup,900);setTimeout(setup,2500);
-})();
-&lt;/script&gt;
-&lt;script id=&quot;dre-diagnostic-button-removal-20261022&quot;&gt;(function(){
-function cleanup(){
- document.querySelectorAll('button,a').forEach(function(b){
-  if(!/Conferir integração Viagens\/Uber\s*→\s*Financeiro/i.test((b.textContent||'').trim()))return;
-  var parent=b.parentElement;
-  b.remove();
-  // Remove somente o invólucro vazio do botão de diagnóstico, nunca dados de reserva.
-  while(parent&amp;&amp;parent!==document.body&amp;&amp;parent.children.length===0&amp;&amp;!(parent.textContent||'').trim()){
-   var next=parent.parentElement;parent.remove();parent=next;
-  }
+
+&lt;script id=&quot;dre-navigation-single-instance-js&quot;&gt;(function(){
+'use strict';
+function clean(){
+ document.querySelectorAll('button,a,[role=&quot;button&quot;]').forEach(function(el){
+  if(!/Conferir\s+integração\s+Viagens\s*\/\s*Uber\s*→\s*Financeiro/i.test((el.textContent||'').trim()))return;
+  var p=el.parentElement;el.remove();
+  if(p&amp;&amp;p!==document.body&amp;&amp;!p.children.length&amp;&amp;!p.textContent.trim()&amp;&amp;!p.id)p.remove();
  });
+ document.querySelectorAll('#dreQuickNavFix').forEach(function(el){el.remove()});
 }
-if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',cleanup);else cleanup();
-var obs=new MutationObserver(function(){cleanup()});
-obs.observe(document.documentElement,{childList:true,subtree:true});
-})();&lt;/script&gt;&lt;script id=&quot;dre-cleanup-definitivo-20261022&quot;&gt;(function(){
-  var busy=false;
-  function cleanup(){
-    if(busy)return;busy=true;
-    try{
-      document.querySelectorAll('button,a,[role=&quot;button&quot;]').forEach(function(el){
-        if(!/Conferir\s+integração\s+Viagens\s*\/\s*Uber\s*→\s*Financeiro/i.test((el.textContent||'').trim()))return;
-        var parent=el.parentElement;
-        el.remove();
-        // Apaga apenas invólucros sem conteúdo, nunca cartões ou dados do usuário.
-        while(parent&amp;&amp;parent!==document.body&amp;&amp;parent!==document.documentElement){
-          if(parent.children.length || (parent.textContent||'').trim())break;
-          if(parent.matches('main,section,article,nav,header,footer,[id]'))break;
-          var next=parent.parentElement;parent.remove();parent=next;
-        }
-      });
-    }finally{busy=false;}
-  }
-  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',cleanup);else cleanup();
-  new MutationObserver(function(){cleanup()}).observe(document.documentElement,{childList:true,subtree:true});
-  window.addEventListener('pageshow',cleanup);
+function home(){
+ var overlay=document.getElementById('mcCardOverlay');if(overlay)overlay.style.display='none';
+ if(typeof mcCloseCard==='function')try{mcCloseCard()}catch(e){}
+ var h=document.getElementById('mxHero')||document.getElementById('mcHomeDash');
+ if(h)h.scrollIntoView({block:'start',behavior:'instant'});else window.scrollTo(0,0);
+}
+document.addEventListener('click',function(e){
+ var b=e.target.closest('button,a');if(!b)return;
+ var label=(b.textContent||'').trim();
+ if(/^(?:←|⬅|↩)\s*Voltar/i.test(label)){e.preventDefault();home()}
+ else if(/^(?:⌂|🏠)\s*In[ií]cio/i.test(label)){e.preventDefault();home()}
+},true);
+if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',clean);else clean();
+var queued=false;new MutationObserver(function(){if(queued)return;queued=true;requestAnimationFrame(function(){queued=false;clean()})}).observe(document.body,{childList:true,subtree:true});
 })();&lt;/script&gt;&lt;/body&gt;
 &lt;/html&gt;
 &quot; title=&quot;Minhas Viagens e Uber"></iframe><iframe allow="clipboard-write; web-share" class="" id="f" loading="eager" srcdoc="&lt;!doctype html&gt;
