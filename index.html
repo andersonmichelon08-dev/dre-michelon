@@ -7992,23 +7992,62 @@ document.getElementById('dreMenuSafe').onclick=function(){
 })();
 </script>
 
-<style id="dre-iphone-viewport-final">
-/* O iframe deve ocupar a altura REAL da tela, não a altura de um painel antigo. */
-html,body{margin:0!important;width:100%!important;min-height:100%!important;overflow-x:hidden!important}
-body>iframe,body>iframe.active{width:100%!important;height:100dvh!important;min-height:0!important;max-height:none!important;border:0!important;display:none}
-body>iframe.active{display:block!important}
-#dreVoltarBar,#dreShellToggle{display:none!important}
-body>nav#dreMainNav{display:none!important}
-body>nav#dreMainNav.dre-open{display:grid!important;position:fixed!important;top:12px!important;left:12px!important;right:12px!important;z-index:2147483000!important;max-height:70dvh!important;overflow:auto!important;box-shadow:0 8px 30px #0003}
+<style id="dre-recuperacao-20261022">
+/* Recupera visibilidade do módulo selecionado mesmo quando a landing anterior ficou ativa. */
+body > iframe#v,body > iframe#f,body > iframe#c{display:none!important}
+body > iframe#v.active,body > iframe#f.active,body > iframe#c.active{
+ display:block!important;visibility:visible!important;opacity:1!important;
+ width:100%!important;height:calc(100dvh - 8px)!important;min-height:650px!important;
+ position:relative!important;z-index:1!important;
+}
+body.dre-landing > iframe.active{display:block!important}
+#dreVoltarBar{z-index:2147483000!important}
 </style>
-<script id="dre-iphone-viewport-js">
+<script id="dre-recuperacao-navegacao-20261022">
 (function(){
- function fit(){
-  var h=window.innerHeight;
-  document.querySelectorAll('body > iframe').forEach(function(f){f.style.setProperty('height',h+'px','important');});
+ function openModule(id){
+   var frame=document.getElementById(id);
+   if(!frame)return;
+   document.body.classList.remove('dre-landing');
+   ['v','f','c'].forEach(function(key){
+     var el=document.getElementById(key);
+     if(el)el.classList.toggle('active',key===id);
+   });
+   if(typeof window.show==='function')window.show(id);
+   frame.style.setProperty('display','block','important');
+   document.querySelectorAll('#dreMainNav button').forEach(function(b){b.classList.remove('active')});
+   var btn=document.getElementById('b'+id);if(btn)btn.classList.add('active');
+   window.scrollTo(0,0);
  }
- window.addEventListener('resize',fit);window.addEventListener('orientationchange',fit);
- if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',fit);else fit();
+ function home(){
+   openModule('v');
+   var frame=document.getElementById('v');
+   try{
+     var d=frame.contentDocument,w=frame.contentWindow;
+     var btn=d&&d.querySelector('[data-mc-section="home"],[data-page="inicio"]');
+     if(btn)btn.click();
+     else if(w&&typeof w.mcShowSection==='function')w.mcShowSection('home');
+     if(w)w.scrollTo(0,0);
+   }catch(e){}
+ }
+ function menu(){
+   var nav=document.getElementById('dreMainNav');
+   if(nav){nav.classList.toggle('dre-open');nav.style.setProperty('display',nav.classList.contains('dre-open')?'grid':'none','important')}
+ }
+ var h=document.getElementById('dreHomeSafe'),b=document.getElementById('dreBackSafe'),m=document.getElementById('dreMenuSafe');
+ if(h)h.onclick=home;
+ if(b)b.onclick=home;
+ if(m)m.onclick=menu;
+ document.querySelectorAll('#dreMainNav button').forEach(function(btn){
+   btn.addEventListener('click',function(){
+     var id=btn.id==='bf'?'f':btn.id==='bc'?'c':'v';
+     openModule(id);
+     var nav=document.getElementById('dreMainNav');
+     if(nav){nav.classList.remove('dre-open');nav.style.setProperty('display','none','important')}
+   });
+ });
+ if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',home,{once:true});
+ else home();
 })();
 </script>
 </body></html>
