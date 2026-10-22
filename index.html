@@ -5440,7 +5440,31 @@ document.addEventListener('click',function(e){
 },true);
 if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',clean);else clean();
 var queued=false;new MutationObserver(function(){if(queued)return;queued=true;requestAnimationFrame(function(){queued=false;clean()})}).observe(document.body,{childList:true,subtree:true});
-})();&lt;/script&gt;&lt;/body&gt;
+})();&lt;/script&gt;
+&lt;style id=&quot;dre-clean-screen-20261022&quot;&gt;
+/* Um unico menu inferior. Nenhum controle flutuante sobre o cabecalho. */
+#dreQuickNavFix,#dreShellQuickNav,.dreQuickNavFix,[id^=&quot;dreQuickNav&quot;],.dre-floating-nav{display:none!important}
+#mxHero{isolation:isolate}
+&lt;/style&gt;
+&lt;script id=&quot;dre-clean-screen-20261022-js&quot;&gt;
+(function(){'use strict';
+function clean(){
+ document.querySelectorAll('#dreQuickNavFix,#dreShellQuickNav,.dreQuickNavFix,[id^=&quot;dreQuickNav&quot;],.dre-floating-nav').forEach(function(e){e.remove()});
+ document.querySelectorAll('button,a,[role=&quot;button&quot;],div,section').forEach(function(e){
+  if(e===document.body||e.classList.contains('mcBottom')||e.closest('.mcBottom'))return;
+  var direct=(e.innerText||e.textContent||'').replace(/\\s+/g,' ').trim();
+  if(!/Conferir integra[çc][aã]o Viagens\\s*\\/\\s*Uber\\s*(?:→|➜|-&gt;)\\s*Financeiro/i.test(direct))return;
+  if(e.querySelector('button,a,[role=&quot;button&quot;]') &amp;&amp; !['BUTTON','A'].includes(e.tagName))return;
+  var wrapper=e.parentElement;
+  e.remove();
+  if(wrapper &amp;&amp; wrapper!==document.body &amp;&amp; !wrapper.id &amp;&amp; !wrapper.textContent.trim() &amp;&amp; !wrapper.children.length)wrapper.remove();
+ });
+}
+if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',clean);else clean();
+var pending=false;new MutationObserver(function(){if(pending)return;pending=true;requestAnimationFrame(function(){pending=false;clean()})}).observe(document.documentElement,{childList:true,subtree:true});
+})();
+&lt;/script&gt;
+&lt;/body&gt;
 &lt;/html&gt;
 &quot; title=&quot;Minhas Viagens e Uber"></iframe><iframe allow="clipboard-write; web-share" class="" id="f" loading="eager" srcdoc="&lt;!doctype html&gt;
 &lt;html lang=&quot;pt-BR&quot;&gt;
