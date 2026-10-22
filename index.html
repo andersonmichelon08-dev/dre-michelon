@@ -17,6 +17,10 @@ body > nav.dre-open{display:grid}
 #dreModuleBar strong{font-size:12px;color:#203e5c;letter-spacing:.2px}
 #dreModuleBar button{width:auto;min-width:120px;border:1px solid #d6e0eb;background:#f1f5fa;color:#234364;border-radius:9px;padding:8px 12px;font-size:12px;font-weight:800}
 body > iframe{height:calc(100dvh - 49px);min-height:550px}
+/* Correção iPhone: isolar a pintura do cabeçalho para evitar rastros repetidos durante rolagem do iframe. */
+#dreModuleBar{position:relative!important;z-index:2;isolation:isolate;contain:layout paint style;transform:translateZ(0);-webkit-transform:translateZ(0);backface-visibility:hidden;-webkit-backface-visibility:hidden}
+body > iframe{position:relative;isolation:isolate;contain:paint;transform:translateZ(0);-webkit-transform:translateZ(0)}
+body > nav.dre-open{position:relative;z-index:3}
 </style></head><body><header><b>MICHELON</b><small>DRE · VIAGENS EXECUTIVAS &amp; GESTÃO</small></header><div id="dreModuleBar"><strong>MICHELON · DRE</strong><button aria-controls="dreMainNav" aria-expanded="false" id="dreModulesToggle" type="button">☰ Módulos e backup</button></div><nav id="dreMainNav"><button aria-selected="true" class="active" id="bv" onclick="show('v')">🚘 Minhas Viagens</button><button aria-selected="false" id="bf" onclick="show('f')">💳 Meu Financeiro</button><button aria-selected="false" id="bc" onclick="show('c')">🛣️ Cotação e pedágios</button><button id="backupSeguro" onclick="exportarBackupDRE()" type="button">💾 Backup de segurança</button></nav><iframe allow="geolocation; clipboard-write; web-share" class="active" id="v" loading="eager" srcdoc="&lt;!DOCTYPE html&gt;
 
 &lt;html lang=&quot;pt-BR&quot;&gt;
