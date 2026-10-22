@@ -1976,6 +1976,10 @@ function normalizarLocalBusca(txt){
 }
 async function geocode(endereco){
  const original=String(endereco||'').trim();
+ const airportKey=original.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'');
+ if(/viracopos|\bvcp\b/.test(airportKey))return {lat:-23.0074,lon:-47.1345,nome:'Aeroporto Internacional de Viracopos, Campinas, SP',precisao:'aeroporto'};
+ if(/cumbica|\bgru\b|aeroporto.*guarulhos/.test(airportKey))return {lat:-23.4356,lon:-46.4731,nome:'Aeroporto Internacional de Guarulhos, SP',precisao:'aeroporto'};
+ if(/congonhas|\bcgh\b/.test(airportKey))return {lat:-23.6261,lon:-46.6566,nome:'Aeroporto de Congonhas, São Paulo, SP',precisao:'aeroporto'};
  if(!original) throw new Error('Informe o local.');
  const normal=normalizarLocalBusca(original);
  const tentativas=[normal];
@@ -7098,6 +7102,11 @@ for(const id of ['origem','destino']){
  let busy=false;
  async function json(url,ms=14000){const controller=new AbortController();const timer=setTimeout(()=&gt;controller.abort(),ms);try{const r=await fetch(url,{signal:controller.signal});if(!r.ok)throw Error('Serviço indisponível ('+r.status+')');return await r.json()}finally{clearTimeout(timer)}}
  async function locate(place){
+    const key=normalize(place);
+    // Coordenadas públicas do terminal: o autocomplete não garante geocodificação.
+    if(/viracopos|\bvcp\b/.test(key))return {lon:-47.1345,lat:-23.0074,name:'Aeroporto Internacional de Viracopos, Campinas, SP'};
+    if(/cumbica|\bgru\b|aeroporto.*guarulhos/.test(key))return {lon:-46.4731,lat:-23.4356,name:'Aeroporto Internacional de Guarulhos, SP'};
+    if(/congonhas|\bcgh\b/.test(key))return {lon:-46.6566,lat:-23.6261,name:'Aeroporto de Congonhas, São Paulo, SP'};
     let q=aliases[normalize(place.trim())]||place.trim();
     try{
       const url='https://photon.komoot.io/api/?limit=8&amp;q='+encodeURIComponent(q.includes('Brasil')?q:q+', Brasil');
