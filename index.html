@@ -978,8 +978,30 @@ const total=Math.round((base+toll)*(1+Number(c.margem)/100)*100)/100;
 if(!Number.isFinite(total)||total<=0){alert('Valor final inválido. Confira os ajustes.');return}
 approved={origin,dest,tipo,km:ida+volta,total,toll,road:'Distâncias conferidas pelo usuário',manual:true,points:[origin,dest]};
 $('resultado').innerHTML='';for(const [name,value] of [['Origem',origin],['Destino',dest],['Ida',ida.toFixed(1)+' km'],['Retorno',volta.toFixed(1)+' km'],['Pedágios',money(toll)],['Orçamento final',money(total)]]){const line=document.createElement('div');line.className='mini';const a=document.createElement('span'),b=document.createElement('strong');a.textContent=name;b.textContent=value;line.append(a,b);$('resultado').append(line)}
-$('dreManualMsg').textContent='Orçamento confirmado. Os botões Salvar e Enviar estão liberados.';$('salvarViagem').disabled=false;$('waEnviar').disabled=false;
+$('dreManualMsg').textContent='Orçamento confirmado. Toque em Salvar na agenda ou Enviar pelo WhatsApp.';$('salvarViagem').disabled=false;$('waEnviar').disabled=false;
 });
-$('salvarViagem').addEventListener('click',e=>{if(!approved)return;e.preventDefault();e.stopImmediatePropagation();try{const db=JSON.parse(localStorage.getItem('michelon_base_nova_v1')||'{}');db.trips=Array.isArray(db.trips)?db.trips:[];db.trips.unshift({...approved,id:crypto.randomUUID(),date:new Date().toLocaleDateString('pt-BR'),status:'Cotação'});localStorage.setItem('michelon_base_nova_v1',JSON.stringify(db));alert('Cotação salva na agenda e em Minhas Viagens.');document.querySelector('[data-page="agenda"]').click()}catch(err){alert('Não foi possível salvar: '+err.message)}},true);
-$('waEnviar').addEventListener('click',e=>{if(!approved)return;e.preventDefault();e.stopImmediatePropagation();const msg=['*Michelon Viagens Executivas*','Proposta de viagem','Origem: '+approved.origin,'Destino: '+approved.dest,'Valor: '+money(approved.total),'Confirme a disponibilidade para agendar.'].join('\n');const url='https://wa.me/?text='+encodeURIComponent(msg);const a=document.createElement('a');a.href=url;a.target='_blank';a.rel='noopener noreferrer';document.body.append(a);a.click();a.remove()},true);
+// Captura no documento antes dos handlers antigos: evita conflitos entre versoes.
+document.addEventListener('click',function(e){
+ const target=e.target.closest && e.target.closest('#salvarViagem,#waEnviar');
+ if(!target || !approved)return;
+ e.preventDefault();e.stopPropagation();e.stopImmediatePropagation();
+ if(target.id==='salvarViagem'){
+  try{
+   const key='michelon_base_nova_v1';const db=JSON.parse(localStorage.getItem(key)||'{}');
+   db.trips=Array.isArray(db.trips)?db.trips:[];
+   const id=(window.crypto&&crypto.randomUUID)?crypto.randomUUID():'cot-'+Date.now();
+   db.trips.unshift({...approved,id,date:new Date().toLocaleDateString('pt-BR'),status:'Cotação'});
+   localStorage.setItem(key,JSON.stringify(db));
+   $('dreManualMsg').textContent='Cotação salva na agenda com sucesso.';
+   alert('Cotação salva na agenda e em Minhas Viagens.');
+   document.querySelector('[data-page="agenda"]').click();
+  }catch(err){alert('Erro ao salvar cotação: '+err.message)}
+ }else{
+  const msg=['*Michelon Viagens Executivas*','Proposta de viagem','Origem: '+approved.origin,'Destino: '+approved.dest,'Pedágios: '+money(approved.toll),'Valor: '+money(approved.total),'Confirme a disponibilidade para agendar.'].join('\n');
+  const url='https://wa.me/?text='+encodeURIComponent(msg);
+  $('dreManualMsg').textContent='Abrindo WhatsApp…';
+  // Navegacao na mesma aba evita bloqueio de pop-up do Safari no iPhone.
+  window.location.href=url;
+ }
+},true);
 })();</script></body></html>
