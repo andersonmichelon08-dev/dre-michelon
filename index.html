@@ -23,7 +23,7 @@ body > nav#dreMainNav {display:grid!important;grid-template-columns:repeat(2,min
 body > nav#dreMainNav button {font-size:11px;padding:9px 4px;min-height:38px}
 body > iframe {height:calc(100dvh - 94px)!important;min-height:0!important}
 </style><style>
-body{background:#f1f5f9!important}body>header{background:linear-gradient(120deg,#0c325c,#236ca0)!important;color:#fff!important;text-align:center!important;padding:18px 10px!important}body>header b{color:#eac77a!important;font-size:29px!important;letter-spacing:2px!important}body>header small{color:#fff!important}#dreModuleBar{display:none!important}nav#dreMainNav{display:grid!important;grid-template-columns:repeat(3,minmax(0,1fr))!important;gap:6px!important;padding:9px!important;background:#fff!important}nav#dreMainNav button{min-width:0!important;white-space:normal!important;font-size:12px!important;padding:11px 3px!important;border-radius:9px!important}nav#dreMainNav button:nth-child(n+4){grid-column:span 1!important;font-size:11px!important}body>iframe{height:calc(100dvh - 173px)!important;min-height:500px!important}</style></head><body><header><b>MICHELON</b><small>DRE · VIAGENS EXECUTIVAS &amp; GESTÃO</small></header><div id="dreModuleBar"><strong>MICHELON · DRE</strong><button aria-controls="dreMainNav" aria-expanded="false" id="dreModulesToggle" type="button">☰ Módulos e backup</button></div><nav id="dreMainNav"><button id="bv" onclick="dreSelect('v')" type="button">🚘 Viagens</button><button id="bu" onclick="dreSelect('uber')" type="button">🚖 Uber</button><button id="bf" onclick="dreSelect('f')" type="button">💳 Financeiro</button><button id="bc" onclick="dreSelect('c')" type="button">🛣️ Cotação e pedágios</button><button id="backupSeguro" onclick="exportarBackupDRE()" type="button">💾 Backup de segurança</button></nav><iframe allow="geolocation; clipboard-write; web-share" class="active" id="v" loading="eager" srcdoc="&lt;!DOCTYPE html&gt;
+body{background:#f1f5f9!important}body>header{background:linear-gradient(120deg,#0c325c,#236ca0)!important;color:#fff!important;text-align:center!important;padding:18px 10px!important}body>header b{color:#eac77a!important;font-size:29px!important;letter-spacing:2px!important}body>header small{color:#fff!important}#dreModuleBar{display:none!important}nav#dreMainNav{display:grid!important;grid-template-columns:repeat(3,minmax(0,1fr))!important;gap:6px!important;padding:9px!important;background:#fff!important}nav#dreMainNav button{min-width:0!important;white-space:normal!important;font-size:12px!important;padding:11px 3px!important;border-radius:9px!important}nav#dreMainNav button:nth-child(n+4){grid-column:span 1!important;font-size:11px!important}body>iframe{height:calc(100dvh - 173px)!important;min-height:500px!important}</style><style>body>header,body>#dreModuleBar{display:none!important}body>nav#dreMainNav{display:none!important;position:relative!important;grid-template-columns:repeat(2,minmax(0,1fr))!important}body>nav#dreMainNav.dre-visible{display:grid!important}body>iframe{height:100dvh!important;min-height:0!important}#dreShellToggle{position:fixed;right:10px;top:8px;z-index:99999;background:#fff;border:1px solid #d5dfeb;border-radius:10px;padding:8px 12px;font-weight:800;color:#153e65;box-shadow:0 2px 10px #0002;font-size:12px}</style></head><body><button id="dreShellToggle" onclick="var n=document.getElementById('dreMainNav');n.classList.toggle('dre-visible');this.textContent=n.classList.contains('dre-visible')?'✕ Fechar módulos':'☰ Módulos e backup'" type="button">☰ Módulos e backup</button><header><b>MICHELON</b><small>DRE · VIAGENS EXECUTIVAS &amp; GESTÃO</small></header><div id="dreModuleBar"><strong>MICHELON · DRE</strong><button aria-controls="dreMainNav" aria-expanded="false" id="dreModulesToggle" type="button">☰ Módulos e backup</button></div><nav id="dreMainNav"><button id="bv" onclick="dreSelect('v')" type="button">🚘 Viagens</button><button id="bu" onclick="dreSelect('uber')" type="button">🚖 Uber</button><button id="bf" onclick="dreSelect('f')" type="button">💳 Financeiro</button><button id="bc" onclick="dreSelect('c')" type="button">🛣️ Cotação e pedágios</button><button id="backupSeguro" onclick="exportarBackupDRE()" type="button">💾 Backup de segurança</button></nav><iframe allow="geolocation; clipboard-write; web-share" class="active" id="v" loading="eager" srcdoc="&lt;!DOCTYPE html&gt;
 
 &lt;html lang=&quot;pt-BR&quot;&gt;
 &lt;head&gt;
@@ -2957,7 +2957,7 @@ function renderAgenda(){
    const recebido=+x.recebido||0, valor=+x.valor||0, saldo=Math.max(0,valor-recebido);
    const status=x.status==='cancelada'?'Cancelada':x.concluida?'Concluída':x.status==='em_andamento'?'Em andamento':x.status==='pago'?'Paga':x.status==='confirmada'?'Confirmada':'Orçamento';
    return `&lt;details class=&quot;agendaItem&quot;&gt;&lt;summary style=&quot;display:block;cursor:pointer&quot;&gt;&lt;strong&gt;${dataBR(x.data)} ${x.horaSaida?`• ${x.horaSaida}`:''}${x.horaRetorno?` → ${x.dataRetorno&amp;&amp;x.dataRetorno!==x.data?dataBR(x.dataRetorno)+' • ':''}${x.horaRetorno}`:''}&lt;/strong&gt;
-    &lt;span class=&quot;badge&quot;&gt;${status}&lt;/span&gt;
+    &lt;span class=&quot;badge&quot;&gt;${status}&lt;/span&gt;&lt;div style=&quot;display:flex;flex-wrap:wrap;gap:6px;margin-top:8px;font-size:12px&quot;&gt;&lt;span style=&quot;background:#edf4fa;padding:6px;border-radius:8px&quot;&gt;Contratado: &lt;b&gt;${brl(valor)}&lt;/b&gt;&lt;/span&gt;&lt;span style=&quot;background:#e8f7ed;padding:6px;border-radius:8px&quot;&gt;Recebido: &lt;b&gt;${brl(recebido)}&lt;/b&gt;&lt;/span&gt;&lt;span style=&quot;background:#fff3df;padding:6px;border-radius:8px&quot;&gt;A receber: &lt;b&gt;${brl(x.status==='cancelada'?0:saldo)}&lt;/b&gt;&lt;/span&gt;&lt;/div&gt;
     &lt;div style=&quot;margin-top:7px&quot;&gt;&lt;b&gt;${x.cliente||'Cliente'}&lt;/b&gt; • ${x.tipoServico||'Viagem'} • 
     ${x.origem||'-'} → ${x.destino||'-'}&lt;/summary&gt;&lt;div style=&quot;padding-top:8px&quot;&gt;👥 ${x.passageiros||'-'} passageiro(s) • 💵 ${brl(valor)} • 
     💰 Recebido: &lt;b&gt;${brl(recebido)}&lt;/b&gt; • Saldo: &lt;b&gt;${brl(saldo)}&lt;/b&gt;
@@ -5380,7 +5380,7 @@ body .mcBottom,body:not(.michelon-interativo) .mcBottom,body.michelon-interativo
   try{if(typeof getAgendaHist==='function')records=getAgendaHist()}catch(e){}
   var now=new Date(),today=[now.getFullYear(),String(now.getMonth()+1).padStart(2,'0'),String(now.getDate()).padStart(2,'0')].join('-');
   var future=records.filter(function(r){return r&amp;&amp;r.data&gt;=today&amp;&amp;!['cancelada','cancelado','concluida','concluída'].includes(String(r.status||'').toLowerCase())}).sort(function(a,b){return (a.data+' '+(a.horaSaida||'')).localeCompare(b.data+' '+(b.horaSaida||''))});
-  var r=future[0];var signature=r?[r.id,r.data,r.horaSaida,r.cliente,r.origem,r.destino,r.status].join('|'):'none';
+  var r=future[0];var signature=r?[r.id,r.data,r.horaSaida,r.cliente,r.origem,r.destino,r.status,r.valor,r.recebido].join('|'):'none';
   if(box.dataset.signature===signature)return;box.dataset.signature=signature;
   box.replaceChildren();
   var head=document.createElement('div');head.className='dre-heading';
@@ -5390,6 +5390,10 @@ body .mcBottom,body:not(.michelon-interativo) .mcBottom,body.michelon-interativo
    var name=document.createElement('div');name.className='dre-name';name.textContent=r.cliente||'Cliente';box.append(name);
    var info=document.createElement('div');info.className='dre-info';
    var dt=String(r.data).split('-');info.textContent=dt.reverse().join('/')+' • '+(r.horaSaida||'Horário a confirmar')+' — '+(r.horaRetorno||'')+' | '+(r.origem||'Origem')+' → '+(r.destino||'Destino');box.append(info);
+   var money=document.createElement('div');money.className='dre-reserva-valores';
+   var val=Number(r.valor)||0,paid=Number(r.recebido)||0,pend=Math.max(0,val-paid);
+   money.style.cssText='display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:6px;margin-top:12px';
+   [['Contratado',val],['Recebido',paid],['A receber',pend]].forEach(function(entry){var item=document.createElement('div');item.style.cssText='border:1px solid #e2e8f0;border-radius:10px;padding:9px 5px;background:#f8fafc;min-width:0';var label=document.createElement('small');label.style.cssText='display:block;color:#64748b;font-size:10px';label.textContent=entry[0];var value=document.createElement('strong');value.style.cssText='display:block;font-size:clamp(11px,3vw,16px);overflow-wrap:anywhere';value.textContent=entry[1].toLocaleString('pt-BR',{style:'currency',currency:'BRL'});item.append(label,value);money.append(item)});box.append(money);
   }else{var empty=document.createElement('div');empty.className='dre-empty';empty.textContent='Nenhuma reserva futura encontrada.';box.append(empty)}
   var actions=document.createElement('div');actions.className='dre-buttons';
   var agenda=document.createElement('button');agenda.type='button';agenda.textContent='📅 Abrir agenda';agenda.addEventListener('click',goAgenda);
@@ -7888,8 +7892,6 @@ body.dre-landing>iframe,body.dre-landing>#v,body.dre-landing>#f,body.dre-landing
 body:not(.dre-landing) #dreStart{display:none}
 body:not(.dre-landing)>iframe.active{height:calc(100dvh - 190px)!important}
 </style>
-
-
 <script>
 (function(){
 window.dreSelect=function(id){
@@ -7915,7 +7917,7 @@ body > iframe.active {height:100dvh!important;min-height:0!important}
 #dreVoltarBar{position:fixed;right:12px;top:calc(8px + env(safe-area-inset-top));z-index:2147483000;display:flex;gap:5px;pointer-events:none}
 #dreVoltarBar button{pointer-events:auto;border:1px solid #cad5e1;border-radius:10px;background:#fff;color:#173b60;font-size:12px;font-weight:800;padding:9px 10px;box-shadow:0 2px 10px #0002}
 </style>
-<div id="dreVoltarBar"><button type="button" id="dreBackSafe">← Voltar</button><button type="button" id="dreHomeSafe">⌂ Início</button><button type="button" id="dreMenuSafe">☰</button></div>
+<div id="dreVoltarBar"><button id="dreBackSafe" type="button">← Voltar</button><button id="dreHomeSafe" type="button">⌂ Início</button><button id="dreMenuSafe" type="button">☰</button></div>
 <script id="dre-navegacao-segura-20261022">
 (function(){
 const getV=()=>document.getElementById('v');
