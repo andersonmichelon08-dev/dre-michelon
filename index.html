@@ -74,7 +74,20 @@ header{height:58px!important;background:linear-gradient(110deg,#063568,#0865ab)!
 <section class="page" id="viagens"><div class="top"><h2>Minhas viagens</h2><button class="secondary" data-go="cotacao">+ Nova cotação</button></div><div class="card scroll"><table class="table"><thead><tr><th>Data</th><th>Percurso</th><th>Valor</th><th>Ação</th></tr></thead><tbody id="listaViagens"></tbody></table></div></section>
 <section class="page" id="agenda"><div class="top"><h2>Agenda</h2><button class="secondary" data-go="cotacao">+ Nova cotação</button></div><div class="card scroll"><table class="table"><thead><tr><th>Data</th><th>Origem</th><th>Destino</th><th>Situação</th></tr></thead><tbody id="listaAgenda"></tbody></table></div></section>
 <section class="page" id="financeiro"><div class="top"><h2>Meu Financeiro</h2><span class="muted">Gestão mensal · DRE Michelon</span></div><div class="card stack"><div class="field"><label for="finMes">Mês de referência</label><input type="month" id="finMes"></div><div class="grid3"><div class="card"><div class="muted">Receitas recebidas</div><div class="stat" id="finReceitas">R$ 0</div></div><div class="card"><div class="muted">Despesas</div><div class="stat" id="finDespesas">R$ 0</div></div><div class="card"><div class="muted">Resultado do mês</div><div class="stat" id="finSaldo">R$ 0</div></div></div><div class="grid3"><div class="card"><div class="muted">A receber (reservas)</div><div class="stat" id="finPendente">R$ 0</div></div><div class="card"><div class="muted">Receitas do ano</div><div class="stat" id="finAnoReceitas">R$ 0</div></div><div class="card"><div class="muted">Resultado do ano</div><div class="stat" id="finAnoSaldo">R$ 0</div></div></div><div class="notice">Reservas pendentes aparecem em A receber, mas não entram no saldo nem no resultado. Recebimentos vinculados a viagens são protegidos contra exclusão isolada.</div></div><div class="cols"><div class="card stack"><h3 style="margin:0">Novo lançamento</h3><div class="field"><label>Data do lançamento</label><input id="finData" type="date"></div><div class="field"><label>Descrição</label><input id="finDesc" placeholder="Ex.: Combustível"></div><div class="field"><label>Valor (R$)</label><input id="finValor" type="number" min="0.01" step="0.01"></div><div class="field"><label>Tipo</label><select id="finTipo"><option value="saida">Despesa</option><option value="entrada">Receita</option></select></div><div class="field"><label>Categoria</label><select id="finCategoria"><option>Combustível</option><option>Pedágio</option><option>Manutenção</option><option>Alimentação</option><option>Estacionamento</option><option>Seguro</option><option>Impostos e taxas</option><option>Viagens executivas</option><option>Uber</option><option>Outras receitas</option><option>Outras despesas</option></select></div><div class="field"><label for="finNovaCategoria">Nova categoria (opcional)</label><div class="actions"><input id="finNovaCategoria" maxlength="60" placeholder="Nome da categoria"><button class="secondary" type="button" id="finAdicionarCategoria">+ Adicionar</button></div></div><button class="primary" id="finSalvar">Salvar lançamento</button><button class="secondary hidden" id="finCancelar" type="button">Cancelar edição</button></div><div class="card stack"><h3 style="margin:0">Histórico do mês</h3><div class="field"><label>Filtrar lançamentos</label><select id="finFiltro"><option value="todos">Todos</option><option value="entrada">Receitas</option><option value="saida">Despesas</option></select></div><div class="scroll"><table class="table"><thead><tr><th>Descrição / categoria</th><th>Valor</th><th>Ações</th></tr></thead><tbody id="finLista"></tbody></table></div><h3 style="margin:8px 0 0">Despesas por categoria</h3><div id="finCategorias" class="result"></div><button class="secondary" id="finExportar" type="button">Exportar relatório CSV do mês</button></div></div></section>
-<section class="page" id="uber"><div class="top"><h2>Uber</h2><span class="muted">Controle diário simples</span></div><div class="cols"><div class="card stack"><div class="field"><label>Data trabalhada</label><input id="uberData" type="date"></div><div class="field"><label>Faturamento do dia (R$)</label><input id="uberBruto" type="number" min="0" step=".01"></div><div class="field"><label>Combustível e outros custos (R$)</label><input id="uberCusto" type="number" min="0" step=".01"></div><button class="primary" id="uberSalvar">Registrar dia</button><div class="notice">Este resumo não substitui o financeiro completo nem desconta automaticamente suas contas fixas.</div></div><div class="card scroll"><table class="table"><thead><tr><th>Dia</th><th>Bruto</th><th>Custos</th><th>Saldo</th></tr></thead><tbody id="uberLista"></tbody></table></div></div></section>
+<section class="card stack" id="dreRelatorio" aria-label="Relatório financeiro">
+<h3 style="margin:0">📊 DRE mensal e gráficos</h3>
+<p class="muted" style="margin:0">Valores recebidos e despesas registradas. Reservas ainda não pagas ficam fora do resultado.</p>
+<div class="grid3">
+<div class="card"><div class="muted">Receitas do mês</div><div class="stat" id="dreReceita">R$ 0</div></div>
+<div class="card"><div class="muted">Despesas do mês</div><div class="stat" id="dreDespesa">R$ 0</div></div>
+<div class="card"><div class="muted">Resultado do mês</div><div class="stat" id="dreResultado">R$ 0</div></div>
+</div>
+<h4 style="margin:8px 0 0">Receitas por categoria</h4><div id="dreReceitaCategorias"></div>
+<h4 style="margin:8px 0 0">Despesas por categoria</h4><div id="dreDespesaCategorias"></div>
+<h4 style="margin:8px 0 0">Comparativo dos últimos 6 meses</h4>
+<div class="scroll"><table class="table"><thead><tr><th>Mês</th><th>Receitas</th><th>Despesas</th><th>Resultado</th></tr></thead><tbody id="dreComparativo"></tbody></table></div>
+<div class="muted">Resultado = receitas recebidas − despesas lançadas. Não representa saldo bancário conciliado.</div>
+</section><section class="page" id="uber"><div class="top"><h2>Uber</h2><span class="muted">Controle diário simples</span></div><div class="cols"><div class="card stack"><div class="field"><label>Data trabalhada</label><input id="uberData" type="date"></div><div class="field"><label>Faturamento do dia (R$)</label><input id="uberBruto" type="number" min="0" step=".01"></div><div class="field"><label>Combustível e outros custos (R$)</label><input id="uberCusto" type="number" min="0" step=".01"></div><button class="primary" id="uberSalvar">Registrar dia</button><div class="notice">Este resumo não substitui o financeiro completo nem desconta automaticamente suas contas fixas.</div></div><div class="card scroll"><table class="table"><thead><tr><th>Dia</th><th>Bruto</th><th>Custos</th><th>Saldo</th></tr></thead><tbody id="uberLista"></tbody></table></div></div></section>
 <section class="page" id="rotas"><div class="top"><h2>Tabela de rotas</h2><span class="muted">Configuração interna</span></div><div class="cols"><div class="card stack scroll"><h3 style="margin:0">Cadastrar ou atualizar</h3><div class="field"><label>Origem</label><input id="rOrigem" value="Limeira, SP"></div><div class="field"><label>Destino</label><input id="rDestino" placeholder="Ex.: Aeroporto de Guarulhos"></div><div class="field"><label>Apelidos separados por vírgula</label><input id="rAliases" placeholder="GRU, Cumbica, Guarulhos"></div><div class="field"><label>Rodovia principal</label><input id="rRodovia" placeholder="SP-348 Bandeirantes"></div><div class="grid3"><div class="field"><label>Km ida</label><input id="rIda" type="number" min=".1" step=".1"></div><div class="field"><label>Km volta</label><input id="rVolta" type="number" min=".1" step=".1"></div><div class="field"><label>Pedágios</label><select id="rPedStatus"><option value="pendente">Não verificados</option><option value="nenhum">Sem pedágios</option><option value="valor">Com pedágios</option></select></div></div><div class="grid3"><div class="field"><label>Pedágio ida R$</label><input id="rPedIda" type="number" min="0" step=".01"></div><div class="field"><label>Pedágio volta R$</label><input id="rPedVolta" type="number" min="0" step=".01"></div></div><button class="primary" id="rSalvar">Salvar rota</button><span id="rMsg" class="muted"></span></div><div class="card scroll"><table class="table"><thead><tr><th>Origem → destino</th><th>Km</th><th>Ação</th></tr></thead><tbody id="rLista"></tbody></table></div></div></section>
 <section class="page" id="recuperacao"><div class="top"><h2>📦 Recuperação dos lançamentos</h2></div><div class="card scroll stack"><p><strong>Backup financeiro de 16/10/2026 preservado.</strong> Estes dados estão anexados a esta versão para consulta e exportação, mas não foram lançados novamente no saldo bancário.</p><p id="recResumo"></p><div class="actions"><button class="primary" id="recBaixar" type="button">Baixar backup completo recuperado</button></div><p class="notice">Os registros originais do financeiro são mantidos sem alteração. Não importe este arquivo como se fosse um backup da nova base. Antes de conciliar, compare com o Meu Financeiro atual para evitar duplicações.</p><div class="scroll"><table class="table"><thead><tr><th>Data</th><th>Descrição</th><th>Valor</th><th>Status</th></tr></thead><tbody id="recLista"></tbody></table></div></div></section><section class="page" id="config"><div class="top"><h2>Ajustes e backup</h2></div><div class="cols"><div class="card stack"><h3 style="margin:0">Valores de cálculo</h3><div class="field"><label>Passageiro ida (R$/km)</label><input id="cfgIda" type="number" min="0" step=".01"></div><div class="field"><label>Retorno vazio (R$/km)</label><input id="cfgVazio" type="number" min="0" step=".01"></div><div class="field"><label>Ida e volta com passageiro (R$/km)</label><input id="cfgVolta" type="number" min="0" step=".01"></div><div class="field"><label>Margem (%)</label><input id="cfgMargem" type="number" min="0" step="1"></div><button class="primary" id="cfgSalvar">Salvar ajustes</button><div class="notice" style="background:#e9f5f2;color:#19383c"><strong>Base offline de pedágios georreferenciados</strong><p>Importe um JSON de praças com latitude, longitude, tarifa, sentido e fonte verificada. Os dados ficam neste navegador, sem API paga.</p><input id="pedImport" type="file" accept=".json,application/json"><div id="pedImportStatus" class="muted">Nenhuma base georreferenciada importada. Também é possível importar JSON oficial da ANTT para localização (sem tarifa).</div><button class="secondary" id="pedExportModelo" type="button">Baixar modelo JSON</button></div></div><div class="card stack"><h3 style="margin:0">Segurança dos dados</h3><p class="muted">Faça backup antes de limpar o navegador ou mudar de computador.</p><button class="secondary" id="exportar">Exportar backup JSON</button><div class="field"><label>Restaurar backup desta nova base</label><input id="importar" type="file" accept=".json,application/json"></div><div class="notice">Esta nova base é independente. Ela consegue ler rotas da tabela antiga se você importar o JSON exportado na versão anterior, mas não migra automaticamente todo o aplicativo antigo.</div></div></div></section>
 </main></div>
@@ -823,4 +836,62 @@ function reset(){editing=null;form.textContent='Salvar lançamento';$('finCancel
 // Capture intercepts the original save handler, preventing double inserts.
 form.addEventListener('click',e=>{e.stopImmediatePropagation();const desc=$('finDesc').value.trim(),valor=Number($('finValor').value),dateValue=$('finData').value,tipo=$('finTipo').value;if(!desc||!Number.isFinite(valor)||valor<=0||!dateValue){alert('Informe data, descrição e valor positivo.');return}const db=read();if(!Array.isArray(db.finance))db.finance=[];if(editing){const f=db.finance.find(x=>x.id===editing);if(!f||f.origemId){alert('Lançamento vinculado não pode ser editado.');return}Object.assign(f,{desc,valor,date:dateValue,tipo,categoria:$('finCategoria').value})}else db.finance.unshift({id:crypto.randomUUID(),desc,valor,date:dateValue,tipo,categoria:$('finCategoria').value});write(db);reset();refresh();updateTotals(db)},true);
 $('finCancelarEdicao').onclick=reset;$('finMes').onchange=refresh;$('finExportCsv').onclick=()=>{const db=read(),month=$('finMes').value,items=(db.finance||[]).filter(f=>month==='todos'||date(f)===month);const q=x=>'"'+String(x??'').replace(/"/g,'""')+'"';const csv='\ufeffData;Descrição;Categoria;Tipo;Valor\r\n'+items.map(f=>[f.date,f.desc,cat(f),f.tipo,Number(f.valor).toFixed(2).replace('.',',')].map(q).join(';')).join('\r\n');const url=URL.createObjectURL(new Blob([csv],{type:'text/csv;charset=utf-8'}));const a=document.createElement('a');a.href=url;a.download='DRE_Michelon_Financeiro_'+month+'.csv';a.click();setTimeout(()=>URL.revokeObjectURL(url),1000)};
-const observer=new MutationObserver(()=>{if(page.classList.contains('active'))refresh()});observer.observe(page,{attributes:true,attributeFilter:['class']});refresh();})();</script></body></html>
+const observer=new MutationObserver(()=>{if(page.classList.contains('active'))refresh()});observer.observe(page,{attributes:true,attributeFilter:['class']});refresh();})();</script>
+<script id="dre-relatorios-v1">
+(function(){
+"use strict";
+const KEY="michelon_base_nova_v1";
+const $=id=>document.getElementById(id);
+const moeda=v=>Number(v||0).toLocaleString("pt-BR",{style:"currency",currency:"BRL"});
+const ler=()=>{try{return JSON.parse(localStorage.getItem(KEY)||"{}")}catch{return {}}};
+function linhaGrafico(pai,nome,valor,max){
+ const wrap=document.createElement("div");wrap.style.cssText="margin:9px 0";
+ const titulo=document.createElement("div");titulo.style.cssText="display:flex;justify-content:space-between;gap:10px;font-size:13px";
+ const a=document.createElement("span"),b=document.createElement("strong");a.textContent=nome;b.textContent=moeda(valor);titulo.append(a,b);
+ const fundo=document.createElement("div");fundo.style.cssText="height:10px;border-radius:8px;background:#e5edf8;overflow:hidden;margin-top:5px";
+ const barra=document.createElement("div");barra.style.cssText="height:100%;border-radius:8px;background:#176caf;width:"+((valor/max)*100).toFixed(2)+"%";
+ fundo.append(barra);wrap.append(titulo,fundo);pai.append(wrap);
+}
+function categorias(destino,items,tipo){
+ const el=$(destino);el.replaceChildren();const totais=new Map();
+ items.filter(f=>f.tipo===tipo).forEach(f=>{
+  const nome=String(f.categoria||"Sem categoria");
+  totais.set(nome,(totais.get(nome)||0)+Number(f.valor||0));
+ });
+ const lista=[...totais].filter(x=>Number.isFinite(x[1])&&x[1]>0).sort((a,b)=>b[1]-a[1]);
+ if(!lista.length){el.textContent="Nenhum lançamento nesta categoria no mês.";return}
+ const max=Math.max(...lista.map(x=>x[1]));
+ lista.forEach(([nome,valor])=>linhaGrafico(el,nome,valor,max));
+}
+function render(){
+ const input=$("finMes");if(!input)return;
+ const mes=input.value;if(!/^\d{4}-\d{2}$/.test(mes))return;
+ const db=ler(),todos=Array.isArray(db.finance)?db.finance:[];
+ const validos=todos.filter(f=>Number.isFinite(Number(f.valor))&&Number(f.valor)>0&&/^\d{4}-\d{2}-\d{2}/.test(String(f.date||"")));
+ const mensal=validos.filter(f=>String(f.date).slice(0,7)===mes);
+ const soma=(items,tipo)=>items.filter(f=>f.tipo===tipo).reduce((a,f)=>a+Number(f.valor),0);
+ const receita=soma(mensal,"entrada"),despesa=soma(mensal,"saida");
+ $("dreReceita").textContent=moeda(receita);$("dreDespesa").textContent=moeda(despesa);
+ $("dreResultado").textContent=moeda(receita-despesa);
+ categorias("dreReceitaCategorias",mensal,"entrada");categorias("dreDespesaCategorias",mensal,"saida");
+ const tbody=$("dreComparativo");tbody.replaceChildren();
+ const [ano,month]=mes.split("-").map(Number);
+ for(let i=5;i>=0;i--){
+  const d=new Date(ano,month-1-i,1),chave=d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0");
+  const items=validos.filter(f=>String(f.date).slice(0,7)===chave);
+  const r=soma(items,"entrada"),c=soma(items,"saida"),tr=document.createElement("tr");
+  [chave.slice(5)+"/"+chave.slice(0,4),moeda(r),moeda(c),moeda(r-c)].forEach(t=>{
+   const td=document.createElement("td");td.textContent=t;tr.append(td);
+  });tbody.append(tr);
+ }
+}
+$("finMes")?.addEventListener("change",render);
+$("finSalvar")?.addEventListener("click",()=>setTimeout(render,0));
+$("finCancelar")?.addEventListener("click",()=>setTimeout(render,0));
+$("finLista")?.addEventListener("click",()=>setTimeout(render,100));
+document.querySelectorAll('[data-page="financeiro"],[data-go="financeiro"]').forEach(b=>b.addEventListener("click",()=>setTimeout(render,0)));
+window.addEventListener("storage",render);
+render();
+})();
+</script>
+</body></html>
