@@ -96,6 +96,21 @@ header{height:58px!important;background:linear-gradient(110deg,#063568,#0865ab)!
  #financeiro #finCategorias{min-height:65px!important}
  #financeiro #finLista{height:auto}
 }
+</style><style id="dre-mobile-final-check">
+/* Mantem os saldos no topo e elimina tabelas largas no iPhone. */
+#financeiro.active{display:flex!important;flex-direction:column!important;align-items:stretch!important}
+#financeiro>#dreContas{order:-10!important;display:flex!important;visibility:visible!important;position:relative!important;min-height:0!important;flex:0 0 auto!important}
+#financeiro>#dreContas .dre-account-grid{display:grid!important;grid-template-columns:repeat(2,minmax(0,1fr))!important}
+#financeiro .cols,#financeiro .cols>.card{min-width:0!important;max-width:100%!important}
+#financeiro .scroll{width:100%!important;max-width:100%!important;min-width:0!important;overflow-x:auto!important;overflow-y:auto!important;-webkit-overflow-scrolling:touch}
+#financeiro .scroll table{width:100%!important;min-width:0!important;table-layout:fixed!important;border-collapse:collapse}
+#financeiro .scroll th,#financeiro .scroll td{padding:8px 5px!important;overflow-wrap:anywhere!important;white-space:normal!important}
+#financeiro .scroll th:first-child{width:40%}#financeiro .scroll th:nth-child(2){width:25%}#financeiro .scroll th:nth-child(3){width:35%}
+#financeiro .scroll .actions{display:flex!important;flex-wrap:wrap!important;gap:4px!important;min-width:0!important}
+#financeiro .scroll button{max-width:100%!important;white-space:normal!important;font-size:11px!important;padding:6px 4px!important}
+#financeiro .field .actions{display:flex!important;flex-direction:column!important;gap:8px!important}
+#financeiro .field .actions>input,#financeiro .field .actions>button{width:100%!important;flex:none!important}
+@media(max-width:420px){#financeiro>#dreContas .dre-account-grid{grid-template-columns:1fr 1fr!important}#financeiro .scroll th,#financeiro .scroll td{font-size:12px!important}}
 </style></head><body><header><strong>🚐 DRE Michelon</strong><span style="font-size:12px">MINHAS VIAGENS · MEU FINANCEIRO</span></header>
 <div class="shell"><nav class="nav" id="nav"><button class="active" data-page="inicio"><span class="nav-icon">🏠</span><span class="nav-label">Início</span></button><button data-page="cotacao"><span class="nav-icon">🚐</span><span class="nav-label">Cotação</span></button><button data-page="viagens"><span class="nav-icon">🧳</span><span class="nav-label">Viagens</span></button><button data-page="agenda"><span class="nav-icon">📅</span><span class="nav-label">Agenda</span></button><button data-page="financeiro"><span class="nav-icon">💰</span><span class="nav-label">Financeiro</span></button><button data-page="uber"><span class="nav-icon">🚕</span><span class="nav-label">Uber</span></button><button data-page="rotas"><span class="nav-icon">🛣️</span><span class="nav-label">Rotas</span></button><button data-page="cartao"><span class="nav-icon">💳</span><span class="nav-label">Cartão</span></button><button data-page="recuperacao"><span class="nav-icon">📦</span><span class="nav-label">Recuperação</span></button><button data-page="config"><span class="nav-icon">⚙️</span><span class="nav-label">Ajustes</span></button><button aria-expanded="false" id="maisMenu" type="button"><span class="nav-icon">☰</span><span class="nav-label">Mais</span></button></nav>
 <main class="main">
