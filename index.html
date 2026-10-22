@@ -7654,6 +7654,21 @@ confirmar.onclick=()=&gt;{if(!recuperadas.length)return;const db=atual();if(!Arr
     if(frame) frame.classList.toggle('active',id===t);
     if(btn) {btn.classList.toggle('active',id===t);btn.setAttribute('aria-selected',String(id===t));}
   }
+  if(t==='c'){
+    const frame=document.getElementById('c');
+    const abrirCotacao=()=>{
+      try{
+        const doc=frame.contentDocument;
+        const botao=doc && doc.querySelector('button[data-page="cotacao"]');
+        if(botao){botao.click();return true;}
+      }catch(e){console.warn('Cotação não acessível:',e);}
+      return false;
+    };
+    if(!abrirCotacao()){
+      frame.addEventListener('load',abrirCotacao,{once:true});
+    }
+    window.scrollTo(0,0);
+  }
 }
 </script><script>
 function exportarBackupDRE(){
