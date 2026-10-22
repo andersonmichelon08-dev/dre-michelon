@@ -7862,4 +7862,32 @@ file.onchange=async()=>{
  function toggle(force){const open=typeof force==='boolean'?force:!nav.classList.contains('dre-open');nav.classList.toggle('dre-open',open);btn.setAttribute('aria-expanded',String(open));}
  btn.addEventListener('click',()=>toggle());
  nav.addEventListener('click',e=>{if(e.target.closest('button[id="bv"],button[id="bf"],button[id="bc"]'))toggle(false)});
-})();</script></body></html>
+})();</script><style id="dre-identidade-restaurada">
+body>header{display:block!important;background:linear-gradient(120deg,#10243f,#24517a)!important;padding:31px 12px 25px!important;border-bottom:2px solid #caa15d}
+body>header b{color:#e3bc74!important;font-size:clamp(29px,8vw,40px)!important;letter-spacing:4px}
+body>header small{color:#f7f7f7!important;letter-spacing:2px!important;font-size:11px!important;margin-top:7px}
+body>nav#dreMainNav{display:none!important;grid-template-columns:repeat(2,minmax(0,1fr))!important}
+body>nav#dreMainNav.dre-open{display:grid!important}
+#dreModuleBar{display:flex!important}#dreModuleBar strong{color:#b48944}
+#dreStart{padding:18px 16px;background:#f0f3f8;min-height:calc(100dvh - 220px);color:#1b314c}
+#dreStart .month{background:white;border:1px solid #dce2ea;border-radius:16px;padding:17px;margin:0 0 16px}
+#dreStart .month strong{display:block;margin-bottom:9px}#dreStart .month span{display:block;text-align:center;padding:14px;border:1px solid #dce2ea;border-radius:12px;font-weight:700}
+#dreStart .shortcuts{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+#dreStart button{border:0;border-radius:12px;padding:15px 8px;color:white;font-weight:800;font-size:14px;min-height:57px}
+#dreStart .blue{background:#20648e}#dreStart .gold{background:#bf9243}#dreStart .green{background:#19836d}#dreStart .slate{background:#546b86}
+#dreStart .card{border:1px solid #dce2ea;background:#fff;border-radius:15px;padding:15px;margin-bottom:14px}
+#dreStart .muted{color:#67798e;font-size:13px}#dreStart h2{font-size:19px;margin:20px 0 10px}
+body.dre-landing>iframe,body.dre-landing>#v,body.dre-landing>#f,body.dre-landing>#c{display:none!important}
+body:not(.dre-landing) #dreStart{display:none}
+body:not(.dre-landing)>iframe.active{height:calc(100dvh - 190px)!important}
+</style>
+<div id="dreStart" aria-label="Início DRE Michelon">
+<div class="month"><strong>Mês de referência</strong><span>novembro de 2026</span></div>
+<button class="blue" style="width:100%;margin-bottom:15px" onclick="dreOpenModule('v')">💳 Meu Cartão Digital — Abrir em Viagens</button>
+<div class="shortcuts"><div class="card"><div class="muted">Faturamento executivo</div><strong>Consultar em Viagens</strong></div><div class="card"><div class="muted">Viagens agendadas</div><strong>Consultar agenda</strong></div></div>
+<div class="shortcuts"><button class="blue" onclick="dreOpenModule('v')">🚘 Viagens</button><button class="gold" onclick="dreOpenModule('v')">📅 Agenda / reserva 03/12</button><button class="green" onclick="dreOpenModule('c')">📋 Cotação e pedágios</button><button class="slate" onclick="dreOpenModule('f')">💳 Meu Financeiro</button></div>
+<h2>Áreas do DRE</h2><div class="card">Viagens, Uber, agenda, cartão digital, financeiro e cotação continuam nos módulos originais. A reserva de 03/12 deve ser conferida em Viagens.</div>
+<button class="slate" style="width:100%" onclick="document.getElementById('dreModulesToggle').click()">☰ Módulos e backup</button>
+</div>
+<script id="dre-start-navigation">(function(){document.body.classList.add('dre-landing');window.dreOpenModule=function(id){document.body.classList.remove('dre-landing');if(typeof window.show==='function')window.show(id);};const h=document.querySelector('body>header');if(h)h.addEventListener('click',function(){document.body.classList.add('dre-landing')});})();</script>
+</body></html>
