@@ -112,7 +112,7 @@ header{height:58px!important;background:linear-gradient(110deg,#063568,#0865ab)!
 #financeiro .field .actions>input,#financeiro .field .actions>button{width:100%!important;flex:none!important}
 @media(max-width:420px){#financeiro>#dreContas .dre-account-grid{grid-template-columns:1fr 1fr!important}#financeiro .scroll th,#financeiro .scroll td{font-size:12px!important}}
 </style><style id="dre-agenda-exclusao-fix">
-#agenda .scroll{overflow-x:auto!important}#agenda .table{min-width:490px}#agenda .table td:last-child button{white-space:nowrap;padding:7px 10px}
+#agenda .scroll{overflow-x:auto!important}#agenda .table{min-width:490px}#agenda .table td:last-child button{white-space:nowrap;padding:7px 10px}#agenda .table td:last-child{white-space:nowrap;font-weight:650;color:#245d91}
 </style></head><body><header><strong>🚐 DRE Michelon</strong><span style="font-size:12px">MINHAS VIAGENS · MEU FINANCEIRO</span></header>
 <div class="shell"><nav class="nav" id="nav"><button class="active" data-page="inicio"><span class="nav-icon">🏠</span><span class="nav-label">Início</span></button><button data-page="cotacao"><span class="nav-icon">🚐</span><span class="nav-label">Cotação</span></button><button data-page="viagens"><span class="nav-icon">🧳</span><span class="nav-label">Viagens</span></button><button data-page="agenda"><span class="nav-icon">📅</span><span class="nav-label">Agenda</span></button><button data-page="financeiro"><span class="nav-icon">💰</span><span class="nav-label">Financeiro</span></button><button data-page="uber"><span class="nav-icon">🚕</span><span class="nav-label">Uber</span></button><button data-page="rotas"><span class="nav-icon">🛣️</span><span class="nav-label">Rotas</span></button><button data-page="cartao"><span class="nav-icon">💳</span><span class="nav-label">Cartão</span></button><button data-page="recuperacao"><span class="nav-icon">📦</span><span class="nav-label">Recuperação</span></button><button data-page="config"><span class="nav-icon">⚙️</span><span class="nav-label">Ajustes</span></button><button aria-expanded="false" id="maisMenu" type="button"><span class="nav-icon">☰</span><span class="nav-label">Mais</span></button></nav>
 <main class="main">
@@ -160,7 +160,7 @@ function renderTrips(){
  // Reserva histórica comprovada na versão anterior. Somente leitura, sem receita automática.
  const legacy={id:'MV-2026-0001',date:'03/12/2026',origin:'São Paulo',dest:'Atibaia (ida e volta)',status:'Reserva confirmada · pagamento pendente',name:'Bruno Campos de Oliveira',total:1450.4375};
  const hasLegacy=db.trips.some(t=>t.id===legacy.id || (String(t.date).includes('03/12/2026')||String(t.date).includes('2026-12-03')) && /bruno campos/i.test(String(t.name||t.client||'')));
- if(!hasLegacy) row($('listaAgenda'),[legacy.date,legacy.origin,legacy.dest,'Reserva confirmada · Pagamento pendente · '+money(legacy.total),'Preservada']);
+ if(!hasLegacy) row($('listaAgenda'),[legacy.date,legacy.origin,legacy.dest,'Reserva confirmada · Pagamento pendente · '+money(legacy.total),'🔒 Protegida']);
  if(!hasLegacy){
   // Reserva histórica já exibida em linha independente da agenda; não gerar duplicidade.
   const tr=document.createElement('tr');
