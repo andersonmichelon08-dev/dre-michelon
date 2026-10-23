@@ -191,7 +191,7 @@ function renderTrips(){
   const td=document.createElement('td');td.textContent='Cliente: '+legacy.name+' · Saída 08:00 · Retorno 22:00 · 1 passageiro · PIX · Registro histórico (somente leitura)';tr.append(td);$('listaViagens').append(tr);
  }
 
- if(db.trips.length===0){const tr=document.createElement('tr'),td=document.createElement('td');td.colSpan=5;td.textContent='Nenhuma cotação de teste salva nesta agenda. O botão 🗑️ Excluir aparecerá aqui quando houver uma cotação. A reserva de Atibaia está protegida.';tr.append(td);$('listaAgenda').append(tr);}
+ if(db.trips.length===0){const tr=document.createElement('tr'),td=document.createElement('td');td.colSpan=5;td.textContent='Nenhuma cotação comum salva para excluir. O botão 🗑️ Excluir aparece automaticamente ao salvar uma nova cotação. A reserva de Atibaia permanece protegida.';td.style.cssText='font-size:12px;color:#526c83';tr.append(td);$('listaAgenda').append(tr);}
  db.trips.forEach(t=>{
   // Conciliação somente informativa: nunca altera dados financeiros automaticamente.
   const linkedPayments=db.finance.filter(f=>f.origemId==='reserva:'+t.id);
