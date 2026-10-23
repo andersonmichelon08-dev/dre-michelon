@@ -191,6 +191,7 @@ function renderTrips(){
   const td=document.createElement('td');td.textContent='Cliente: '+legacy.name+' · Saída 08:00 · Retorno 22:00 · 1 passageiro · PIX · Registro histórico (somente leitura)';tr.append(td);$('listaViagens').append(tr);
  }
 
+ if(db.trips.length===0){const tr=document.createElement('tr'),td=document.createElement('td');td.colSpan=5;td.textContent='Nenhuma cotação de teste salva nesta agenda. O botão 🗑️ Excluir aparecerá aqui quando houver uma cotação. A reserva de Atibaia está protegida.';tr.append(td);$('listaAgenda').append(tr);}
  db.trips.forEach(t=>{
   // Conciliação somente informativa: nunca altera dados financeiros automaticamente.
   const linkedPayments=db.finance.filter(f=>f.origemId==='reserva:'+t.id);
@@ -230,7 +231,7 @@ function renderTrips(){
    if(t.status==='Pago'||db.finance.some(f=>f.origemId==='reserva:'+t.id)){
     actionCell.textContent='Pagamento vinculado';
    }else{
-    actionCell.append(btn('Excluir',()=>{
+    actionCell.append(btn('🗑️ Excluir',()=>{
      if(!confirm('Excluir esta cotação/viagem da Agenda e de Minhas Viagens? Esta ação não pode ser desfeita.'))return;
      // Revalida o vínculo financeiro no instante da exclusão.
      if(db.finance.some(f=>f.origemId==='reserva:'+t.id)){alert('Existe um recebimento vinculado. Exclusão bloqueada.');return}
