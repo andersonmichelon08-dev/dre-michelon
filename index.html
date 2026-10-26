@@ -151,7 +151,27 @@ header{height:58px!important;background:linear-gradient(110deg,#063568,#0865ab)!
 }
 @media(min-width:801px){#dreV8Overlay{display:none!important}}
 @media(max-width:800px){.nav.menu-open>button[data-page]:not([data-page="inicio"]):not([data-page="cotacao"]):not([data-page="viagens"]):not([data-page="agenda"]){display:none!important}}
-</style></head><body><header><strong>🚐 DRE Michelon</strong><span style="font-size:12px">MINHAS VIAGENS · MEU FINANCEIRO</span></header>
+</style>
+<style id="dre-financeiro-layout-tablet-v1">
+/* Keep financial sections in normal flow, including wide, short tablet screens. */
+#financeiro.active{overflow-y:auto;overflow-x:hidden;overscroll-behavior:contain}
+#financeiro.active > *{flex-shrink:0;min-width:0}
+#financeiro > .cols{flex:0 0 auto;min-height:min-content;align-items:start;overflow:visible;grid-template-columns:repeat(2,minmax(0,1fr))}
+#financeiro .cols > .card{min-width:0;height:auto}
+#financeiro .stack > *{flex-shrink:0}
+#financeiro .field{min-width:0}
+#financeiro .grid3{grid-template-columns:repeat(3,minmax(0,1fr))}
+#financeiro .grid3 > .card{min-width:0;overflow-wrap:anywhere}
+#financeiro .scroll{flex:0 0 auto;max-height:420px;overflow:auto}
+@media(max-width:1000px){
+ #financeiro > .cols{display:flex;flex-direction:column;gap:14px}
+ #financeiro > .cols > .card{width:100%;flex:none}
+}
+@media(max-width:480px){
+ #financeiro .grid3{grid-template-columns:1fr}
+}
+</style>
+</head><body><header><strong>🚐 DRE Michelon</strong><span style="font-size:12px">MINHAS VIAGENS · MEU FINANCEIRO</span></header>
 <div class="shell"><nav class="nav" id="nav"><button class="active" data-page="inicio"><span class="nav-icon">🏠</span><span class="nav-label">Início</span></button><button data-page="cotacao"><span class="nav-icon">🚐</span><span class="nav-label">Cotação</span></button><button data-page="viagens"><span class="nav-icon">🧳</span><span class="nav-label">Viagens</span></button><button data-page="agenda"><span class="nav-icon">📅</span><span class="nav-label">Agenda</span></button><button data-page="financeiro"><span class="nav-icon">💰</span><span class="nav-label">Financeiro</span></button><button data-page="uber"><span class="nav-icon">🚕</span><span class="nav-label">Uber</span></button><button data-page="rotas"><span class="nav-icon">🛣️</span><span class="nav-label">Rotas</span></button><button data-page="cartao"><span class="nav-icon">💳</span><span class="nav-label">Cartão</span></button><button data-page="recuperacao"><span class="nav-icon">📦</span><span class="nav-label">Recuperação</span></button><button data-page="config"><span class="nav-icon">⚙️</span><span class="nav-label">Ajustes</span></button><button aria-expanded="false" id="maisMenu" type="button"><span class="nav-icon">☰</span><span class="nav-label">Mais</span></button></nav>
 <main class="main">
 <section class="page" id="cartao"><div class="top"><h2>📇 Meu Cartão Digital</h2></div><div class="card stack scroll" style="max-width:640px;width:100%;margin:0 auto;text-align:center;align-items:stretch"><h2>MICHELON</h2><strong style="font-size:22px">Anderson Michelon</strong><p>Viagens Executivas · Limeira – SP</p><p>Mais que viagens, conexões que importam.</p><a class="primary" href="https://andersonmichelon08-dev.github.io/cartao-michelon/" rel="noopener" style="text-decoration:none" target="_blank">📇 Abrir cartão digital completo</a><a class="secondary" href="https://wa.me/5519992462362" target="_blank">💬 WhatsApp</a><a class="secondary" href="tel:+5519992462362">📞 Ligar</a><button class="secondary" onclick="navigator.share?navigator.share({title:'Michelon Viagens Executivas',url:'https://andersonmichelon08-dev.github.io/cartao-michelon/'}).catch(()=&gt;{}):prompt('Copie o link:','https://andersonmichelon08-dev.github.io/cartao-michelon/')">🔗 Compartilhar cartão</button><img alt="QR Code do cartão" height="170" src="https://api.qrserver.com/v1/create-qr-code/?size=170x170&amp;data=https%3A%2F%2Fandersonmichelon08-dev.github.io%2Fcartao-michelon%2F" style="margin:auto" width="170"/></div></section><section class="page active" id="inicio"><div class="top"><h2>Bem-vindo à Michelon</h2><span class="muted">Uma tela de cada vez</span></div><div class="grid3"><div class="card"><div class="muted">Viagens salvas</div><div class="stat" id="statTrips">0</div></div><div class="card"><div class="muted">Rotas cadastradas</div><div class="stat" id="statRoutes">0</div></div><div class="card"><div class="muted">Saldo financeiro</div><div class="stat" id="statBalance">R$ 0</div></div></div><div id="drePainelInicio" aria-label="Avisos e planejamento financeiro"></div><div class="card stack"><h3 style="margin:0">O que deseja fazer?</h3><div class="actions"><button class="primary" data-go="cotacao"><span class="action-icon">📋</span><span>Nova cotação</span></button><button class="secondary" data-go="agenda"><span class="action-icon">📅</span><span>Abrir agenda</span></button><button class="secondary" data-go="financeiro"><span class="action-icon">💰</span><span>Meu Financeiro</span></button><button class="secondary" data-go="cartao"><span class="action-icon">💳</span><span>💳 Cartão digital</span></button></div><p class="muted">Os registros desta versão são salvos neste navegador. Faça backup antes de trocar de aparelho.</p></div></section>
