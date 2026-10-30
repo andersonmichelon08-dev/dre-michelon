@@ -1530,3 +1530,19 @@ if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',
 <script id="dre-cotacao-icones">(()=>{const labels={calcular:'🧮 Calcular orçamento',dreLimparCotacao:'🧹 Limpar cotação',salvarViagem:'📅 Salvar na agenda',waEnviar:'📲 Enviar pelo WhatsApp'};for(const [id,label] of Object.entries(labels)){const button=document.getElementById(id);if(button)button.textContent=label}})();</script>
 
 <style id="dre-desconto-restaurado">#dreDescontoBox{display:grid!important;gap:10px;margin-top:12px;padding:14px;border:1px solid #d9bd83;border-radius:14px;background:#fffaf0;color:#183e67}#dreDescontoBox .dreDiscountFields{display:grid;grid-template-columns:1fr 1fr;gap:12px}#dreDescontoBox label{min-width:0}#dreDescontoBox input,#dreDescontoBox select{width:100%;min-width:0;min-height:48px}#dreDescontoPrevia{font-size:14px;line-height:1.5}@media(max-width:420px){#dreDescontoBox .dreDiscountFields{grid-template-columns:1fr}}</style>
+
+<script id="dre-desconto-acoes-visivel">
+(()=>{
+function setup(){
+ const actions=document.getElementById('dreCotacaoAcoes'),box=document.getElementById('dreDescontoBox');
+ if(!actions||!box)return;
+ const calculate=document.getElementById('calcular');
+ actions.insertBefore(box,calculate);
+ const heading=box.querySelector('strong');heading.textContent='🏷️ Desconto em R$ ou %';
+ let apply=document.getElementById('dreAplicarDesconto');
+ if(!apply){apply=document.createElement('button');apply.id='dreAplicarDesconto';apply.type='button';apply.className='secondary';apply.textContent='🏷️ Aplicar desconto';box.append(apply);apply.addEventListener('click',()=>document.getElementById('dreConfirmarCotacao').click())}
+}
+if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',setup);else setup();
+})();
+</script>
+<style>#dreCotacaoAcoes #dreDescontoBox{display:grid!important;visibility:visible!important;margin:0 0 4px!important}#dreCotacaoAcoes #dreAplicarDesconto{background:#fff2d4!important;color:#70501b!important;border:1px solid #c5a35f!important}</style>
