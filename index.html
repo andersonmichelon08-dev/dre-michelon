@@ -1495,7 +1495,8 @@ $('avSave').onclick=async()=>{const a=$('avDayStart').value,b=$('avDayEnd').valu
 
 <style>
 #dreCotacaoAcoes{display:grid;grid-template-columns:1fr;gap:10px;width:100%;margin-top:14px;padding:14px 0 8px;border-top:1px solid #d5e3ef}
-#dreCotacaoAcoes button{white-space:normal;overflow-wrap:anywhere;display:block!important;visibility:visible!important;width:100%;min-height:52px;margin:0!important}
+#dreCotacaoAcoes{position:static!important;order:initial!important;flex:none!important}
+#dreCotacaoAcoes button{position:static!important;order:initial!important;flex:none!important;white-space:normal;overflow-wrap:anywhere;display:block!important;visibility:visible!important;width:100%;min-height:52px;margin:0!important}
 #dreCotacaoAcoes #dreLimparCotacao{background:#fff4e6;color:#805014;border:2px solid #d8a34b}
 #cotacao{padding-bottom:110px}
 </style>
@@ -1505,7 +1506,21 @@ function arrange(){
  const card=result.closest('.card');if(!card)return;
  let actions=document.getElementById('dreCotacaoAcoes');
  if(!actions){actions=document.createElement('div');actions.id='dreCotacaoAcoes';actions.setAttribute('aria-label','Ações da cotação');card.append(actions)}
+ const conference=document.getElementById('dreManualBox');
+ if(conference)conference.after(actions);
  for(const id of ['calcular','dreLimparCotacao','salvarViagem','waEnviar']){const button=document.getElementById(id);if(button)actions.append(button)}
 }
 if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',arrange);else arrange();
 })();</script>
+<style id="dre-cotacao-botoes-elegantes">
+#dreCotacaoAcoes{gap:12px;padding-top:18px}
+#dreCotacaoAcoes button{border-radius:15px!important;padding:16px 18px!important;font-size:16px!important;font-weight:750!important;line-height:1.35;letter-spacing:.1px;min-height:56px!important;box-shadow:0 4px 10px #102c4812;transition:transform .15s,box-shadow .15s}
+#dreCotacaoAcoes #calcular{background:linear-gradient(135deg,#123453,#1c5683)!important;color:#fff!important;border:1px solid #244f73!important;border-bottom:3px solid #c5a35f!important}
+#dreCotacaoAcoes #dreLimparCotacao{background:#fffaf0!important;color:#785a25!important;border:1px solid #d9bd83!important;box-shadow:none}
+#dreCotacaoAcoes #salvarViagem{background:#edf4fc!important;color:#174d79!important;border:1px solid #b8cfe6!important}
+#dreCotacaoAcoes #waEnviar{background:linear-gradient(135deg,#13795b,#0e674e)!important;color:#fff!important;border:1px solid #0d664b!important}
+#dreCotacaoAcoes button:disabled{opacity:.5!important;box-shadow:none;cursor:not-allowed}
+#dreCotacaoAcoes button:not(:disabled):active{transform:translateY(2px);box-shadow:none}
+#dreCotacaoAcoes button:focus-visible{outline:3px solid #d3ad60;outline-offset:3px}
+</style>
+<script id="dre-cotacao-icones">(()=>{const labels={calcular:'🧮 Calcular orçamento',dreLimparCotacao:'🧹 Limpar cotação',salvarViagem:'📅 Salvar na agenda',waEnviar:'📲 Enviar pelo WhatsApp'};for(const [id,label] of Object.entries(labels)){const button=document.getElementById(id);if(button)button.textContent=label}})();</script>
