@@ -269,13 +269,7 @@ const save=()=>{try{const persisted=JSON.parse(localStorage.getItem(KEY)||'{}');
 // Contas a pagar são gravadas por outro módulo: preservar seus pagamentos mesmo se a tela financeira mantiver uma cópia antiga.
 if(Array.isArray(persisted.finance)){const current=Array.isArray(db.finance)?db.finance:[];const currentIds=new Set(current.map(f=>String(f.id)));const pendingPayments=persisted.finance.filter(f=>String(f.origemId||'').startsWith('contapagar:')&&!currentIds.has(String(f.id)));if(pendingPayments.length)db.finance=[...pendingPayments,...current]}
 }catch(e){console.warn('Falha ao reconciliar dados antes de salvar',e)}localStorage.setItem(KEY,JSON.stringify(db))};save();let quote=null;
-function go(page){
- const cotacao=$('cotacao');
- const entrandoNaCotacao=page==='cotacao'&&!cotacao.classList.contains('active');
- if(entrandoNaCotacao)document.activeElement?.blur();
- document.querySelectorAll('.page').forEach(p=>p.classList.toggle('active',p.id===page));document.querySelectorAll('.nav button').forEach(b=>b.classList.toggle('active',b.dataset.page===page));if(page==='inicio')stats();if(page==='rotas')renderRoutes();if(page==='financeiro')renderFin();if(page==='viagens'||page==='agenda')renderTrips();if(page==='uber')renderUber();document.activeElement.blur();
- if(entrandoNaCotacao)cotacao.scrollTop=0;
-}
+function go(page){document.querySelectorAll('.page').forEach(p=>p.classList.toggle('active',p.id===page));document.querySelectorAll('.nav button').forEach(b=>b.classList.toggle('active',b.dataset.page===page));if(page==='inicio')stats();if(page==='rotas')renderRoutes();if(page==='financeiro')renderFin();if(page==='viagens'||page==='agenda')renderTrips();if(page==='uber')renderUber();document.activeElement.blur()}
 document.querySelectorAll('[data-page]').forEach(b=>b.onclick=()=>go(b.dataset.page));document.querySelectorAll('[data-go]').forEach(b=>b.onclick=()=>go(b.dataset.go));
 function matches(query,name,aliases=''){const q=norm(query);return q&&[name,...String(aliases).split(',')].some(x=>{const v=norm(x);return v&&(q===v||q.length>=3&&v.includes(q)||v.length>=3&&q.includes(v))})}
 function suggest(){const dl=$('sugestoes');dl.replaceChildren();for(const r of db.routes){for(const v of [r.origem,r.destino,...String(r.aliases||'').split(',')])if(v.trim()){const opt=document.createElement('option');opt.value=v.trim();dl.append(opt)}}}suggest();
@@ -1567,12 +1561,7 @@ $('avSave').onclick=async()=>{const a=$('avDayStart').value,b=$('avDayEnd').valu
 #dreCotacaoAcoes{position:static!important;order:initial!important;flex:none!important}
 #dreCotacaoAcoes button{position:static!important;order:initial!important;flex:none!important;white-space:normal;overflow-wrap:anywhere;display:block!important;visibility:visible!important;width:100%;min-height:52px;margin:0!important}
 #dreCotacaoAcoes #dreLimparCotacao{background:#fff4e6;color:#805014;border:2px solid #d8a34b}
-/* A cotacao tem uma unica area de rolagem, incluindo resultado e acoes. */
-#cotacao.active{overflow-y:auto;overflow-x:hidden;padding-bottom:24px}
-#cotacao .cols{flex:none;align-items:start}
-#cotacao .cols>.card{min-width:0;width:100%}
-#cotacao .cols>.card:last-child{overflow:visible;min-height:0}
-#cotacao #resultado{flex:none;min-height:140px;overflow:visible}
+#cotacao{padding-bottom:110px}
 </style>
 <script id="dre-cotacao-acoes-inferiores">(()=>{
 function arrange(){
