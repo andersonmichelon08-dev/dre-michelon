@@ -269,7 +269,13 @@ const save=()=>{try{const persisted=JSON.parse(localStorage.getItem(KEY)||'{}');
 // Contas a pagar são gravadas por outro módulo: preservar seus pagamentos mesmo se a tela financeira mantiver uma cópia antiga.
 if(Array.isArray(persisted.finance)){const current=Array.isArray(db.finance)?db.finance:[];const currentIds=new Set(current.map(f=>String(f.id)));const pendingPayments=persisted.finance.filter(f=>String(f.origemId||'').startsWith('contapagar:')&&!currentIds.has(String(f.id)));if(pendingPayments.length)db.finance=[...pendingPayments,...current]}
 }catch(e){console.warn('Falha ao reconciliar dados antes de salvar',e)}localStorage.setItem(KEY,JSON.stringify(db))};save();let quote=null;
-function go(page){document.querySelectorAll('.page').forEach(p=>p.classList.toggle('active',p.id===page));document.querySelectorAll('.nav button').forEach(b=>b.classList.toggle('active',b.dataset.page===page));if(page==='inicio')stats();if(page==='rotas')renderRoutes();if(page==='financeiro')renderFin();if(page==='viagens'||page==='agenda')renderTrips();if(page==='uber')renderUber();document.activeElement.blur()}
+function go(page){
+ const cotacao=$('cotacao');
+ const entrandoNaCotacao=page==='cotacao'&&!cotacao.classList.contains('active');
+ if(entrandoNaCotacao)document.activeElement?.blur();
+ document.querySelectorAll('.page').forEach(p=>p.classList.toggle('active',p.id===page));document.querySelectorAll('.nav button').forEach(b=>b.classList.toggle('active',b.dataset.page===page));if(page==='inicio')stats();if(page==='rotas')renderRoutes();if(page==='financeiro')renderFin();if(page==='viagens'||page==='agenda')renderTrips();if(page==='uber')renderUber();document.activeElement.blur();
+ if(entrandoNaCotacao)cotacao.scrollTop=0;
+}
 document.querySelectorAll('[data-page]').forEach(b=>b.onclick=()=>go(b.dataset.page));document.querySelectorAll('[data-go]').forEach(b=>b.onclick=()=>go(b.dataset.go));
 function matches(query,name,aliases=''){const q=norm(query);return q&&[name,...String(aliases).split(',')].some(x=>{const v=norm(x);return v&&(q===v||q.length>=3&&v.includes(q)||v.length>=3&&q.includes(v))})}
 function suggest(){const dl=$('sugestoes');dl.replaceChildren();for(const r of db.routes){for(const v of [r.origem,r.destino,...String(r.aliases||'').split(',')])if(v.trim()){const opt=document.createElement('option');opt.value=v.trim();dl.append(opt)}}}suggest();
@@ -474,8 +480,39 @@ function renderUber(){$('uberLista').replaceChildren();db.uber.forEach(u=>row($(
 for(const [id,key] of [['cfgIda','ida'],['cfgVazio','vazio'],['cfgVolta','volta'],['cfgMargem','margem']])$(id).value=db.cfg[key];
 $('cfgSalvar').onclick=()=>{for(const [id,key] of [['cfgIda','ida'],['cfgVazio','vazio'],['cfgVolta','volta'],['cfgMargem','margem']]){const v=num(id);if(!(v>=0)){alert('Valor inválido.');return}db.cfg[key]=v}save();alert('Ajustes salvos.')};
 function download(name,obj){const blob=new Blob([JSON.stringify(obj,null,2)],{type:'application/json'}),url=URL.createObjectURL(blob),a=document.createElement('a');a.href=url;a.download=name;a.click();setTimeout(()=>URL.revokeObjectURL(url),2000)}
-$('exportar').onclick=()=>download('Michelon_nova_base_backup.json',{formato:'michelon-base-v1',data:db});
-$('importar').onchange=async e=>{try{let obj=JSON.parse(await e.target.files[0].text());if(!obj.formato&&Array.isArray(obj.routes)&&Array.isArray(obj.trips)&&Array.isArray(obj.finance)&&Array.isArray(obj.uber))obj={formato:'michelon-base-v1',data:obj};if(obj.formato==='michelon-tabela-rotas-v1'&&Array.isArray(obj.rotas)){const rs=obj.rotas.filter(r=>Number(r.ida)>0&&Number(r.volta)>0).map(r=>({id:crypto.randomUUID(),origem:'Limeira, SP',destino:r.nome,aliases:'',rodovia:r.rodovia||'',ida:Number(r.ida),volta:Number(r.volta),pedStatus:r.tipoIda==='nenhum'&&r.tipoVolta==='nenhum'?'nenhum':r.tipoIda==='valor'&&r.tipoVolta==='valor'?'valor':'pendente',pedIda:Number(r.pedIda)||0,pedVolta:Number(r.pedVolta)||0}));db.routes.push(...rs);save();renderRoutes();alert(rs.length+' rotas importadas.')}else if(obj.formato==='michelon-base-v1'&&obj.data&&Array.isArray(obj.data.routes)&&Array.isArray(obj.data.trips)&&Array.isArray(obj.data.finance)){if(confirm('Restaurar os dados deste backup? A base atual será guardada em uma cópia de segurança neste navegador.')){const raw=localStorage.getItem(KEY);if(raw!==null)localStorage.setItem(KEY+':antes_restauracao:'+Date.now(),raw);localStorage.setItem(KEY,JSON.stringify(obj.data));db=obj.data;location.reload()}}else throw Error('Arquivo incompatível')}catch(err){alert('Não foi possível importar: '+err.message)}finally{e.target.value=''}};
+function backupSummary(data){
+ return data.uber.length+' dia(s) do Uber · '+data.routes.length+' rota(s) · '+data.finance.length+' lançamento(s) financeiros · '+(data.contasPagar?.length||0)+' conta(s) cadastradas';
+}
+function isMichelonBase(data){
+ return data&&['routes','trips','finance','uber'].every(key=>Array.isArray(data[key]));
+}
+$('exportar').onclick=()=>{
+ try{
+  const data=JSON.parse(localStorage.getItem(KEY));
+  if(!isMichelonBase(data))throw Error('Base salva inválida.');
+  download('Michelon_nova_base_backup.json',{formato:'michelon-base-v1',data});
+ }catch(err){alert('Não foi possível exportar: '+err.message)}
+};
+$('importar').onchange=async e=>{
+ const file=e.target.files[0];
+ if(!file)return;
+ try{
+  let obj=JSON.parse(await file.text());
+  if(!obj?.formato&&isMichelonBase(obj))obj={formato:'michelon-base-v1',data:obj};
+  if(obj?.formato==='michelon-tabela-rotas-v1'&&Array.isArray(obj.rotas)){const rs=obj.rotas.filter(r=>Number(r.ida)>0&&Number(r.volta)>0).map(r=>({id:crypto.randomUUID(),origem:'Limeira, SP',destino:r.nome,aliases:'',rodovia:r.rodovia||'',ida:Number(r.ida),volta:Number(r.volta),pedStatus:r.tipoIda==='nenhum'&&r.tipoVolta==='nenhum'?'nenhum':r.tipoIda==='valor'&&r.tipoVolta==='valor'?'valor':'pendente',pedIda:Number(r.pedIda)||0,pedVolta:Number(r.pedVolta)||0}));db.routes.push(...rs);save();renderRoutes();alert(rs.length+' rotas importadas.')}
+  else if(obj?.formato==='michelon-base-v1'&&isMichelonBase(obj.data)){
+   const raw=localStorage.getItem(KEY);
+   const atual=JSON.parse(raw);
+   const resumoAtual=isMichelonBase(atual)?'\nBase atual: '+backupSummary(atual):'';
+   if(!confirm('Restaurar '+file.name+'?\nBackup escolhido: '+backupSummary(obj.data)+resumoAtual+
+     '\n\nA base atual será guardada em uma cópia de segurança neste navegador.'))return;
+   if(raw!==null)localStorage.setItem(KEY+':antes_restauracao:'+Date.now(),raw);
+   localStorage.setItem(KEY,JSON.stringify(obj.data));
+   location.reload();
+  }else throw Error('Arquivo incompatível.');
+ }catch(err){alert('Não foi possível importar: '+err.message)}
+ finally{e.target.value=''}
+};
 for(const id of ['finData','uberData'])$(id).value=new Date(Date.now()-new Date().getTimezoneOffset()*60000).toISOString().slice(0,10);function stats(){$('statTrips').textContent=db.trips.length;$('statRoutes').textContent=db.routes.length;renderFin()}stats();renderTrips();renderRoutes();renderUber();
 })();
 </script><script>
@@ -1561,7 +1598,12 @@ $('avSave').onclick=async()=>{const a=$('avDayStart').value,b=$('avDayEnd').valu
 #dreCotacaoAcoes{position:static!important;order:initial!important;flex:none!important}
 #dreCotacaoAcoes button{position:static!important;order:initial!important;flex:none!important;white-space:normal;overflow-wrap:anywhere;display:block!important;visibility:visible!important;width:100%;min-height:52px;margin:0!important}
 #dreCotacaoAcoes #dreLimparCotacao{background:#fff4e6;color:#805014;border:2px solid #d8a34b}
-#cotacao{padding-bottom:110px}
+/* A cotacao tem uma unica area de rolagem, incluindo resultado e acoes. */
+#cotacao.active{overflow-y:auto;overflow-x:hidden;padding-bottom:24px}
+#cotacao .cols{flex:none;align-items:start}
+#cotacao .cols>.card{min-width:0;width:100%}
+#cotacao .cols>.card:last-child{overflow:visible;min-height:0}
+#cotacao #resultado{flex:none;min-height:140px;overflow:visible}
 </style>
 <script id="dre-cotacao-acoes-inferiores">(()=>{
 function arrange(){
