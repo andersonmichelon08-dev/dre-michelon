@@ -377,6 +377,12 @@ function renderTrips(){
    if(t.status==='Pago'||db.finance.some(f=>f.origemId==='reserva:'+t.id)){
     actionCell.textContent='Pagamento vinculado';
    }else{
+    if(t.status!=='Reserva confirmada'){
+     const confirmReservation=btn('Confirmar reserva',()=>window.michelonOpenAvailability(t.id));
+     confirmReservation.className='primary';
+     confirmReservation.style.marginBottom='6px';
+     actionCell.append(confirmReservation);
+    }
     actionCell.append(btn('🗑️ Excluir',()=>{
      if(!confirm('Excluir esta cotação/viagem da Agenda e de Minhas Viagens? Esta ação não pode ser desfeita.'))return;
      // Revalida o vínculo financeiro no instante da exclusão.
