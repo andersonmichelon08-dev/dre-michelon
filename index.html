@@ -1468,8 +1468,10 @@ async function fetchCloud(){await refreshSession();const rows=await req('/rest/v
 function assertUnchanged(hash){if(canonical(local())!==hash)throw Error('Você alterou dados durante a sincronização. Vou tentar novamente.');}
 function editing(){return /^(INPUT|TEXTAREA|SELECT)$/.test(document.activeElement?.tagName)||document.activeElement?.isContentEditable}
 async function sync(mode='auto'){
- if(busy||!session||document.hidden)return;
+ if(busy){if(mode!=='auto')status('Sincronização em andamento. Aguarde e tente novamente.');return}
+ if(!session||document.hidden)return;
  busy=true;
+ if(mode!=='auto')status('Verificando dados da nuvem…');
  try{
   const remote=await fetchCloud(),data=local(),hash=canonical(data),base=baseline();
   if(!remote){
@@ -1482,7 +1484,14 @@ async function sync(mode='auto'){
   const rh=canonical(remote.dados);
   if(hash===rh){setBaseline(data,remote.revisao);status('✓ Sincronizado. Envio e recebimento automáticos ativos.');return}
   if(!base){
-   if(mode!=='receive'){status('Nuvem encontrada. Faça backup e toque em Receber para vincular este aparelho.');return}
+   if(mode==='send'){
+    if(!confirm('Enviar os dados deste aparelho para substituir a cópia da nuvem? Continue somente se este aparelho tem os dados atualizados. As duas cópias serão guardadas em backup antes do envio.')){status('Envio cancelado. Dados preservados.');return}
+    await backup('antes_vincular_por_envio',{local:data,nuvem:remote});assertUnchanged(hash);
+    const rows=await req('/rest/v1/michelon_estado_usuario?user_id=eq.'+encodeURIComponent(session.user.id)+'&revisao=eq.'+remote.revisao,{method:'PATCH',headers:{Prefer:'return=representation'},body:JSON.stringify({dados:data,revisao:remote.revisao+1})});
+    if(!rows?.length)throw Error('A nuvem mudou durante o envio. Cópias preservadas; tente novamente.');
+    setBaseline(data,rows[0].revisao);status('✓ Dados deste aparelho enviados. No tablet, toque em Receber dados da nuvem.');return;
+   }
+   if(mode!=='receive'){status('Nuvem encontrada. No aparelho atualizado, toque em Enviar; no outro, toque em Receber.');return}
    if(!confirm('Vincular este aparelho à nuvem? A cópia local inteira ficará em backup antes da substituição. Se este aparelho tem lançamentos exclusivos, cancele para conferi-los primeiro.'))return;
   }else{
    const dirty=hash!==base.hash,remoteDirty=rh!==base.hash;
