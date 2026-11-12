@@ -1570,6 +1570,7 @@ render();
 #drePainelInicio .dre-aviso-toggle{width:100%;min-height:44px;padding:8px;border:1px solid #d5e5f4;border-radius:8px;background:#eaf3fc;color:#183e67;font:inherit;text-align:left;cursor:pointer;touch-action:manipulation}
 #drePainelInicio .dre-aviso-toggle strong{text-decoration:underline}
 #drePainelInicio .dre-aviso-contagens{text-align:right}
+#drePainelInicio .dre-aviso-total-atraso{display:block;margin-top:4px;font-size:.85em}
 #drePainelInicio .dre-aviso-lista{margin:0;padding:4px 8px 4px 26px;max-height:240px;overflow:auto}
 #drePainelInicio .dre-aviso-lista li{padding:8px 0;overflow-wrap:anywhere}
 #drePainelInicio .dre-aviso-lista .actions{margin-top:5px;flex-wrap:wrap}
@@ -1607,6 +1608,7 @@ const items=Array.isArray(d.contasPagar)?d.contasPagar:[],finance=Array.isArray(
 const unpaid=items.filter(x=>x&&x.venc&&Number(x.valor)>0&&!finance.some(f=>f.origemId==='contapagar:'+x.id));
 const urgent=unpaid.filter(x=>x.venc<=tomorrow).sort((a,b)=>a.venc.localeCompare(b.venc));
 const overdue = urgent.filter(x => x.venc < now);
+const overdueTotal = overdue.reduce((sum, account) => sum + Number(account.valor), 0);
 const monthly = unpaid.filter(x => x.venc.startsWith(month)).sort((a,b) => a.venc.localeCompare(b.venc));
 const pending = monthly.reduce((a,x) => a + Number(x.valor),0);
 const uberReceipts = finance
@@ -1639,6 +1641,12 @@ function disclosure(key, label, value, entries, empty, emphasis = '', upcoming =
   button.className = 'dre-painel-linha dre-aviso-toggle';
   const name = document.createElement('span');
   name.textContent = label;
+  if (key === 'atrasadas'){
+    const total = document.createElement('span');
+    total.className = 'dre-aviso-total-atraso';
+    total.textContent = 'Total em atraso · ' + money(overdueTotal);
+    name.append(total);
+  }
   const summary = document.createElement('span');
   summary.className = 'dre-aviso-contagens';
   const amount = document.createElement('strong');
@@ -1679,7 +1687,7 @@ function disclosure(key, label, value, entries, empty, emphasis = '', upcoming =
     const due = account.venc.split('-').reverse().join('/');
     const paymentAccount = {uber:'Uber',itau:'Itaú',cartao:'Cartão Itaú'}[account.conta] || account.conta || 'Sem conta vinculada';
     item.textContent = (account.nome || 'Conta') + ' · ' + money(account.valor) + ' · Venc. ' + due +
-      ' · ' + paymentAccount;
+      ' · Conta de pagamento: ' + paymentAccount;
     if (account.id){
       const actions = document.createElement('div');
       actions.className = 'actions';
@@ -1699,11 +1707,6 @@ function disclosure(key, label, value, entries, empty, emphasis = '', upcoming =
       item.append(actions);
     }
     list.append(item);
-  }
-  if (key === 'atrasadas'){
-    const total = document.createElement('strong');
-    total.textContent = 'Total em atraso · ' + money(entries.reduce((sum, account) => sum + Number(account.valor), 0));
-    details.append(total);
   }
   details.append(list);
   list.scrollTop = listScroll;
