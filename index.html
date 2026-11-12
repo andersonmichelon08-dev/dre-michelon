@@ -214,7 +214,21 @@ header{height:58px!important;background:linear-gradient(110deg,#063568,#0865ab)!
 </head><body><header><strong>🚐 DRE Michelon</strong><span style="font-size:12px">MINHAS VIAGENS · MEU FINANCEIRO</span></header>
 <div class="shell"><nav class="nav" id="nav"><button class="active" data-page="inicio"><span class="nav-icon">🏠</span><span class="nav-label">Início</span></button><button data-page="cotacao"><span class="nav-icon">🚐</span><span class="nav-label">Cotação</span></button><button data-page="viagens"><span class="nav-icon">🧳</span><span class="nav-label">Viagens</span></button><button data-page="agenda"><span class="nav-icon">📅</span><span class="nav-label">Agenda</span></button><button data-page="financeiro"><span class="nav-icon">💰</span><span class="nav-label">Financeiro</span></button><button data-page="nfDemo"><span class="nav-icon">🧾</span><span class="nav-label">Notas fiscais</span></button><button data-page="uber"><span class="nav-icon">🚕</span><span class="nav-label">Uber</span></button><button data-page="rotas"><span class="nav-icon">🛣️</span><span class="nav-label">Rotas</span></button><button data-page="cartao"><span class="nav-icon">💳</span><span class="nav-label">Cartão</span></button><button data-page="recuperacao"><span class="nav-icon">📦</span><span class="nav-label">Recuperação</span></button><button data-page="config"><span class="nav-icon">⚙️</span><span class="nav-label">Ajustes</span></button><button aria-expanded="false" id="maisMenu" type="button"><span class="nav-icon">☰</span><span class="nav-label">Mais</span></button></nav>
 <main class="main">
-<section class="page" id="cartao"><div class="top"><h2>📇 Meu Cartão Digital</h2></div><div class="card stack scroll" style="max-width:640px;width:100%;margin:0 auto;text-align:center;align-items:stretch"><h2>MICHELON</h2><strong style="font-size:22px">Anderson Michelon</strong><p>Viagens Executivas · Limeira – SP</p><p>Mais que viagens, conexões que importam.</p><a class="primary" href="https://andersonmichelon08-dev.github.io/cartao-michelon/" rel="noopener" style="text-decoration:none" target="_blank">📇 Abrir cartão digital completo</a><a class="secondary" href="https://wa.me/5519992462362" target="_blank">💬 WhatsApp</a><a class="secondary" href="tel:+5519992462362">📞 Ligar</a><button class="secondary" onclick="navigator.share?navigator.share({title:'Michelon Viagens Executivas',url:'https://andersonmichelon08-dev.github.io/cartao-michelon/'}).catch(()=&gt;{}):prompt('Copie o link:','https://andersonmichelon08-dev.github.io/cartao-michelon/')">🔗 Compartilhar cartão</button><img alt="QR Code do cartão" height="170" src="https://api.qrserver.com/v1/create-qr-code/?size=170x170&amp;data=https%3A%2F%2Fandersonmichelon08-dev.github.io%2Fcartao-michelon%2F" style="margin:auto" width="170"/></div></section><section class="page active" id="inicio"><div class="top"><h2>Bem-vindo à Michelon</h2><span class="muted">Uma tela de cada vez</span></div><div class="grid3"><div class="card"><div class="muted">Viagens salvas</div><div class="stat" id="statTrips">0</div></div><div class="card"><div class="muted">Rotas cadastradas</div><div class="stat" id="statRoutes">0</div></div><div class="card"><div class="muted">Saldo financeiro</div><div class="stat" id="statBalance">R$ 0</div></div></div><div class="card stack" id="recoverySafe" style="border:2px solid #1063a0"><strong>📦 Recuperar meu backup</strong><p>Selecione o arquivo JSON que você guardou. Os registros atuais serão mantidos e uma cópia será salva antes da recuperação.</p><button type="button" class="primary" id="recoveryChoose">Selecionar backup JSON</button><input type="file" accept=".json,application/json" id="recoveryFile" hidden><p id="recoveryStatus" role="status"></p></div><div id="drePainelInicio" aria-label="Avisos e planejamento financeiro"></div><div class="card stack"><h3 style="margin:0">O que deseja fazer?</h3><div class="actions"><button id="nfHomeButton" class="secondary" data-go="nfDemo" type="button"><span class="action-icon">🧾</span><span>Notas fiscais</span></button><button class="primary" data-go="cotacao"><span class="action-icon">📋</span><span>Nova cotação</span></button><button class="secondary" data-go="agenda"><span class="action-icon">📅</span><span>Abrir agenda</span></button><button class="secondary" data-go="financeiro"><span class="action-icon">💰</span><span>Meu Financeiro</span></button><button class="secondary" data-go="cartao"><span class="action-icon">💳</span><span>💳 Cartão digital</span></button></div><p class="muted">Os registros desta versão são salvos neste navegador. Faça backup antes de trocar de aparelho.</p></div></section>
+<section class="page" id="cartao"><div class="top"><h2>📇 Meu Cartão Digital</h2></div><div class="card stack scroll" style="max-width:640px;width:100%;margin:0 auto;text-align:center;align-items:stretch"><h2>MICHELON</h2><strong style="font-size:22px">Anderson Michelon</strong><p>Viagens Executivas · Limeira – SP</p><p>Mais que viagens, conexões que importam.</p><a class="primary" href="https://andersonmichelon08-dev.github.io/cartao-michelon/" rel="noopener" style="text-decoration:none" target="_blank">📇 Abrir cartão digital completo</a><a class="secondary" href="https://wa.me/5519992462362" target="_blank">💬 WhatsApp</a><a class="secondary" href="tel:+5519992462362">📞 Ligar</a><button class="secondary" onclick="navigator.share?navigator.share({title:'Michelon Viagens Executivas',url:'https://andersonmichelon08-dev.github.io/cartao-michelon/'}).catch(()=&gt;{}):prompt('Copie o link:','https://andersonmichelon08-dev.github.io/cartao-michelon/')">🔗 Compartilhar cartão</button><img alt="QR Code do cartão" height="170" src="https://api.qrserver.com/v1/create-qr-code/?size=170x170&amp;data=https%3A%2F%2Fandersonmichelon08-dev.github.io%2Fcartao-michelon%2F" style="margin:auto" width="170"/></div></section><section class="page active" id="inicio"><div class="top"><h2>Bem-vindo à Michelon</h2><span class="muted">Uma tela de cada vez</span></div><div class="grid3"><div class="card"><div class="muted">Viagens salvas</div><div class="stat" id="statTrips">0</div></div><div class="card"><div class="muted">Rotas cadastradas</div><div class="stat" id="statRoutes">0</div></div><div class="card"><div class="muted">Saldo financeiro</div><div class="stat" id="statBalance">R$ 0</div></div></div><div class="card stack" id="recoverySafe" style="border:2px solid #1063a0"><strong>📦 Recuperar meu backup</strong><p>Selecione o arquivo JSON que você guardou. Os registros atuais serão mantidos e uma cópia será salva antes da recuperação.</p><button type="button" class="primary" id="recoveryChoose">Selecionar backup JSON</button><input type="file" accept=".json,application/json" id="recoveryFile" hidden><p id="recoveryStatus" role="status"></p></div><div id="drePainelInicio" aria-label="Avisos e planejamento financeiro"></div><p id="dreAvisoMensagem" class="muted" role="status"></p>
+<dialog id="dreAvisoEditar" aria-labelledby="dreAvisoEditarTitulo">
+  <form class="stack">
+    <h3 id="dreAvisoEditarTitulo">Editar conta</h3>
+    <label class="field">Nome<input name="nome" maxlength="100" required></label>
+    <label class="field">Valor (R$)<input name="valor" inputmode="decimal" required></label>
+    <label class="field">Vencimento<input name="vencimento" type="date" required></label>
+    <p class="muted">A alteração vale para este vencimento.</p>
+    <p id="dreAvisoErro" role="alert"></p>
+    <div class="actions">
+      <button type="button" class="secondary" data-cancelar>Cancelar</button>
+      <button type="submit" class="primary">Salvar alteração</button>
+    </div>
+  </form>
+</dialog><div class="card stack"><h3 style="margin:0">O que deseja fazer?</h3><div class="actions"><button id="nfHomeButton" class="secondary" data-go="nfDemo" type="button"><span class="action-icon">🧾</span><span>Notas fiscais</span></button><button class="primary" data-go="cotacao"><span class="action-icon">📋</span><span>Nova cotação</span></button><button class="secondary" data-go="agenda"><span class="action-icon">📅</span><span>Abrir agenda</span></button><button class="secondary" data-go="financeiro"><span class="action-icon">💰</span><span>Meu Financeiro</span></button><button class="secondary" data-go="cartao"><span class="action-icon">💳</span><span>💳 Cartão digital</span></button></div><p class="muted">Os registros desta versão são salvos neste navegador. Faça backup antes de trocar de aparelho.</p></div></section>
 <section class="page" id="cotacao"><div class="top"><h2>Nova cotação</h2><span class="muted">Origem livre • cálculo pela tabela</span></div><div class="cols"><div class="card stack"><div class="field"><label>Origem</label><input id="origem" list="sugestoes" placeholder="Digite a origem" value="Limeira, SP"/></div><div class="field"><label>Destino</label><input id="destino" list="sugestoes" placeholder="Ex.: GRU, Campinas, Viracopos"/></div><datalist id="sugestoes"></datalist><div class="field"><label>Viagem</label><select id="tipo"><option value="ida">Somente ida (retorno vazio)</option><option value="volta">Ida e volta com passageiro</option><option value="buscar">Buscar passageiro (ida vazia)</option></select></div><div class="actions"><button class="wa-button" id="waAbrir" type="button">📲 Importar WhatsApp</button></div><div class="muted">A busca aceita apelidos cadastrados, como GRU, Cumbica e Viracopos.</div></div><div class="card stack"><h3 style="margin:0">Resultado</h3><div class="result" id="resultado"><span class="muted">Preencha origem e destino e clique em calcular.</span></div><div id="dreCotacaoAcoes" aria-label="Ações da cotação"><button class="primary" id="calcular" style="flex:1;min-height:52px;display:block!important;visibility:visible!important" type="button">Calcular orçamento</button><button class="secondary" id="dreLimparCotacao" type="button">🧹 Limpar cotação</button><button class="secondary" disabled="" id="salvarViagem">Salvar cotação na agenda</button><button class="wa-button" disabled="" id="waEnviar" type="button">📲 Enviar proposta pelo WhatsApp</button></div><div class="muted">Sem distância conferida, não será exibido um preço inventado.</div></div></div></section>
 <section class="page" id="viagens"><div class="top"><h2>Minhas viagens</h2><button class="secondary" data-go="cotacao">+ Nova cotação</button></div><div class="card scroll"><table class="table"><thead><tr><th>Data</th><th>Percurso</th><th>Valor</th><th>Ação</th></tr></thead><tbody id="listaViagens"></tbody></table></div></section>
 <section class="page" id="agenda"><div class="top"><h2>Agenda</h2><button class="secondary" data-go="cotacao">+ Nova cotação</button></div><div class="card scroll"><table class="table"><thead><tr><th>Data</th><th>Origem</th><th>Destino</th><th>Situação</th><th>Ação</th></tr></thead><tbody id="listaAgenda"></tbody></table></div><div class="card" id="manualAgenda">
@@ -1423,15 +1437,38 @@ function horizon(){return [monthly(today(),11).slice(0,7),month.value].sort().po
 function ensure(){const d=read();if(generate(d,horizon()))write(d)}
 function action(parent,label,fn){const b=document.createElement('button');b.type='button';b.className='secondary';b.textContent=label;b.onclick=guard(fn);parent.append(b)}
 function refresh(){render();document.getElementById('finMes')?.dispatchEvent(new Event('change',{bubbles:true}));document.dispatchEvent(new Event('dre-contas-alteradas'))}
+function pendingAccount(id){
+  const base = read();
+  const item = (base.contasPagar || []).find(account => account.id === id);
+  if (!item || base.finance.some(entry => entry.origemId === 'contapagar:' + id)){
+    throw Error('Esta conta já foi paga ou removida. Confira a lista');
+  }
+  return {base,item};
+}
+function confirmPayment(id, done){
+  const {item: shown} = pendingAccount(id);
+  const date = today();
+  const account = {uber:'Uber',itau:'Itaú',cartao:'Cartão Itaú'}[shown.conta] || shown.conta || 'Sem conta vinculada';
+  if (!confirm('Confirmar pagamento de ' + shown.nome + ' de ' + money(shown.valor) + ' em ' +
+    date.split('-').reverse().join('/') + '? Conta de pagamento: ' + account + '.')) return;
+  const {base,item} = pendingAccount(id);
+  if (['nome','valor','venc','conta','categoria'].some(key => item[key] !== shown[key])){
+    throw Error('A conta foi alterada. Confira os dados antes de confirmar');
+  }
+  base.finance.unshift({id:uid(),origemId:'contapagar:'+item.id,desc:item.nome,valor:Number(item.valor),
+    date,tipo:'saida',categoria:item.categoria,conta:item.conta});
+  write(base);
+  done();
+}
 function render(){ensure();const db=read(),items=db.contasPagar||[],fin=db.finance,mes=month.value||today().slice(0,7),now=today();let pend=0,paid=0,late=0;const list=$('payLista');list.replaceChildren();const subset=items.filter(x=>String(x.venc||'').slice(0,7)===mes).sort((a,b)=>a.venc.localeCompare(b.venc));
 for(const x of subset){const payment=fin.find(f=>f.origemId==='contapagar:'+x.id),isPaid=!!payment;if(isPaid)paid+=Number(payment.valor)||0;else{pend+=Number(x.valor)||0;if(x.venc<now)late+=Number(x.valor)||0}
 const el=document.createElement('div');el.className='pay-item';const info=document.createElement('div'),actions=document.createElement('div');actions.className='actions';const title=document.createElement('strong');title.textContent=x.nome+' · '+money(x.valor);const meta=document.createElement('div');meta.className='muted';meta.textContent='Vence '+x.venc.split('-').reverse().join('/')+' · '+(x.categoria||'')+' · '+({uber:'Uber',itau:'Itaú',cartao:'Cartão Itaú'}[x.conta]||x.conta||'')+(x.tipoConta==='parcelada'?' · Parcela '+x.parcela+'/'+x.totalParcelas:x.tipoConta==='recorrente'?' · Recorrente mensal':'');const status=document.createElement('div');status.className=!isPaid&&x.venc<now?'pay-overdue':'muted';status.textContent=isPaid?'✓ Paga em '+String(payment.date).split('-').reverse().join('/') : x.venc<now?'⚠ Atrasada':'⏳ Pendente';info.append(title,meta,status);
-if(!isPaid){action(actions,'Confirmar pagamento',()=>{const fresh=read(),item=(fresh.contasPagar||[]).find(t=>t.id===x.id);if(!item)return refresh();if(fresh.finance.some(f=>f.origemId==='contapagar:'+item.id))return refresh();if(!confirm('Confirmar pagamento de '+item.nome+' de '+money(item.valor)+' em '+today().split('-').reverse().join('/')+'?'))return;fresh.finance.unshift({id:uid(),origemId:'contapagar:'+item.id,desc:item.nome,valor:Number(item.valor),date:today(),tipo:'saida',categoria:item.categoria,conta:item.conta});write(fresh);location.reload()});
+if(!isPaid){action(actions,'Confirmar pagamento',()=>confirmPayment(x.id,()=>location.reload()));
 action(actions,'Editar esta conta',()=>{const fresh=read(),item=(fresh.contasPagar||[]).find(t=>t.id===x.id);if(!item)return refresh();if(fresh.finance.some(f=>f.origemId==='contapagar:'+x.id))return refresh();const nome=prompt('Nome desta conta (somente este vencimento):',item.nome);if(nome===null)return;const val=prompt('Valor deste vencimento (R$):',String(item.valor));if(val===null)return;const valor=Number(val.replace(',','.'));if(!nome.trim()||!Number.isFinite(valor)||valor<=0)throw Error('Nome ou valor inválido');item.nome=nome.trim();item.valor=valor;write(fresh);refresh()});
-action(actions,'Excluir pendente',()=>{if(!confirm('Excluir somente esta conta pendente? Os outros vencimentos serão mantidos.'))return;const fresh=read();if(fresh.finance.some(f=>f.origemId==='contapagar:'+x.id))throw Error('Esta conta já tem pagamento vinculado');if(x.tipoConta==='recorrente'){const serie=(fresh.contasSeries||[]).find(s=>s.id===x.serieId);if(serie)serie.excluidos=[...new Set([...(serie.excluidos||[]),x.venc.slice(0,7)])]}fresh.contasPagar=(fresh.contasPagar||[]).filter(t=>t.id!==x.id);write(fresh);refresh()});
+action(actions,'Excluir pendente',()=>{if(!confirm('Excluir somente esta conta pendente? Os outros vencimentos serão mantidos.'))return;const fresh=read();if(fresh.finance.some(f=>f.origemId==='contapagar:'+x.id))throw Error('Esta conta já tem pagamento vinculado');if(x.tipoConta==='recorrente'){const serie=(fresh.contasSeries||[]).find(s=>s.id===x.serieId);if(serie)serie.excluidos=[...new Set([...(serie.excluidos||[]),String(x.id).startsWith(serie.id+':')?String(x.id).slice(-7):x.venc.slice(0,7)])]}fresh.contasPagar=(fresh.contasPagar||[]).filter(t=>t.id!==x.id);write(fresh);refresh()});
 }else{action(actions,'Editar conta',()=>{const fresh=read(),item=(fresh.contasPagar||[]).find(t=>t.id===x.id),pay=fresh.finance.find(f=>f.origemId==='contapagar:'+x.id);if(!item||!pay)return refresh();const nome=prompt('Nome da conta:',item.nome);if(nome===null)return;const val=prompt('Valor pago (R$):',String(pay.valor));if(val===null)return;const valor=Number(val.replace(',','.'));if(!nome.trim()||!Number.isFinite(valor)||valor<=0)throw Error('Nome ou valor inválido');if(!confirm('Atualizar esta conta e seu pagamento? O saldo será recalculado.'))return;item.nome=nome.trim();item.valor=valor;pay.desc=item.nome;pay.valor=valor;write(fresh);location.reload()});
 action(actions,'Excluir pagamento',()=>{if(!confirm('Excluir o pagamento? O valor voltará ao saldo e a conta ficará pendente.'))return;const fresh=read();fresh.finance=fresh.finance.filter(f=>f.origemId!=='contapagar:'+x.id);write(fresh);location.reload()});
-action(actions,'Excluir conta',()=>{if(!confirm('Excluir esta conta e o pagamento vinculado? O saldo será recalculado.'))return;const fresh=read();fresh.finance=fresh.finance.filter(f=>f.origemId!=='contapagar:'+x.id);if(x.tipoConta==='recorrente'){const s=(fresh.contasSeries||[]).find(s=>s.id===x.serieId);if(s)s.excluidos=[...new Set([...(s.excluidos||[]),x.venc.slice(0,7)])]}fresh.contasPagar=(fresh.contasPagar||[]).filter(t=>t.id!==x.id);write(fresh);location.reload()})}
+action(actions,'Excluir conta',()=>{if(!confirm('Excluir esta conta e o pagamento vinculado? O saldo será recalculado.'))return;const fresh=read();fresh.finance=fresh.finance.filter(f=>f.origemId!=='contapagar:'+x.id);if(x.tipoConta==='recorrente'){const s=(fresh.contasSeries||[]).find(s=>s.id===x.serieId);if(s)s.excluidos=[...new Set([...(s.excluidos||[]),String(x.id).startsWith(s.id+':')?String(x.id).slice(-7):x.venc.slice(0,7)])]}fresh.contasPagar=(fresh.contasPagar||[]).filter(t=>t.id!==x.id);write(fresh);location.reload()})}
 el.append(info,actions);list.append(el)}
 if(!subset.length)list.textContent='Nenhuma conta cadastrada para este mês.';$('payPendente').textContent=money(pend);$('payPago').textContent=money(paid);$('payAtraso').textContent=money(late);
 const series=$('paySeriesLista');series.replaceChildren();for(const s of db.contasSeries||[]){if(!s.ativo)continue;const line=document.createElement('div');line.className='pay-item';const text=document.createElement('div');text.textContent=s.nome+' · '+money(s.valor)+'/mês'+(s.fim?' · até '+s.fim.split('-').reverse().join('/'):' · sem data final');line.append(text);action(line,'Parar recorrência',()=>{if(!confirm('Parar a criação de novas contas de '+s.nome+'? As contas já criadas, pagas ou pendentes, serão mantidas.'))return;const fresh=read(),serie=(fresh.contasSeries||[]).find(t=>t.id===s.id);if(serie)serie.ativo=false;write(fresh);refresh()});series.append(line)}if(!series.children.length)series.textContent='Nenhuma recorrência ativa.';
@@ -1447,6 +1484,49 @@ if(tipo==='parcelada'){const total=$('payValorModo').value==='total'?Math.round(
 }else db.contasPagar.push({...base,id:grupo,venc,valor:Math.round(valor*100)/100,tipoConta:'unica'});
 write(db);$('payNome').value='';$('payValor').value='';month.value=venc.slice(0,7);refresh();preview();alert(count+' conta(s) cadastrada(s) como pendente(s). Nenhum saldo foi descontado.');});
 document.querySelectorAll('[data-pay-cadastro]').forEach(b=>b.addEventListener('click',()=>{$('drePagar').scrollIntoView({behavior:'smooth',block:'start'});$('payTipoConta').focus({preventScroll:true})}));month.onchange=guard(refresh);document.querySelectorAll('[data-page="financeiro"],[data-go="financeiro"]').forEach(b=>b.addEventListener('click',()=>setTimeout(guard(render),0)));options();guard(render)();
+const editor = $('dreAvisoEditar');
+const form = editor.querySelector('form');
+const message = $('dreAvisoMensagem');
+let editing;
+editor.querySelector('[data-cancelar]').onclick = () => editor.close();
+document.addEventListener('dre-editar-conta-inicio', event => guard(() => {
+  const {item} = pendingAccount(event.detail);
+  editing = item;
+  form.elements.nome.value = item.nome;
+  form.elements.valor.value = Number(item.valor).toFixed(2).replace('.',',');
+  form.elements.vencimento.value = item.venc;
+  $('dreAvisoErro').textContent = '';
+  editor.showModal();
+})());
+form.onsubmit = event => {
+  event.preventDefault();
+  try{
+    const nome = form.elements.nome.value.trim();
+    const raw = form.elements.valor.value.trim();
+    const valor = Number(raw.replace(',','.'));
+    const venc = form.elements.vencimento.value;
+    if (!nome || !/^\d+(?:[,.]\d{1,2})?$/.test(raw) || !Number.isFinite(valor) || valor <= 0 || !dateOK(venc)){
+      throw Error('Informe um nome, um valor positivo e uma data de vencimento válida.');
+    }
+    const {base,item} = pendingAccount(editing.id);
+    if (['nome','valor','venc'].some(key => item[key] !== editing[key])){
+      throw Error('Esta conta foi alterada. Feche a edição e abra novamente.');
+    }
+    Object.assign(item,{nome,valor,venc});
+    write(base);
+    editor.close();
+    refresh();
+    message.textContent = 'Conta atualizada.';
+  }catch(error){
+    $('dreAvisoErro').textContent = error.message;
+  }
+};
+document.addEventListener('dre-pagar-conta-inicio', event => guard(() => {
+  confirmPayment(event.detail, () => {
+    refresh();
+    message.textContent = 'Pagamento confirmado.';
+  });
+})());
 })();
 </script><script id="dre-modelos-contas-v2">(()=>{'use strict';const KEY='michelon_base_nova_v1', $=id=>document.getElementById(id);const base=[['Aluguel','Contas fixas'],['Prestação do carro','Contas fixas'],['Água','Contas fixas'],['Energia elétrica','Contas fixas'],['Internet','Contas fixas'],['Telefone / celular','Contas fixas'],['Condomínio','Contas fixas'],['Seguro do carro','Seguro'],['IPVA','Impostos e taxas'],['Licenciamento','Impostos e taxas'],['Manutenção do carro','Manutenção'],['Cartão de crédito','Contas fixas']];const read=()=>{try{return JSON.parse(localStorage.getItem(KEY)||'{}')||{}}catch{return {}}},write=d=>localStorage.setItem(KEY,JSON.stringify(d)),uid=()=>typeof crypto.randomUUID==='function'?crypto.randomUUID():Date.now()+'-'+Math.random();const norm=s=>String(s||'').trim().toLocaleLowerCase('pt-BR');function types(){const d=read();return [...base,...(Array.isArray(d.tiposContas)?d.tiposContas:[])].filter((x,i,a)=>a.findIndex(y=>norm(y[0])===norm(x[0]))===i)}function refresh(selected){const sel=$('payModelo');sel.replaceChildren();const o=document.createElement('option');o.value='';o.textContent='Escolha uma conta ou digite abaixo';sel.append(o);for(const [name] of types()){const opt=document.createElement('option');opt.value=name;opt.textContent=name;sel.append(opt)}if(selected)sel.value=selected}function category(name){const found=types().find(x=>norm(x[0])===norm(name));return found?found[1]:'Contas fixas'}$('payModelo').addEventListener('change',()=>{const name=$('payModelo').value;if(!name)return;$('payNome').value=name;const cat=category(name);if([...$('payCategoria').options].some(o=>o.value===cat))$('payCategoria').value=cat});$('payAdicionarTipo').addEventListener('click',()=>{const name=$('payNovoTipo').value.trim();if(!name){alert('Digite o nome da conta.');return}if(types().some(x=>norm(x[0])===norm(name))){refresh(name);$('payModelo').dispatchEvent(new Event('change'));alert('Essa conta já está na lista.');return}const db=read();db.tiposContas=Array.isArray(db.tiposContas)?db.tiposContas:[];db.tiposContas.push([name,'Contas fixas']);write(db);refresh(name);$('payModelo').dispatchEvent(new Event('change'));$('payNovoTipo').value='';alert('Novo tipo adicionado à lista. Nenhuma despesa foi lançada.')});$('payRepetirMes').addEventListener('click',()=>{const mes=$('payMes').value;if(!/^\d{4}-\d{2}$/.test(mes)){alert('Selecione o mês de origem.');return}const [y,m]=mes.split('-').map(Number),next=new Date(Date.UTC(y,m,1)).toISOString().slice(0,7);const db=read(),items=Array.isArray(db.contasPagar)?db.contasPagar:[];const fixed=new Set(types().map(x=>norm(x[0])));const source=items.filter(x=>!x.serieId&&String(x.venc||'').startsWith(mes)&&fixed.has(norm(x.nome)));if(!source.length){alert('Não há contas fixas cadastradas no mês selecionado para copiar.');return}const candidates=source.filter(x=>!items.some(t=>String(t.venc||'').startsWith(next)&&norm(t.nome)===norm(x.nome)));if(!candidates.length){alert('Todas essas contas já estão cadastradas no mês seguinte.');return}if(!confirm('Criar '+candidates.length+' conta(s) pendente(s) em '+next+'? Confira valores e vencimentos, que podem mudar.'))return;for(const x of candidates){const day=Number(x.venc.slice(8)),[ny,nm]=next.split('-').map(Number),max=new Date(Date.UTC(ny,nm,0)).getUTCDate();items.unshift({...x,id:uid(),venc:next+'-'+String(Math.min(day,max)).padStart(2,'0')})}db.contasPagar=items;write(db);$('payMes').value=next;$('payMes').dispatchEvent(new Event('change'));alert(candidates.length+' conta(s) copiada(s) como pendentes, sem alterar saldos.')});refresh()})();</script><script id="dre-alertas-vencimento-v1">
 (()=>{'use strict';
@@ -1486,33 +1566,133 @@ window.addEventListener('focus',render);
 setInterval(render,60000);
 render();
 })();
-</script><script id="dre-painel-inicio-v1">(()=>{'use strict';
+</script><style>
+#drePainelInicio .dre-aviso-toggle{width:auto;min-height:36px;padding:4px 8px;border:0;border-radius:6px;background:#eaf3fc;color:#183e67;font:inherit;font-weight:700;text-decoration:underline;cursor:pointer}
+#drePainelInicio .dre-aviso-toggle.dre-alerta-urgente{color:#a12622}
+#drePainelInicio .dre-aviso-contagens{text-align:right}
+#drePainelInicio .dre-aviso-lista{margin:0;padding:4px 8px 4px 26px;max-height:240px;overflow:auto}
+#drePainelInicio .dre-aviso-lista li{padding:8px 0;overflow-wrap:anywhere}
+#drePainelInicio .dre-aviso-lista .actions{margin-top:5px;flex-wrap:wrap}
+#drePainelInicio .dre-aviso-lista button{width:auto;min-height:36px;padding:5px 10px}
+#dreAvisoMensagem:empty,#dreAvisoErro:empty{display:none}
+#dreAvisoEditar{width:min(420px,calc(100% - 32px));max-height:calc(100% - 24px);overflow:auto;border:1px solid #c8d9ea;border-radius:14px;padding:18px;color:#183e67;background:#fff}
+#dreAvisoEditar::backdrop{background:#132c4966}
+#dreAvisoEditar h3,#dreAvisoEditar p{margin:0}
+#dreAvisoErro{color:#a12622}
+@media(prefers-reduced-motion:reduce){#drePainelInicio .dre-aviso-toggle{animation:none}}
+</style><script id="dre-painel-inicio-v1">(()=>{'use strict';
 const box=document.getElementById('drePainelInicio');if(!box)return;
 const money=n=>Number(n||0).toLocaleString('pt-BR',{style:'currency',currency:'BRL'});
 const today=()=>{const d=new Date();return new Date(d.getTime()-d.getTimezoneOffset()*60000).toISOString().slice(0,10)};
 const next=iso=>{const [y,m,d]=iso.split('-').map(Number);return new Date(Date.UTC(y,m-1,d+1)).toISOString().slice(0,10)};
 const read=()=>{try{return JSON.parse(localStorage.getItem('michelon_base_nova_v1')||'{}')||{}}catch{return {}}};
-function render(){const d=read(),now=today(),tomorrow=next(now),month=now.slice(0,7);
+let expanded = '';
+function render(){
+if (document.getElementById('dreAvisoEditar').open) return;
+const active = document.activeElement;
+const focused = box.contains(active) ? active.id : '';
+const listScroll = box.querySelector('.dre-aviso-lista')?.scrollTop || 0;const d=read(),now=today(),tomorrow=next(now),month=now.slice(0,7);
 const items=Array.isArray(d.contasPagar)?d.contasPagar:[],finance=Array.isArray(d.finance)?d.finance:[];
 const unpaid=items.filter(x=>x&&x.venc&&Number(x.valor)>0&&!finance.some(f=>f.origemId==='contapagar:'+x.id));
 const urgent=unpaid.filter(x=>x.venc<=tomorrow).sort((a,b)=>a.venc.localeCompare(b.venc));
-const pending=unpaid.filter(x=>x.venc.startsWith(month)).reduce((a,x)=>a+Number(x.valor),0);
+const overdue = urgent.filter(x => x.venc < now);
+const monthly = unpaid.filter(x => x.venc.startsWith(month)).sort((a,b) => a.venc.localeCompare(b.venc));
+const pending = monthly.reduce((a,x) => a + Number(x.valor),0);
 const uberMonth=finance.filter(f=>f.conta==='uber'&&f.tipo==='entrada'&&String(f.date||'').startsWith(month)).reduce((a,f)=>a+Number(f.valor||0),0);
 const [y,m,day]=now.split('-').map(Number),daysLeft=Math.max(1,new Date(y,m,0).getDate()-day+1);
 const target=pending/daysLeft;
 box.replaceChildren();const title=document.createElement('strong');title.textContent='🔔 Avisos e planejamento';box.append(title);
-function line(label,value,cls){const el=document.createElement('div');el.className='dre-painel-linha';const a=document.createElement('span');a.textContent=label;const b=document.createElement('strong');b.textContent=value;if(cls)b.className=cls;el.append(a,b);box.append(el)}
-if(urgent.length){const overdue=urgent.filter(x=>x.venc<now).length,dueToday=urgent.filter(x=>x.venc===now).length,dueTomorrow=urgent.filter(x=>x.venc===tomorrow).length;
-line('Contas exigindo atenção',`${overdue} atrasada(s) · ${dueToday} hoje · ${dueTomorrow} amanhã`,dueTomorrow?'dre-alerta-urgente dre-pisca':'dre-alerta-urgente');
-const sample=urgent.slice(0,3).map(x=>x.nome+' ('+money(x.valor)+')').join(' · ');const small=document.createElement('div');small.className='muted';small.textContent=sample;box.append(small);
-}else line('Contas vencendo até amanhã','Nenhuma');
-line('Contas pendentes neste mês',money(pending));line('Receitas registradas na conta Uber neste mês',money(uberMonth));
+function row(label){
+  const el = document.createElement('div');
+  el.className = 'dre-painel-linha';
+  const name = document.createElement('span');
+  name.textContent = label;
+  el.append(name);
+  box.append(el);
+  return el;
+}
+function line(label, value){
+  const total = document.createElement('strong');
+  total.textContent = value;
+  row(label).append(total);
+}
+function disclosure(container, key, value, label, accounts, empty, emphasis = ''){
+  const button = document.createElement('button');
+  const details = document.createElement('div');
+  const open = expanded === key;
+  button.type = 'button';
+  button.id = 'dreAviso-' + key;
+  button.className = 'dre-aviso-toggle ' + emphasis;
+  button.textContent = value;
+  button.setAttribute('aria-label', label + ', ' + value);
+  button.setAttribute('aria-expanded', String(open));
+  details.id = 'dreAvisoLista-' + key;
+  button.setAttribute('aria-controls', details.id);
+  details.hidden = !open;
+  button.onclick = () => {
+    expanded = open ? '' : key;
+    render();
+  };
+  container.append(button);
+  box.append(details);
+  if (!open) return;
+  if (!accounts.length){
+    details.textContent = empty;
+    return;
+  }
+  const list = document.createElement('ul');
+  list.className = 'dre-aviso-lista';
+  for (const account of accounts){
+    const item = document.createElement('li');
+    const due = account.venc.split('-').reverse().join('/');
+    item.textContent = (account.nome || 'Conta') + ' · ' + money(account.valor) + ' · Venc. ' + due;
+    if (account.id){
+      const actions = document.createElement('div');
+      actions.className = 'actions';
+      for (const [label, type] of [['Editar','editar'],['Confirmar pagamento','pagar']]){
+        const control = document.createElement('button');
+        control.type = 'button';
+        control.className = 'secondary';
+        control.id = 'dreAviso-' + key + '-' + type + '-' + account.id;
+        control.setAttribute('aria-label', label + ': ' + (account.nome || 'Conta'));
+        control.textContent = label;
+        control.onclick = () => {
+          document.getElementById('dreAvisoMensagem').textContent = '';
+          document.dispatchEvent(new CustomEvent('dre-' + type + '-conta-inicio',{detail:account.id}));
+        };
+        actions.append(control);
+      }
+      item.append(actions);
+    }
+    list.append(item);
+  }
+  details.append(list);
+  list.scrollTop = listScroll;
+}
+const attention = row('Contas exigindo atenção');
+const counts = document.createElement('span');
+counts.className = 'dre-aviso-contagens';
+attention.append(counts);
+const dueToday = urgent.filter(x => x.venc === now).length;
+const dueTomorrow = urgent.filter(x => x.venc === tomorrow).length;
+disclosure(counts, 'atrasadas', overdue.length + ' atrasada(s)', 'Contas em atraso',
+  overdue, 'Nenhuma conta em atraso.', overdue.length ? 'dre-alerta-urgente dre-pisca' : '');
+const upcoming = document.createElement('span');
+upcoming.textContent = ' · ' + dueToday + ' hoje · ' + dueTomorrow + ' amanhã';
+counts.append(upcoming);
+disclosure(row('Contas pendentes neste mês'), 'pendentes', money(pending), 'Contas pendentes neste mês',
+  monthly, 'Nenhuma conta pendente neste mês.');
+line('Receitas registradas na conta Uber neste mês',money(uberMonth));
 line('Meta diária para cobrir pendências',money(target)+' / dia');
 const note=document.createElement('div');note.className='muted';note.textContent='Meta indicativa: contas pendentes deste mês ÷ dias restantes, incluindo hoje. Não considera despesas futuras não cadastradas, saldo disponível ou dias sem trabalho.';box.append(note);
-const btn=document.createElement('button');btn.type='button';btn.className='secondary dre-painel-btn';btn.textContent='Ver contas a pagar';btn.onclick=()=>document.querySelector('[data-page="financeiro"]')?.click();box.append(btn);
+if (focused){
+  const focusTarget = document.getElementById(focused) || document.getElementById('dreAviso-' + expanded);
+  focusTarget?.focus({preventScroll:true});
+}
 }
 document.querySelectorAll('[data-page="inicio"],[data-go="inicio"]').forEach(b=>b.addEventListener('click',()=>setTimeout(render,0)));
 window.addEventListener('focus',render);document.addEventListener('visibilitychange',()=>{if(!document.hidden)render()});
+document.addEventListener('dre-contas-alteradas',render);
 setInterval(render,60000);render();
 })();</script><script id="dre-auditoria-segura-v5">(()=>{'use strict';const K='michelon_base_nova_v1';const $=id=>document.getElementById(id);const read=()=>{try{return JSON.parse(localStorage.getItem(K)||'{}')||{}}catch(e){return {erro:String(e)}}};const fmt=v=>Number(v||0).toLocaleString('pt-BR',{style:'currency',currency:'BRL'});function render(){const d=read(),f=Array.isArray(d.finance)?d.finance:[],c=Array.isArray(d.contasPagar)?d.contasPagar:[];const paid=new Set(f.filter(x=>String(x.origemId||'').startsWith('contapagar:')).map(x=>String(x.origemId).slice(11)));$('audResumo').textContent=d.erro?'Erro ao ler armazenamento: '+d.erro:`${f.length} lançamento(s) financeiros · ${c.length} conta(s) cadastrada(s) · ${c.filter(x=>paid.has(String(x.id))).length} conta(s) paga(s). Se R$ 100,00 não aparecer aqui, não consta na base atual deste navegador.`;const list=$('audLista');list.replaceChildren();const entries=[...f.filter(x=>Number(x.valor)>0).map(x=>({date:x.date||'',label:(x.tipo==='saida'?'Despesa':'Receita')+' · '+(x.desc||x.categoria||'Sem nome')+(x.origemId?' · vinculado':''),valor:x.valor})),...c.filter(x=>Number(x.valor)>0).map(x=>({date:x.venc||'',label:(paid.has(String(x.id))?'Conta paga':'Conta pendente')+' · '+x.nome,valor:x.valor}))].sort((a,b)=>String(b.date).localeCompare(String(a.date)));if(!entries.length){list.textContent='Nenhum registro encontrado na base atual.';return}for(const x of entries){const el=document.createElement('div');el.className='mini';const left=document.createElement('span');left.textContent=x.date+' · '+x.label;const right=document.createElement('strong');right.textContent=fmt(x.valor);el.append(left,right);list.append(el)}}$('audAtualizar').onclick=()=>{render();document.getElementById('finMes')?.dispatchEvent(new Event('change',{bubbles:true}));};$('audBackup').onclick=()=>{const raw=localStorage.getItem(K);if(!raw){alert('Não existe base salva neste navegador.');return}const blob=new Blob([raw],{type:'application/json'}),url=URL.createObjectURL(blob),a=document.createElement('a');a.href=url;a.download='Michelon_backup_seguranca_'+new Date().toISOString().slice(0,10)+'.json';document.body.append(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),1000)};document.querySelectorAll('[data-page="financeiro"],[data-go="financeiro"]').forEach(b=>b.addEventListener('click',()=>setTimeout(render,80)));render()})();</script><div id="dreV8Overlay" aria-hidden="true"><div id="dreV8Panel" role="dialog" aria-modal="true" aria-label="Mais opções"><div class="dre-v8-handle"></div><div class="dre-v8-head"><div><strong>Mais opções</strong><small>Acesse as áreas do aplicativo</small></div><button class="dre-v8-close" id="dreV8X" type="button">✕</button></div><div class="dre-v8-grid"><button class="dre-v8-tile" data-v8-go="nfDemo"><span class="ico">🧾</span><strong>Notas fiscais</strong><small>Clientes e rascunhos</small></button><button class="dre-v8-tile" data-v8-go="financeiro"><span class="ico">💰</span><strong>Financeiro</strong><small>Contas, lançamentos e saldos</small></button><button class="dre-v8-tile" data-v8-go="uber"><span class="ico">🚕</span><strong>Uber</strong><small>Faturamento e despesas</small></button><button class="dre-v8-tile" data-v8-go="rotas"><span class="ico">🛣️</span><strong>Rotas</strong><small>Destinos cadastrados</small></button><button class="dre-v8-tile" data-v8-go="cartao"><span class="ico">💳</span><strong>Cartão</strong><small>Cartão digital</small></button><button class="dre-v8-tile" data-v8-go="recuperacao"><span class="ico">📦</span><strong>Recuperação</strong><small>Dados preservados</small></button><button class="dre-v8-tile" data-v8-go="config"><span class="ico">⚙️</span><strong>Ajustes</strong><small>Configurações e backup</small></button></div><button id="dreV8Fechar" class="dre-v8-footer" type="button">Fechar menu</button></div></div><script id="dre-v8-menu-script">(()=>{const b=document.getElementById('maisMenu'),n=document.getElementById('nav'),o=document.getElementById('dreV8Overlay');if(!b||!o)return;const close=()=>{o.classList.remove('open');o.setAttribute('aria-hidden','true');n.classList.remove('menu-open');b.setAttribute('aria-expanded','false')};b.addEventListener('click',()=>{if(matchMedia('(max-width:1280px)').matches){n.classList.remove('menu-open');o.classList.add('open');o.setAttribute('aria-hidden','false');b.setAttribute('aria-expanded','true')}});['dreV8X','dreV8Fechar'].forEach(id=>document.getElementById(id).addEventListener('click',close));o.addEventListener('click',e=>{if(e.target===o)close()});o.querySelectorAll('[data-v8-go]').forEach(x=>x.addEventListener('click',()=>{const page=x.dataset.v8Go;close();document.querySelector('.nav [data-page="'+page+'"]').click()}));document.addEventListener('keydown',e=>{if(e.key==='Escape')close()})})();</script><style>
 #msync{position:fixed;right:10px;bottom:90px;z-index:800;font:13px system-ui,sans-serif;color:#183e67}
