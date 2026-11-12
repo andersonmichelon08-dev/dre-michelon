@@ -1609,7 +1609,10 @@ const urgent=unpaid.filter(x=>x.venc<=tomorrow).sort((a,b)=>a.venc.localeCompare
 const overdue = urgent.filter(x => x.venc < now);
 const monthly = unpaid.filter(x => x.venc.startsWith(month)).sort((a,b) => a.venc.localeCompare(b.venc));
 const pending = monthly.reduce((a,x) => a + Number(x.valor),0);
-const uberMonth=finance.filter(f=>f.conta==='uber'&&f.tipo==='entrada'&&String(f.date||'').startsWith(month)).reduce((a,f)=>a+Number(f.valor||0),0);
+const uberReceipts = finance
+  .filter(f => f.conta === 'uber' && f.tipo === 'entrada' && String(f.date || '').startsWith(month))
+  .sort((a,b) => String(b.date).localeCompare(String(a.date)));
+const uberMonth = uberReceipts.reduce((total, receipt) => total + Number(receipt.valor || 0), 0);
 const [y,m,day]=now.split('-').map(Number),daysLeft=Math.max(1,new Date(y,m,0).getDate()-day+1);
 const target=pending/daysLeft;
 box.replaceChildren();const title=document.createElement('strong');title.textContent='🔔 Avisos e planejamento';box.append(title);
@@ -1627,7 +1630,7 @@ function line(label, value){
   total.textContent = value;
   row(label).append(total);
 }
-function disclosure(key, label, value, accounts, empty, emphasis = '', upcoming = ''){
+function disclosure(key, label, value, entries, empty, emphasis = '', upcoming = ''){
   const button = document.createElement('button');
   const details = document.createElement('div');
   const open = expanded === key;
@@ -1658,16 +1661,25 @@ function disclosure(key, label, value, accounts, empty, emphasis = '', upcoming 
   };
   box.append(button,details);
   if (!open) return;
-  if (!accounts.length){
+  if (!entries.length){
     details.textContent = empty;
     return;
   }
   const list = document.createElement('ul');
   list.className = 'dre-aviso-lista';
-  for (const account of accounts){
+  for (const entry of entries){
     const item = document.createElement('li');
+    if (key === 'receitas'){
+      const date = String(entry.date).slice(0,10).split('-').reverse().join('/');
+      item.textContent = (entry.desc || entry.categoria || 'Receita') + ' · ' + money(entry.valor) + ' · ' + date;
+      list.append(item);
+      continue;
+    }
+    const account = entry;
     const due = account.venc.split('-').reverse().join('/');
-    item.textContent = (account.nome || 'Conta') + ' · ' + money(account.valor) + ' · Venc. ' + due;
+    const paymentAccount = {uber:'Uber',itau:'Itaú',cartao:'Cartão Itaú'}[account.conta] || account.conta || 'Sem conta vinculada';
+    item.textContent = (account.nome || 'Conta') + ' · ' + money(account.valor) + ' · Venc. ' + due +
+      ' · ' + paymentAccount;
     if (account.id){
       const actions = document.createElement('div');
       actions.className = 'actions';
@@ -1688,6 +1700,11 @@ function disclosure(key, label, value, accounts, empty, emphasis = '', upcoming 
     }
     list.append(item);
   }
+  if (key === 'atrasadas'){
+    const total = document.createElement('strong');
+    total.textContent = 'Total em atraso · ' + money(entries.reduce((sum, account) => sum + Number(account.valor), 0));
+    details.append(total);
+  }
   details.append(list);
   list.scrollTop = listScroll;
 }
@@ -1698,7 +1715,8 @@ disclosure('atrasadas','Contas exigindo atenção',overdue.length + ' atrasada(s
   ' · ' + dueToday + ' hoje · ' + dueTomorrow + ' amanhã');
 disclosure('pendentes','Contas pendentes neste mês',money(pending),
   monthly,'Nenhuma conta pendente neste mês.');
-line('Receitas registradas na conta Uber neste mês',money(uberMonth));
+disclosure('receitas','Receitas registradas na conta Uber neste mês',money(uberMonth),
+  uberReceipts,'Nenhuma receita registrada na conta Uber neste mês.');
 line('Meta diária para cobrir pendências',money(target)+' / dia');
 const note=document.createElement('div');note.className='muted';note.textContent='Meta indicativa: contas pendentes deste mês ÷ dias restantes, incluindo hoje. Não considera despesas futuras não cadastradas, saldo disponível ou dias sem trabalho.';box.append(note);
 if (focused){
