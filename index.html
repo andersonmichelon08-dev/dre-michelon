@@ -1567,8 +1567,8 @@ setInterval(render,60000);
 render();
 })();
 </script><style>
-#drePainelInicio .dre-aviso-toggle{width:auto;min-height:36px;padding:4px 8px;border:0;border-radius:6px;background:#eaf3fc;color:#183e67;font:inherit;font-weight:700;text-decoration:underline;cursor:pointer}
-#drePainelInicio .dre-aviso-toggle.dre-alerta-urgente{color:#a12622}
+#drePainelInicio .dre-aviso-toggle{width:100%;min-height:44px;padding:8px;border:1px solid #d5e5f4;border-radius:8px;background:#eaf3fc;color:#183e67;font:inherit;text-align:left;cursor:pointer;touch-action:manipulation}
+#drePainelInicio .dre-aviso-toggle strong{text-decoration:underline}
 #drePainelInicio .dre-aviso-contagens{text-align:right}
 #drePainelInicio .dre-aviso-lista{margin:0;padding:4px 8px 4px 26px;max-height:240px;overflow:auto}
 #drePainelInicio .dre-aviso-lista li{padding:8px 0;overflow-wrap:anywhere}
@@ -1585,13 +1585,24 @@ const box=document.getElementById('drePainelInicio');if(!box)return;
 const money=n=>Number(n||0).toLocaleString('pt-BR',{style:'currency',currency:'BRL'});
 const today=()=>{const d=new Date();return new Date(d.getTime()-d.getTimezoneOffset()*60000).toISOString().slice(0,10)};
 const next=iso=>{const [y,m,d]=iso.split('-').map(Number);return new Date(Date.UTC(y,m-1,d+1)).toISOString().slice(0,10)};
-const read=()=>{try{return JSON.parse(localStorage.getItem('michelon_base_nova_v1')||'{}')||{}}catch{return {}}};
 let expanded = '';
+let lastView;
+function readSnapshot(){
+  try { return localStorage.getItem('michelon_base_nova_v1') || '{}'; }
+  catch { return '{}'; }
+}
 function render(){
 if (document.getElementById('dreAvisoEditar').open) return;
 const active = document.activeElement;
 const focused = box.contains(active) ? active.id : '';
-const listScroll = box.querySelector('.dre-aviso-lista')?.scrollTop || 0;const d=read(),now=today(),tomorrow=next(now),month=now.slice(0,7);
+const raw = readSnapshot();
+const now = today();
+if (lastView?.raw === raw && lastView.now === now && lastView.expanded === expanded) return;
+const listScroll = lastView?.expanded === expanded ? box.querySelector('.dre-aviso-lista')?.scrollTop || 0 : 0;
+lastView = {raw,now,expanded};
+let d;
+try { d = JSON.parse(raw) || {}; } catch { d = {}; }
+const tomorrow = next(now),month = now.slice(0,7);
 const items=Array.isArray(d.contasPagar)?d.contasPagar:[],finance=Array.isArray(d.finance)?d.finance:[];
 const unpaid=items.filter(x=>x&&x.venc&&Number(x.valor)>0&&!finance.some(f=>f.origemId==='contapagar:'+x.id));
 const urgent=unpaid.filter(x=>x.venc<=tomorrow).sort((a,b)=>a.venc.localeCompare(b.venc));
@@ -1616,15 +1627,27 @@ function line(label, value){
   total.textContent = value;
   row(label).append(total);
 }
-function disclosure(container, key, value, label, accounts, empty, emphasis = ''){
+function disclosure(key, label, value, accounts, empty, emphasis = '', upcoming = ''){
   const button = document.createElement('button');
   const details = document.createElement('div');
   const open = expanded === key;
   button.type = 'button';
   button.id = 'dreAviso-' + key;
-  button.className = 'dre-aviso-toggle ' + emphasis;
-  button.textContent = value;
-  button.setAttribute('aria-label', label + ', ' + value);
+  button.className = 'dre-painel-linha dre-aviso-toggle';
+  const name = document.createElement('span');
+  name.textContent = label;
+  const summary = document.createElement('span');
+  summary.className = 'dre-aviso-contagens';
+  const amount = document.createElement('strong');
+  amount.className = emphasis;
+  amount.textContent = value;
+  const extra = document.createElement('span');
+  extra.textContent = upcoming;
+  const arrow = document.createElement('span');
+  arrow.textContent = open ? ' ▴' : ' ▾';
+  arrow.setAttribute('aria-hidden','true');
+  summary.append(amount,extra,arrow);
+  button.append(name,summary);
   button.setAttribute('aria-expanded', String(open));
   details.id = 'dreAvisoLista-' + key;
   button.setAttribute('aria-controls', details.id);
@@ -1633,8 +1656,7 @@ function disclosure(container, key, value, label, accounts, empty, emphasis = ''
     expanded = open ? '' : key;
     render();
   };
-  container.append(button);
-  box.append(details);
+  box.append(button,details);
   if (!open) return;
   if (!accounts.length){
     details.textContent = empty;
@@ -1669,19 +1691,13 @@ function disclosure(container, key, value, label, accounts, empty, emphasis = ''
   details.append(list);
   list.scrollTop = listScroll;
 }
-const attention = row('Contas exigindo atenção');
-const counts = document.createElement('span');
-counts.className = 'dre-aviso-contagens';
-attention.append(counts);
 const dueToday = urgent.filter(x => x.venc === now).length;
 const dueTomorrow = urgent.filter(x => x.venc === tomorrow).length;
-disclosure(counts, 'atrasadas', overdue.length + ' atrasada(s)', 'Contas em atraso',
-  overdue, 'Nenhuma conta em atraso.', overdue.length ? 'dre-alerta-urgente dre-pisca' : '');
-const upcoming = document.createElement('span');
-upcoming.textContent = ' · ' + dueToday + ' hoje · ' + dueTomorrow + ' amanhã';
-counts.append(upcoming);
-disclosure(row('Contas pendentes neste mês'), 'pendentes', money(pending), 'Contas pendentes neste mês',
-  monthly, 'Nenhuma conta pendente neste mês.');
+disclosure('atrasadas','Contas exigindo atenção',overdue.length + ' atrasada(s)',
+  overdue,'Nenhuma conta em atraso.',overdue.length ? 'dre-alerta-urgente dre-pisca' : '',
+  ' · ' + dueToday + ' hoje · ' + dueTomorrow + ' amanhã');
+disclosure('pendentes','Contas pendentes neste mês',money(pending),
+  monthly,'Nenhuma conta pendente neste mês.');
 line('Receitas registradas na conta Uber neste mês',money(uberMonth));
 line('Meta diária para cobrir pendências',money(target)+' / dia');
 const note=document.createElement('div');note.className='muted';note.textContent='Meta indicativa: contas pendentes deste mês ÷ dias restantes, incluindo hoje. Não considera despesas futuras não cadastradas, saldo disponível ou dias sem trabalho.';box.append(note);
