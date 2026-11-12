@@ -181,14 +181,33 @@ header{height:58px!important;background:linear-gradient(110deg,#063568,#0865ab)!
 @media(max-width:1100px){#nfDemo .nf-columns{grid-template-columns:1fr}}
 </style>
 <style>
-#uber.page.active { overflow-y: auto; overflow-x: hidden; }
-#uber > .top, #uber > #uberExtrato { flex: none; min-width: 0; }
-#uber > .cols { min-width: 0; }
+#uber.page.active {
+  display: block;
+  overflow-y: auto;
+  overflow-x: hidden;
+  padding-bottom: 24px;
+}
+#uber.page.active > * + * { margin-top: 12px; }
+#uber > .cols { min-width: 0; overflow: visible; align-items: start; }
+#uber .stack > * { flex-shrink: 0; }
+#uberExtrato { min-width: 0; overflow-wrap: anywhere; }
+#uberExtratoResultado[hidden], #uberExtratoDivergencias[hidden] { display: none; }
+#uberExtratoDivergencias {
+  margin-top: 12px;
+  border: 1px solid #d4e5f6;
+  border-radius: 10px;
+  padding: 10px;
+  background: #f4f8ff;
+}
+#uberExtratoDivergencias summary { cursor: pointer; font-weight: 700; padding: 4px; }
+#uberExtratoItens ul { margin: 8px 0 0; padding-left: 22px; }
+#uberExtratoItens li { padding: 8px 0; }
+#uberExtratoItens li + li { border-top: 1px solid #d4e5f6; }
 #uberExtrato > label.primary { color: #fff; font-weight: 700; text-align: center; }
 #uberExtrato > label:focus-within { outline: 2px solid #07588f; outline-offset: 2px; }
 #uberExtratoStatus:empty { display: none; }
 @media (max-width: 900px) {
-  #uber > .cols { flex: none; }
+  #uber > .cols { align-items: stretch; }
   #uber input[type="date"] { min-width: 0; max-width: 100%; }
 }
 </style>
@@ -229,7 +248,10 @@ header{height:58px!important;background:linear-gradient(110deg,#063568,#0865ab)!
         <label>Conferir a partir de <input id="uberExtratoInicio" type="date"></label>
       </div>
       <p id="uberExtratoResumo"></p>
-      <div id="uberExtratoItens"></div>
+      <details id="uberExtratoDivergencias" hidden>
+        <summary>Ver itens para revisar</summary>
+        <div id="uberExtratoItens"></div>
+      </details>
     </div>
 </div>
 <div class="cols"><div class="card stack"><div class="field"><label>Data trabalhada</label><input id="uberData" type="date"/></div><div class="field"><label>Faturamento no app Uber (R$)</label><input id="uberBruto" min="0" step=".01" type="number"/></div><div class="field"><label for="uberCreditado">Recebido na Uber Conta por corridas (R$)</label><input id="uberCreditado" min="0" step=".01" type="number" placeholder="Valor das corridas no extrato"/><small class="muted">Começa com o faturamento informado. Se o extrato mostrar outro total em Ganhos Uber, ajuste aqui, inclusive para zero. Registre Pix recebidos à parte no Financeiro.</small></div><div class="field"><label for="uberCusto">Combustível (R$)</label><input id="uberCusto" min="0" step=".01" type="number" placeholder="0,00"/><label for="uberCombustivelConta">Pago por</label><select id="uberCombustivelConta"><option value="uber">Uber Conta</option><option value="itau">Itaú</option><option value="fora">Outra forma, fora das contas do DRE</option></select></div><div class="field"><label>Outras despesas do dia</label><p class="muted" style="margin:0">Escolha um tipo ou digite um novo nome e informe o valor. Use + Adicionar despesa para lançar mais de uma.</p><datalist id="uberTiposDespesa"></datalist><div id="uberDespesasItens"></div><button class="secondary" id="uberAdicionarDespesa" type="button">+ Adicionar despesa</button></div><div class="notice" id="uberResumo" aria-live="polite"></div><button class="primary" id="uberSalvar">Registrar dia</button><small class="muted">Use o Financeiro para Pix recebidos e outras movimentações avulsas da conta. As despesas registradas aqui já entram na conta escolhida.</small></div><div class="card scroll"><table class="table"><thead><tr><th>Dia</th><th>Faturamento</th><th>Custos</th><th>Resultado do dia</th><th>Movimento na Uber Conta</th></tr></thead><tbody id="uberLista"></tbody></table></div></div></section>
@@ -1859,6 +1881,7 @@ $('avSave').onclick=async()=>{const a=$('avDayStart').value,b=$('avDayEnd').valu
     if (!de || de < extrato.de || de > extrato.ate) {
       el('Resumo').textContent = 'Escolha uma data dentro do período do extrato.';
       el('Itens').replaceChildren();
+      el('Divergencias').hidden = true;
       return;
     }
     const ate = extrato.ate;
@@ -1874,9 +1897,9 @@ $('avSave').onclick=async()=>{const a=$('avDayStart').value,b=$('avDayEnd').valu
       ' correspondência(s) por data e valor · ' + revisao.length + ' item(ns) para revisar.';
     const itens = el('Itens');
     itens.replaceChildren();
+    el('Divergencias').hidden = revisao.length === 0;
     if (revisao.length) {
       const lista = document.createElement('ul');
-      lista.style.cssText = 'max-height:22rem;overflow:auto;padding-left:1.25rem;overflow-wrap:anywhere';
       for (const item of revisao) {
         const li = document.createElement('li');
         li.textContent = formatoData(item.date) + ' · ' + item.texto;
@@ -1893,6 +1916,7 @@ $('avSave').onclick=async()=>{const a=$('avDayStart').value,b=$('avDayEnd').valu
     arquivo.disabled = true;
     extrato = null;
     el('Resultado').hidden = true;
+    el('Divergencias').open = false;
     el('Status').textContent = 'Abrindo o extrato…';
     try {
       extrato = await lerExtrato(new Uint8Array(await file.arrayBuffer()));
