@@ -1824,7 +1824,10 @@ render();
 #dreAvisoEditar::backdrop{background:#132c4966}
 #dreAvisoEditar h3,#dreAvisoEditar p{margin:0}
 #dreAvisoErro{color:#a12622}
-@media(prefers-reduced-motion:reduce){#drePainelInicio .dre-aviso-toggle{animation:none}}
+#drePainelInicio .dre-aviso-toggle.dre-home-overdue{background:#fceaf0;color:#812342;border-color:#e7a8ba}
+@media(prefers-reduced-motion:no-preference){
+  #drePainelInicio .dre-home-overdue .dre-aviso-contagens strong{animation:dre-pisca 1.5s ease-in-out infinite}
+}
 </style><script id="dre-painel-inicio-v1">(()=>{'use strict';
 const box=document.getElementById('drePainelInicio');if(!box)return;
 const money=n=>Number(n||0).toLocaleString('pt-BR',{style:'currency',currency:'BRL'});
