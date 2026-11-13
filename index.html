@@ -211,6 +211,46 @@ header{height:58px!important;background:linear-gradient(110deg,#063568,#0865ab)!
   #uber input[type="date"] { min-width: 0; max-width: 100%; }
 }
 </style>
+
+<style id="dre-period-style">
+#inicio .card.stack .actions #dreHomeReport{background:#e7f5ef;color:#125c49;border:1px solid #a8d9c8}
+#inicio .card.stack .actions #dreHomeReport:hover{background:#d8efe5}
+#inicio .card.stack .actions #dreHomeReport:focus-visible{outline:3px solid #16785d;outline-offset:2px}
+
+.dre-report-header,.dre-period-line{display:flex;align-items:center;justify-content:space-between;gap:8px;flex-wrap:wrap}
+.dre-report-header h3,#dreAnnualMonths h4,#dreMonthlyComparison h4{margin:0}
+#dreAnnualMonths h4,#dreMonthlyComparison h4{margin:6px 0 10px}
+.dre-period-toggle{display:inline-flex;gap:3px;background:#e9eff8;border:1px solid #d9e4f2;border-radius:12px;padding:3px}
+.dre-period-toggle button{min-height:44px;padding:5px 14px;border:0;border-radius:8px;background:transparent;color:#25415c;font-weight:750}
+.dre-period-toggle button[aria-pressed="true"]{background:#123c68;color:#fff;box-shadow:0 2px 5px #123c6833}
+.dre-period-line{color:#3c5874}
+#dreYearControl select{width:auto;min-height:44px;margin-left:4px}
+.dre-report-totals{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
+.dre-report-tile{display:grid;gap:6px;border-radius:13px;padding:12px;min-width:0;font-variant-numeric:tabular-nums}
+.dre-report-tile span{font-size:.86rem;font-weight:700}
+.dre-report-tile strong{font-size:clamp(1rem,3.5vw,1.55rem);overflow-wrap:anywhere}
+.dre-income{background:#e4f6ed;color:#086046;border:1px solid #a4d9c5}
+.dre-cost{background:#fff0e4;color:#934318;border:1px solid #f1c9ac}
+.dre-net{background:linear-gradient(120deg,#103257,#185b8d);color:white;border:1px solid #144c78}
+.dre-net.dre-loss{background:linear-gradient(120deg,#68233e,#942c50);border-color:#68233e}
+.dre-months{display:grid;gap:8px}
+button.dre-month-row{width:100%;display:grid;grid-template-columns:minmax(0,1fr) auto;gap:8px;padding:10px 12px;border-radius:12px;border:1px solid #d6e4f1;background:#f7faff;color:#183954;text-align:left}
+button.dre-month-row:hover{border-color:#5385af}
+.dre-month-row:focus-visible,.dre-period-toggle button:focus-visible{outline:3px solid #387db0;outline-offset:2px}
+.dre-month-row .dre-month-amount{text-align:right;font-weight:750;font-variant-numeric:tabular-nums}
+.dre-month-row .dre-month-income{color:#086046}
+.dre-month-row .dre-month-cost{color:#934318}
+.dre-month-row .dre-month-loss{color:#912548}
+.dre-month-row .dre-month-track{grid-column:1/-1;display:block;height:5px;border-radius:5px;background:#e3ecf5;overflow:hidden}
+.dre-month-track i{display:block;height:100%;border-radius:inherit;background:#219a70}
+.dre-month-track.dre-month-cost i{background:#d77939}
+#dreReceitaCategorias{--dre-bar:#219a70}
+#dreDespesaCategorias{--dre-bar:#d77939}
+@media(max-width:530px){
+ .dre-report-totals{grid-template-columns:repeat(2,minmax(0,1fr))}
+ .dre-net{grid-column:1/-1}
+}
+</style>
 </head><body><header><strong>🚐 DRE Michelon</strong><span style="font-size:12px">MINHAS VIAGENS · MEU FINANCEIRO</span></header>
 <div class="shell"><nav class="nav" id="nav"><button class="active" data-page="inicio"><span class="nav-icon">🏠</span><span class="nav-label">Início</span></button><button data-page="cotacao"><span class="nav-icon">🚐</span><span class="nav-label">Cotação</span></button><button data-page="viagens"><span class="nav-icon">🧳</span><span class="nav-label">Viagens</span></button><button data-page="agenda"><span class="nav-icon">📅</span><span class="nav-label">Agenda</span></button><button data-page="financeiro"><span class="nav-icon">💰</span><span class="nav-label">Financeiro</span></button><button data-page="nfDemo"><span class="nav-icon">🧾</span><span class="nav-label">Notas fiscais</span></button><button data-page="uber"><span class="nav-icon">🚕</span><span class="nav-label">Uber</span></button><button data-page="rotas"><span class="nav-icon">🛣️</span><span class="nav-label">Rotas</span></button><button data-page="cartao"><span class="nav-icon">💳</span><span class="nav-label">Cartão</span></button><button data-page="recuperacao"><span class="nav-icon">📦</span><span class="nav-label">Recuperação</span></button><button data-page="config"><span class="nav-icon">⚙️</span><span class="nav-label">Ajustes</span></button><button aria-expanded="false" id="maisMenu" type="button"><span class="nav-icon">☰</span><span class="nav-label">Mais</span></button></nav>
 <main class="main">
@@ -228,7 +268,7 @@ header{height:58px!important;background:linear-gradient(110deg,#063568,#0865ab)!
       <button type="submit" class="primary">Salvar alteração</button>
     </div>
   </form>
-</dialog><div class="card stack"><h3 style="margin:0">O que deseja fazer?</h3><div class="actions"><button id="nfHomeButton" class="secondary" data-go="nfDemo" type="button"><span class="action-icon">🧾</span><span>Notas fiscais</span></button><button class="primary" data-go="cotacao"><span class="action-icon">📋</span><span>Nova cotação</span></button><button class="secondary" data-go="agenda"><span class="action-icon">📅</span><span>Abrir agenda</span></button><button class="secondary" data-go="financeiro"><span class="action-icon">💰</span><span>Meu Financeiro</span></button><button class="secondary" data-go="cartao"><span class="action-icon">💳</span><span>💳 Cartão digital</span></button></div><p class="muted">Os registros desta versão são salvos neste navegador. Faça backup antes de trocar de aparelho.</p></div></section>
+</dialog><div class="card stack"><h3 style="margin:0">O que deseja fazer?</h3><div class="actions"><button id="nfHomeButton" class="secondary" data-go="nfDemo" type="button"><span class="action-icon">🧾</span><span>Notas fiscais</span></button><button class="primary" data-go="cotacao"><span class="action-icon">📋</span><span>Nova cotação</span></button><button class="secondary" data-go="agenda"><span class="action-icon">📅</span><span>Abrir agenda</span></button><button class="secondary" data-go="financeiro"><span class="action-icon">💰</span><span>Meu Financeiro</span></button><button class="secondary" data-go="cartao"><span class="action-icon">💳</span><span>💳 Cartão digital</span></button><button class="secondary" id="dreHomeReport" data-go="financeiro" type="button"><span class="action-icon" aria-hidden="true">📊</span><span>DRE mensal e anual</span></button></div><p class="muted">Os registros desta versão são salvos neste navegador. Faça backup antes de trocar de aparelho.</p></div></section>
 <section class="page" id="cotacao"><div class="top"><h2>Nova cotação</h2><span class="muted">Origem livre • cálculo pela tabela</span></div><div class="cols"><div class="card stack"><div class="field"><label>Origem</label><input id="origem" list="sugestoes" placeholder="Digite a origem" value="Limeira, SP"/></div><div class="field"><label>Destino</label><input id="destino" list="sugestoes" placeholder="Ex.: GRU, Campinas, Viracopos"/></div><datalist id="sugestoes"></datalist><div class="field"><label>Viagem</label><select id="tipo"><option value="ida">Somente ida (retorno vazio)</option><option value="volta">Ida e volta com passageiro</option><option value="buscar">Buscar passageiro (ida vazia)</option></select></div><div class="actions"><button class="wa-button" id="waAbrir" type="button">📲 Importar WhatsApp</button></div><div class="muted">A busca aceita apelidos cadastrados, como GRU, Cumbica e Viracopos.</div></div><div class="card stack"><h3 style="margin:0">Resultado</h3><div class="result" id="resultado"><span class="muted">Preencha origem e destino e clique em calcular.</span></div><div id="dreCotacaoAcoes" aria-label="Ações da cotação"><button class="primary" id="calcular" style="flex:1;min-height:52px;display:block!important;visibility:visible!important" type="button">Calcular orçamento</button><button class="secondary" id="dreLimparCotacao" type="button">🧹 Limpar cotação</button><button class="secondary" disabled="" id="salvarViagem">Salvar cotação na agenda</button><button class="wa-button" disabled="" id="waEnviar" type="button">📲 Enviar proposta pelo WhatsApp</button></div><div class="muted">Sem distância conferida, não será exibido um preço inventado.</div></div></div></section>
 <section class="page" id="viagens"><div class="top"><h2>Minhas viagens</h2><button class="secondary" data-go="cotacao">+ Nova cotação</button></div><div class="card scroll"><table class="table"><thead><tr><th>Data</th><th>Percurso</th><th>Valor</th><th>Ação</th></tr></thead><tbody id="listaViagens"></tbody></table></div></section>
 <section class="page" id="agenda"><div class="top"><h2>Agenda</h2><button class="secondary" data-go="cotacao">+ Nova cotação</button></div><div class="card scroll"><table class="table"><thead><tr><th>Data</th><th>Origem</th><th>Destino</th><th>Situação</th><th>Ação</th></tr></thead><tbody id="listaAgenda"></tbody></table></div><div class="card" id="manualAgenda">
@@ -238,18 +278,32 @@ header{height:58px!important;background:linear-gradient(110deg,#063568,#0865ab)!
 <p id="manualDayStatus" role="status"></p>
 </div></section>
 <section class="page" id="financeiro"><div class="top"><h2>Meu Financeiro</h2><span class="muted">Gestão mensal · DRE Michelon</span><button class="secondary" type="button" data-pay-cadastro>📅 Cadastrar conta</button></div><div class="card stack" id="dreContas"><h3 style="margin:0">🏦 Contas e saldos</h3><div class="dre-account-grid"><div class="dre-account-tile"><small>Saldo Itaú</small><strong id="dreSaldoItau">R$ 0,00</strong></div><div class="dre-account-tile"><small>Saldo Uber</small><strong id="dreSaldoUber">R$ 0,00</strong></div><div class="dre-account-tile"><small>Total disponível nas contas</small><strong id="dreSaldoContas">R$ 0,00</strong></div><div class="dre-account-tile"><small>Limite disponível cartão Itaú</small><strong id="dreLimiteDisponivel">R$ 0,00</strong><small id="dreLimiteDetalhe">Limite total: R$ 0,00</small></div><div class="dre-account-tile"><small>Cheque especial Itaú disponível</small><strong id="dreChequeDisponivel">R$ 0,00</strong><small id="dreChequeDetalhe"></small></div></div><details><summary>⚙️ Configurar saldos iniciais e limites</summary><p class="dre-note">Informe os saldos de referência das contas. Somente lançamentos vinculados a uma conta alteram os valores calculados. Os limites de crédito ficam separados do saldo das contas.</p><div class="dre-account-settings"><div class="field"><label for="dreItauInicial">Saldo inicial Itaú (R$)</label><input id="dreItauInicial" step="0.01" type="number"/></div><div class="field"><label for="dreUberInicial">Saldo inicial Uber (R$)</label><input id="dreUberInicial" step="0.01" type="number"/></div><div class="field"><label for="dreChequeLimite">Limite total do cheque especial Itaú (R$)</label><input id="dreChequeLimite" min="0" step="0.01" type="number"/></div><div class="field"><label for="dreCartaoLimite">Limite total cartão Itaú (R$)</label><input id="dreCartaoLimite" min="0" step="0.01" type="number"/></div><div class="field"><label for="dreCartaoUsado">Valor já utilizado no cartão (R$)</label><input id="dreCartaoUsado" min="0" step="0.01" type="number"/></div></div><button class="secondary" id="dreSalvarContas" type="button">Salvar saldos e limites</button></details><p class="dre-note">Regra: corridas, contas pessoais e despesas do carro → Uber; viagens executivas recebidas → Itaú. A conta sugerida pode ser alterada antes de salvar. Lançamentos antigos sem conta vinculada permanecem no DRE, mas não alteram os saldos bancários. Saldo Uber aqui é o valor informado ou lançado na conta, não uma consulta automática à plataforma.</p></div><div class="card stack"><div class="field"><label for="finMes">Mês de referência</label><input id="finMes" type="month"/></div><div class="grid3"><div class="card"><div class="muted">Receitas recebidas</div><div class="stat" id="finReceitas">R$ 0</div></div><div class="card"><div class="muted">Despesas</div><div class="stat" id="finDespesas">R$ 0</div></div><div class="card"><div class="muted">Resultado do mês</div><div class="stat" id="finSaldo">R$ 0</div></div></div><div class="grid3"><div class="card"><div class="muted">A receber (reservas)</div><div class="stat" id="finPendente">R$ 0</div></div><div class="card"><div class="muted">Receitas do ano</div><div class="stat" id="finAnoReceitas">R$ 0</div></div><div class="card"><div class="muted">Resultado do ano</div><div class="stat" id="finAnoSaldo">R$ 0</div></div></div><div class="notice">Reservas pendentes aparecem em A receber, mas não entram no saldo nem no resultado. Recebimentos vinculados a viagens são protegidos contra exclusão isolada.</div></div><div id="dreAlertasVencimento" role="status" aria-live="polite" hidden></div><section class="card stack" id="drePagar"><h3 style="margin:0">📅 Contas a pagar</h3><p class="muted" style="margin:0">Cadastre contas futuras sem descontar do saldo. O desconto acontece somente ao confirmar o pagamento.</p><div class="pay-agenda-grid"><div class="field"><label for="payTipoConta">Tipo de conta</label><select id="payTipoConta"><option value="unica">Única — uma vez</option><option value="parcelada">Parcelada — número de parcelas</option><option value="recorrente">Recorrente mensal</option></select></div><div class="field" id="payParcelasWrap" hidden><label for="payParcelas">Número de parcelas</label><input id="payParcelas" type="number" min="2" max="360" step="1" value="2"></div><div class="field" id="payValorModoWrap" hidden><label for="payValorModo">O valor informado é</label><select id="payValorModo"><option value="parcela">Valor de cada parcela</option><option value="total">Valor total da compra</option></select></div><div class="field" id="payFimWrap" hidden><label for="payFim">Repetir até (opcional)</label><input id="payFim" type="date"><span class="muted">Deixe vazio para continuar mensalmente.</span></div></div><p class="notice" id="payAgendaPrevia" role="status"></p><div class="pay-grid"><div class="field"><label for="payModelo">Selecionar conta fixa</label><select id="payModelo"></select></div><div class="field"><label for="payNome">Nome da conta</label><input id="payNome" placeholder="Ex.: Aluguel, seguro, IPVA" maxlength="100"/></div><div class="field"><label id="payVencLabel" for="payVenc">Data de vencimento</label><input id="payVenc" type="date"/></div><div class="field"><label id="payValorLabel" for="payValor">Valor (R$)</label><input id="payValor" type="number" min="0.01" step="0.01"/></div><div class="field"><label for="payCategoria">Categoria</label><select id="payCategoria"><option>Contas fixas</option><option>Alimentação</option><option>Combustível</option><option>Manutenção</option><option>Seguro</option><option>Impostos e taxas</option><option>Outras despesas</option></select></div><div class="field"><label for="payConta">Conta de pagamento</label><select id="payConta"><option value="uber">Saldo Uber</option><option value="itau">Conta Itaú</option><option value="cartao">Cartão de crédito Itaú</option></select></div></div><div class="field"><label for="payNovoTipo">Adicionar novo tipo de conta</label><div class="actions"><input id="payNovoTipo" maxlength="100" placeholder="Ex.: Plano de saúde"/><button class="secondary" id="payAdicionarTipo" type="button">+ Adicionar tipo</button></div></div><button class="primary" id="paySalvar" type="button">Cadastrar conta a pagar</button><button class="secondary" id="payRepetirMes" type="button">Copiar contas fixas para o mês seguinte</button><p class="muted" style="margin:0">A cópia cria contas pendentes para o próximo mês, sem descontar saldo. Confira os valores antes de confirmar pagamentos.</p><div class="field"><label for="payMes">Consultar contas do mês</label><input type="month" id="payMes"/></div><div class="pay-summary"><span>Pendente: <strong id="payPendente">R$ 0,00</strong></span><span>Pago: <strong id="payPago">R$ 0,00</strong></span><span>Em atraso: <strong id="payAtraso">R$ 0,00</strong></span></div><div id="payLista" aria-live="polite"></div><details><summary>Gerenciar contas recorrentes</summary><p class="muted">Parar uma recorrência mantém os vencimentos já criados.</p><div id="paySeriesLista"></div></details></section><div class="cols"><div class="card stack"><h3 style="margin:0">Lançamento avulso</h3><p class="muted">Registre aqui valores já pagos ou recebidos. Para contas futuras, parcelas e recorrência, use o botão abaixo.</p><button class="secondary" type="button" data-pay-cadastro>📅 Cadastrar conta a pagar</button><div class="field"><label>Data do lançamento</label><input id="finData" type="date"/></div><input aria-hidden="true" id="finDesc" type="hidden"/><div class="field"><label>Valor (R$)</label><input id="finValor" min="0.01" step="0.01" type="number"/></div><div class="field"><label>Tipo</label><select id="finTipo"><option value="saida">Despesa</option><option value="entrada">Receita</option></select></div><div class="field"><label for="finConta">Conta / forma de pagamento (automática, editável)</label><select id="finConta"><option value="">Sem conta vinculada (histórico)</option><option value="itau">Conta Itaú</option><option value="uber">Saldo Uber</option><option value="cartao">Cartão de crédito Itaú</option></select></div><div class="field"><label>Categoria</label><select id="finCategoria"><option>Combustível</option><option>Pedágio</option><option>Manutenção</option><option>Alimentação</option><option>Estacionamento</option><option>Seguro</option><option>Impostos e taxas</option><option>Viagens executivas</option><option>Uber</option><option>Outras receitas</option><option>Outras despesas</option></select></div><div class="field"><label for="finNovaCategoria">Nova categoria (opcional)</label><div class="actions"><input id="finNovaCategoria" maxlength="60" placeholder="Nome da categoria"/><button class="secondary" id="finAdicionarCategoria" type="button">+ Adicionar</button></div></div><button class="primary" id="finSalvar">Salvar lançamento</button><button class="secondary hidden" id="finCancelar" type="button">Cancelar edição</button></div><div class="card stack"><h3 style="margin:0">Histórico do mês</h3><div class="field"><label>Filtrar lançamentos</label><select id="finFiltro"><option value="todos">Todos</option><option value="entrada">Receitas</option><option value="saida">Despesas</option></select></div><div class="scroll"><table class="table"><thead><tr><th>Categoria</th><th>Valor</th><th>Ações</th></tr></thead><tbody id="finLista"></tbody></table></div><h3 style="margin:8px 0 0">Despesas por categoria</h3><div class="result" id="finCategorias"></div><button class="secondary" id="finExportar" type="button">Exportar relatório CSV do mês</button></div></div><div class="notice" id="dreAvisoDados">Os dados financeiros são armazenados neste navegador e endereço do site. Se um lançamento não aparecer, confira o backup antes de cadastrar novamente.</div><section class="card stack" id="dreAuditoria"><h3>🔎 Conferência de lançamentos</h3><p class="muted">Mostra registros de todos os meses, inclusive contas fixas pagas. Não cria nem apaga lançamentos.</p><div class="actions"><button class="secondary" type="button" id="audAtualizar">Atualizar conferência</button><button class="secondary" type="button" id="audBackup">Baixar backup de segurança</button></div><div id="audResumo" class="notice"></div><div id="audLista" style="max-height:300px;overflow:auto"></div></section><section aria-label="Relatório financeiro" class="card stack" id="dreRelatorio">
-<h3 style="margin:0">📊 DRE mensal e gráficos</h3>
-<p class="muted" style="margin:0">Valores recebidos e despesas registradas. Reservas ainda não pagas ficam fora do resultado.</p>
-<div class="grid3">
-<div class="card"><div class="muted">Receitas do mês</div><div class="stat" id="dreReceita">R$ 0</div></div>
-<div class="card"><div class="muted">Despesas do mês</div><div class="stat" id="dreDespesa">R$ 0</div></div>
-<div class="card"><div class="muted">Resultado do mês</div><div class="stat" id="dreResultado">R$ 0</div></div>
+<div class="dre-report-header">
+<h3 id="dreReportTitle" tabindex="-1">DRE mensal</h3>
+<div class="dre-period-toggle" role="group" aria-label="Período do DRE">
+<button type="button" id="dreMonthly" aria-pressed="true">Mensal</button>
+<button type="button" id="dreAnnual" aria-pressed="false">Anual</button>
+</div>
+</div>
+<div class="dre-period-line"><strong id="dreReportPeriod"></strong>
+<label id="dreYearControl" hidden>Ano <select id="dreYear"></select></label>
+</div>
+<div class="dre-report-totals" aria-live="polite">
+<div class="dre-report-tile dre-income"><span>Receitas</span><strong id="dreReceita">R$ 0,00</strong></div>
+<div class="dre-report-tile dre-cost"><span>Despesas</span><strong id="dreDespesa">R$ 0,00</strong></div>
+<div class="dre-report-tile dre-net"><span>Resultado</span><strong id="dreResultado">R$ 0,00</strong></div>
+</div>
+<div id="dreAnnualMonths" hidden>
+<h4>Movimento por mês</h4>
+<div class="dre-months" id="dreAnnualRows"></div>
 </div>
 <h4 style="margin:8px 0 0">Receitas por categoria</h4><div id="dreReceitaCategorias"></div>
 <h4 style="margin:8px 0 0">Despesas por categoria</h4><div id="dreDespesaCategorias"></div>
-<h4 style="margin:8px 0 0">Comparativo dos últimos 6 meses</h4>
+<div id="dreMonthlyComparison">
+<h4>Comparativo dos últimos 6 meses</h4>
 <div class="scroll"><table class="table"><thead><tr><th>Mês</th><th>Receitas</th><th>Despesas</th><th>Resultado</th></tr></thead><tbody id="dreComparativo"></tbody></table></div>
-<div class="muted">Resultado = receitas recebidas − despesas lançadas. Não representa saldo bancário conciliado.</div>
+</div>
+<div class="muted">O resultado é a diferença entre receitas recebidas e despesas lançadas. Reservas entram nas receitas após o pagamento.</div>
 </section></section>
 <section class="page" id="uber"><div class="top"><h2>Uber</h2><span class="muted">Controle diário simples</span></div><div class="card stack" id="uberExtrato">
     <label for="uberExtratoArquivo" class="primary" style="position:relative;display:flex;align-items:center;justify-content:center;min-height:44px;padding:10px;border-radius:10px;cursor:pointer">
@@ -1365,7 +1419,7 @@ function linhaGrafico(pai,nome,valor,max){
  const titulo=document.createElement("div");titulo.style.cssText="display:flex;justify-content:space-between;gap:10px;font-size:13px";
  const a=document.createElement("span"),b=document.createElement("strong");a.textContent=nome;b.textContent=moeda(valor);titulo.append(a,b);
  const fundo=document.createElement("div");fundo.style.cssText="height:10px;border-radius:8px;background:#e5edf8;overflow:hidden;margin-top:5px";
- const barra=document.createElement("div");barra.style.cssText="height:100%;border-radius:8px;background:#176caf;width:"+((valor/max)*100).toFixed(2)+"%";
+ const barra=document.createElement("div");barra.style.cssText="height:100%;border-radius:8px;background:var(--dre-bar,#176caf);width:"+((valor/max)*100).toFixed(2)+"%";
  fundo.append(barra);wrap.append(titulo,fundo);pai.append(wrap);
 }
 function categorias(destino,items,tipo){
@@ -1375,21 +1429,88 @@ function categorias(destino,items,tipo){
   totais.set(nome,(totais.get(nome)||0)+Number(f.valor||0));
  });
  const lista=[...totais].filter(x=>Number.isFinite(x[1])&&x[1]>0).sort((a,b)=>b[1]-a[1]);
- if(!lista.length){el.textContent="Nenhum lançamento nesta categoria no mês.";return}
+ if(!lista.length){el.textContent="Nenhum lançamento no período.";return}
  const max=Math.max(...lista.map(x=>x[1]));
  lista.forEach(([nome,valor])=>linhaGrafico(el,nome,valor,max));
+}
+const monthName=new Intl.DateTimeFormat("pt-BR",{month:"long"});
+const periodName=new Intl.DateTimeFormat("pt-BR",{month:"long",year:"numeric"});
+let annual=false;
+let selectedYear="";
+const soma=(items,tipo)=>items.filter(f=>f.tipo===tipo).reduce((a,f)=>a+Number(f.valor),0);
+
+function setPeriod(showAnnual){
+ annual=showAnnual;
+ render();
+}
+function renderAnnualMonths(items,year){
+ const rows=$("dreAnnualRows");
+ rows.replaceChildren();
+ const months=Array.from({length:12},(_,i)=>{
+  const key=year+"-"+String(i+1).padStart(2,"0");
+  const entries=items.filter(f=>String(f.date).slice(0,7)===key);
+  return {key,index:i,income:soma(entries,"entrada"),cost:soma(entries,"saida")};
+ }).filter(m=>m.income||m.cost);
+ if(!months.length){
+  rows.textContent="Nenhuma movimentação registrada neste ano.";
+  return;
+ }
+ const max=Math.max(...months.flatMap(m=>[m.income,m.cost]));
+ for(const m of months){
+  const button=document.createElement("button");
+  button.type="button";
+  button.className="dre-month-row";
+  const name=monthName.format(new Date(Number(year),m.index,1));
+  button.setAttribute("aria-label","Ver DRE de "+name+" de "+year);
+  button.innerHTML=`<strong>${name[0].toUpperCase()+name.slice(1)}</strong><span aria-hidden="true">›</span>
+   <span>Receitas</span><span class="dre-month-amount dre-month-income">${moeda(m.income)}</span>
+   <span class="dre-month-track" aria-hidden="true"><i style="width:${100*m.income/max}%"></i></span>
+   <span>Despesas</span><span class="dre-month-amount dre-month-cost">${moeda(m.cost)}</span>
+   <span class="dre-month-track dre-month-cost" aria-hidden="true"><i style="width:${100*m.cost/max}%"></i></span>
+   <strong>Resultado</strong><strong class="dre-month-amount ${m.income<m.cost?"dre-month-loss":""}">${moeda(m.income-m.cost)}</strong>`;
+  button.addEventListener("click",()=>{
+   const input=$("finMes");
+   input.value=m.key;
+   annual=false;
+   input.dispatchEvent(new Event("change",{bubbles:true}));
+   $("dreMonthly").focus({preventScroll:true});
+   $("dreReportTitle").scrollIntoView({block:"center"});
+  });
+  rows.append(button);
+ }
 }
 function render(){
  const input=$("finMes");if(!input)return;
  const mes=input.value;if(!/^\d{4}-\d{2}$/.test(mes))return;
  const db=ler(),todos=Array.isArray(db.finance)?db.finance:[];
  const validos=todos.filter(f=>Number.isFinite(Number(f.valor))&&Number(f.valor)>0&&/^\d{4}-\d{2}-\d{2}/.test(String(f.date||"")));
- const mensal=validos.filter(f=>String(f.date).slice(0,7)===mes);
- const soma=(items,tipo)=>items.filter(f=>f.tipo===tipo).reduce((a,f)=>a+Number(f.valor),0);
- const receita=soma(mensal,"entrada"),despesa=soma(mensal,"saida");
+ const yearInput=$("dreYear"),monthYear=mes.slice(0,4);
+ const year=selectedYear||monthYear;
+ $("dreMonthly").setAttribute("aria-pressed",String(!annual));
+ $("dreAnnual").setAttribute("aria-pressed",String(annual));
+ $("dreYearControl").hidden=!annual;
+ $("dreAnnualMonths").hidden=!annual;
+ $("dreMonthlyComparison").hidden=annual;
+ $("dreReportTitle").textContent=annual?"DRE anual":"DRE mensal";
+ const [yearNumber,monthNumber]=mes.split("-").map(Number);
+ const period=annual?year:periodName.format(new Date(yearNumber,monthNumber-1,1));
+ $("dreReportPeriod").textContent=period[0].toUpperCase()+period.slice(1);
+ if(annual){
+  const years=new Set([year,monthYear,String(new Date().getFullYear())]);
+  validos.filter(f=>f.tipo==="entrada"||f.tipo==="saida").forEach(f=>years.add(String(f.date).slice(0,4)));
+  yearInput.replaceChildren(...[...years].sort().reverse().map(y=>new Option(y,y)));
+  yearInput.value=year;
+ }
+ const items=validos.filter(f=>String(f.date).slice(0,annual?4:7)===(annual?year:mes));
+ const receita=soma(items,"entrada"),despesa=soma(items,"saida");
  $("dreReceita").textContent=moeda(receita);$("dreDespesa").textContent=moeda(despesa);
  $("dreResultado").textContent=moeda(receita-despesa);
- categorias("dreReceitaCategorias",mensal,"entrada");categorias("dreDespesaCategorias",mensal,"saida");
+ $("dreResultado").parentElement.classList.toggle("dre-loss",receita<despesa);
+ categorias("dreReceitaCategorias",items,"entrada");categorias("dreDespesaCategorias",items,"saida");
+ if(annual){
+  renderAnnualMonths(items,year);
+  return;
+ }
  const tbody=$("dreComparativo");tbody.replaceChildren();
  const [ano,month]=mes.split("-").map(Number);
  let mesesComMovimento=0;
@@ -1406,6 +1527,21 @@ function render(){
  }
  if(!mesesComMovimento){const tr=document.createElement("tr"),td=document.createElement("td");td.colSpan=4;td.textContent="Nenhuma movimentação registrada nos últimos 6 meses.";tr.append(td);tbody.append(tr)}
 }
+$("dreHomeReport").addEventListener("click",()=>{
+ setPeriod(false);
+ requestAnimationFrame(()=>{
+  const title=$("dreReportTitle");
+  title.focus({preventScroll:true});
+  title.scrollIntoView({block:"center"});
+ });
+});
+$("dreMonthly").addEventListener("click",()=>setPeriod(false));
+$("dreAnnual").addEventListener("click",()=>setPeriod(true));
+$("dreYear").addEventListener("change",event=>{
+ selectedYear=event.target.value;
+ render();
+});
+document.addEventListener("dre-contas-alteradas",render);
 $("finMes")?.addEventListener("change",render);
 $("finSalvar")?.addEventListener("click",()=>setTimeout(render,0));
 $("finCancelar")?.addEventListener("click",()=>setTimeout(render,0));
