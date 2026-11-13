@@ -258,7 +258,7 @@ header{height:58px!important;background:linear-gradient(110deg,#063568,#0865ab)!
              style="position:absolute;inset:0;width:100%;height:100%;margin:0;padding:0;opacity:0;cursor:pointer">
     </label>
     
-    <small class="muted">Em Arquivos, selecione o PDF baixado da Uber Conta. O PDF é lido no aparelho. A conferência não altera lançamentos nem saldos.</small>
+    <small class="muted">Selecione a data trabalhada e importe o PDF da Uber Conta após a última movimentação do dia. O DRE preenche o valor recebido por corridas. Revise e toque em Registrar dia para salvar.</small>
     <div id="uberExtratoStatus" role="status"></div>
     <div id="uberExtratoResultado" hidden>
       <p id="uberExtratoSaldo"></p>
@@ -273,7 +273,7 @@ header{height:58px!important;background:linear-gradient(110deg,#063568,#0865ab)!
       </details>
     </div>
 </div>
-<div class="cols"><div class="card stack"><div class="field"><label>Data trabalhada</label><input id="uberData" type="date"/></div><div class="field"><label>Faturamento no app Uber (R$)</label><input id="uberBruto" min="0" step=".01" type="number"/></div><div class="field"><label for="uberCreditado">Recebido na Uber Conta por corridas (R$)</label><input id="uberCreditado" min="0" step=".01" type="number" placeholder="Valor das corridas no extrato"/><small class="muted">Some os créditos de Ganhos Uber do dia no extrato. Informe o total mesmo quando for igual ao faturamento. Se não houve crédito, informe zero.</small></div><div class="field"><label for="uberCusto">Combustível (R$)</label><input id="uberCusto" min="0" step=".01" type="number" placeholder="0,00"/><label for="uberCombustivelConta">Pago por</label><select id="uberCombustivelConta"><option value="uber">Uber Conta</option><option value="itau">Itaú</option><option value="fora">Outra forma, fora das contas do DRE</option></select></div><div class="field"><label>Outras despesas do dia</label><p class="muted" style="margin:0">Escolha um tipo ou digite um novo nome e informe o valor. Use + Adicionar despesa para lançar mais de uma.</p><datalist id="uberTiposDespesa"></datalist><div id="uberDespesasItens"></div><button class="secondary" id="uberAdicionarDespesa" type="button">+ Adicionar despesa</button></div><div class="notice" id="uberResumo" aria-live="polite"></div><button class="primary" id="uberSalvar">Registrar dia</button><small class="muted">Use o Financeiro para Pix recebidos e outras movimentações avulsas da conta. As despesas registradas aqui já entram na conta escolhida.</small></div><div class="card scroll"><table class="table"><thead><tr><th>Dia</th><th>Faturamento</th><th>Custos</th><th>Resultado do dia</th><th>Movimento na Uber Conta</th><th>Ações</th></tr></thead><tbody id="uberLista"></tbody></table></div></div>
+<div class="cols"><div class="card stack"><div class="field"><label>Data trabalhada</label><input id="uberData" type="date"/></div><div class="field"><label>Faturamento no app Uber (R$)</label><input id="uberBruto" min="0" step=".01" type="number"/></div><div class="field"><label for="uberCreditado">Recebido na Uber Conta por corridas (R$)</label><input id="uberCreditado" min="0" step=".01" type="number" placeholder="Valor das corridas no extrato"/><small class="muted">Importe o PDF para preencher este valor com os créditos de Ganhos Uber da data trabalhada.</small></div><div class="field"><label for="uberCusto">Combustível (R$)</label><input id="uberCusto" min="0" step=".01" type="number" placeholder="0,00"/><label for="uberCombustivelConta">Pago por</label><select id="uberCombustivelConta"><option value="uber">Uber Conta</option><option value="itau">Itaú</option><option value="fora">Outra forma, fora das contas do DRE</option></select></div><div class="field"><label>Outras despesas do dia</label><p class="muted" style="margin:0">Escolha um tipo ou digite um novo nome e informe o valor. Use + Adicionar despesa para lançar mais de uma.</p><datalist id="uberTiposDespesa"></datalist><div id="uberDespesasItens"></div><button class="secondary" id="uberAdicionarDespesa" type="button">+ Adicionar despesa</button></div><div class="notice" id="uberResumo" aria-live="polite"></div><button class="primary" id="uberSalvar">Registrar dia</button><small class="muted">Use o Financeiro para Pix recebidos e outras movimentações avulsas da conta. As despesas registradas aqui já entram na conta escolhida.</small></div><div class="card scroll"><table class="table"><thead><tr><th>Dia</th><th>Faturamento</th><th>Custos</th><th>Resultado do dia</th><th>Movimento na Uber Conta</th><th>Ações</th></tr></thead><tbody id="uberLista"></tbody></table></div></div>
 <dialog id="uberEditarDialog" class="card" aria-labelledby="uberEditarTitulo">
 <form id="uberEditarForm" class="stack">
 <h3 id="uberEditarTitulo">Editar recebimento Uber</h3>
@@ -2066,6 +2066,40 @@ $('avSave').onclick=async()=>{const a=$('avDayStart').value,b=$('avDayEnd').valu
   const el = id => document.getElementById('uberExtrato' + id);
   const arquivo = el('Arquivo');
   const inicio = el('Inicio');
+  const dataTrabalhada = document.getElementById('uberData');
+  const recebido = document.getElementById('uberCreditado');
+  let valorImportado;
+
+  function limparValorImportado() {
+    if (valorImportado !== undefined && recebido.value === valorImportado) {
+      recebido.value = '';
+      recebido.dispatchEvent(new Event('input', {bubbles: true}));
+    }
+    valorImportado = undefined;
+  }
+
+  function preencherRecebido() {
+    limparValorImportado();
+    if (!extrato) return '';
+    const data = dataTrabalhada.value;
+    if (!data || data < extrato.de || data > extrato.ate) {
+      return ' Selecione uma data trabalhada dentro do período do PDF.';
+    }
+    const total = agruparCorridas(extrato.movimentos).totais.get(data) ?? 0;
+    recebido.value = (total / 100).toFixed(2);
+    valorImportado = recebido.value;
+    recebido.dispatchEvent(new Event('input', {bubbles: true}));
+    return ' Recebido em ' + formatoData(data) + ': ' + brl(total) + '. Confira o horário de emissão do extrato.';
+  }
+
+  function mostrarImportacao() {
+    el('Status').textContent = 'PDF conferido. ' + extrato.movimentos.length +
+      ' movimentações lidas.' + preencherRecebido();
+  }
+
+  dataTrabalhada.addEventListener('change', () => {
+    if (extrato) mostrarImportacao();
+  });
   const formatoData = date => date.split('-').reverse().join('/');
   const iso = date => date.split('/').reverse().join('-');
   const centavos = value => Math.round(Number(value) * 100);
@@ -2269,6 +2303,7 @@ $('avSave').onclick=async()=>{const a=$('avDayStart').value,b=$('avDayEnd').valu
     const file = arquivo.files[0];
     if (!file) return;
     arquivo.disabled = true;
+    limparValorImportado();
     extrato = null;
     el('Resultado').hidden = true;
     el('Divergencias').open = false;
@@ -2279,10 +2314,12 @@ $('avSave').onclick=async()=>{const a=$('avDayStart').value,b=$('avDayEnd').valu
       inicio.max = extrato.ate;
       const mes = extrato.ate.slice(0, 7) + '-01';
       inicio.value = mes < extrato.de ? extrato.de : mes;
+      mostrarImportacao();
       mostrar();
-      el('Status').textContent = 'PDF conferido. ' + extrato.movimentos.length + ' movimentações lidas.';
       el('Resultado').hidden = false;
     } catch (error) {
+      extrato = null;
+      limparValorImportado();
       el('Status').textContent = 'Conferência interrompida. ' + error.message;
     } finally {
       arquivo.value = '';
