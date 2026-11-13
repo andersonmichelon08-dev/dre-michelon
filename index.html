@@ -395,6 +395,14 @@ button.dre-month-row:hover{border-color:#5385af}
 </aside></div></div></section></main></div>
 <div aria-labelledby="waTitulo" aria-modal="true" class="wa-modal" id="waModal" role="dialog"><div class="wa-panel"><h3 id="waTitulo">📲 Importar solicitação do WhatsApp</h3><p class="muted">Copie a mensagem do cliente e cole abaixo. Confira os campos antes de calcular.</p><textarea id="waTexto" placeholder="Ex.: Olá, preciso de uma viagem. Origem: Limeira, SP. Destino: Aeroporto de Viracopos. Data: 25/10/2026. Horário: 08:00. Passageiros: 2."></textarea><div class="wa-preview" id="waPrevia">Nenhuma mensagem analisada.</div><div class="actions"><button class="secondary" id="waFechar" type="button">Cancelar</button><button class="secondary" id="waAnalisar" type="button">Identificar dados</button><button class="primary" disabled="" id="waAplicar" type="button">Usar na cotação</button></div></div></div>
 <script>
+  function dreAccountBalances(c,finance){
+    const delta=key=>finance.filter(f=>f.conta===key).reduce((v,f)=>v+(f.tipo==='entrada'?1:-1)*(Number(f.valor)||0),0);
+    const itau=(Number(c.itauInicial)||0)+delta('itau');
+    const uber=(Number(c.uberInicial)||0)+delta('uber');
+    return {itau,uber};
+  }
+</script>
+<script>
 (()=>{'use strict';const KEY='michelon_base_nova_v1',LEGACY='michelon_tabela_rotas_v1';const $=id=>document.getElementById(id),money=n=>Number(n).toLocaleString('pt-BR',{style:'currency',currency:'BRL'}),norm=s=>String(s||'').normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase().replace(/[^a-z0-9]/g,' ').replace(/\s+/g,' ').trim(),num=id=>Number($(id).value);
 const defaults={routes:[],trips:[],finance:[],uber:[],contas:{itauInicial:0,uberInicial:0,cartaoLimite:0,cartaoUsado:0},cfg:{ida:2.1,vazio:1.5,volta:3,margem:10}};
 let db;try{db=JSON.parse(localStorage.getItem(KEY))||structuredClone(defaults)}catch{db=structuredClone(defaults)};
@@ -534,12 +542,6 @@ $('rSalvar').onclick=()=>{const origem=$('rOrigem').value.trim(),destino=$('rDes
  let finEditId=null;
  const finDate=f=>String(f.date||'').slice(0,10), finMonth=f=>finDate(f).slice(0,7);
  const finMonthInput=$('finMes');finMonthInput.value=new Date(Date.now()-new Date().getTimezoneOffset()*60000).toISOString().slice(0,7);
-  function dreAccountBalances(c,finance){
-    const delta=key=>finance.filter(f=>f.conta===key).reduce((v,f)=>v+(f.tipo==='entrada'?1:-1)*(Number(f.valor)||0),0);
-    const itau=(Number(c.itauInicial)||0)+delta('itau');
-    const uber=(Number(c.uberInicial)||0)+delta('uber');
-    return {itau,uber};
-  }
   function renderContas(){
     const c=db.contas||{},all=Array.isArray(db.finance)?db.finance:[];
     const {itau,uber}=dreAccountBalances(c,all);
