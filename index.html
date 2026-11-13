@@ -273,7 +273,17 @@ header{height:58px!important;background:linear-gradient(110deg,#063568,#0865ab)!
       </details>
     </div>
 </div>
-<div class="cols"><div class="card stack"><div class="field"><label>Data trabalhada</label><input id="uberData" type="date"/></div><div class="field"><label>Faturamento no app Uber (R$)</label><input id="uberBruto" min="0" step=".01" type="number"/></div><div class="field"><label for="uberCreditado">Recebido na Uber Conta por corridas (R$)</label><input id="uberCreditado" min="0" step=".01" type="number" placeholder="Valor das corridas no extrato"/><small class="muted">Começa com o faturamento informado. Se o extrato mostrar outro total em Ganhos Uber, ajuste aqui, inclusive para zero. Registre Pix recebidos à parte no Financeiro.</small></div><div class="field"><label for="uberCusto">Combustível (R$)</label><input id="uberCusto" min="0" step=".01" type="number" placeholder="0,00"/><label for="uberCombustivelConta">Pago por</label><select id="uberCombustivelConta"><option value="uber">Uber Conta</option><option value="itau">Itaú</option><option value="fora">Outra forma, fora das contas do DRE</option></select></div><div class="field"><label>Outras despesas do dia</label><p class="muted" style="margin:0">Escolha um tipo ou digite um novo nome e informe o valor. Use + Adicionar despesa para lançar mais de uma.</p><datalist id="uberTiposDespesa"></datalist><div id="uberDespesasItens"></div><button class="secondary" id="uberAdicionarDespesa" type="button">+ Adicionar despesa</button></div><div class="notice" id="uberResumo" aria-live="polite"></div><button class="primary" id="uberSalvar">Registrar dia</button><small class="muted">Use o Financeiro para Pix recebidos e outras movimentações avulsas da conta. As despesas registradas aqui já entram na conta escolhida.</small></div><div class="card scroll"><table class="table"><thead><tr><th>Dia</th><th>Faturamento</th><th>Custos</th><th>Resultado do dia</th><th>Movimento na Uber Conta</th></tr></thead><tbody id="uberLista"></tbody></table></div></div></section>
+<div class="cols"><div class="card stack"><div class="field"><label>Data trabalhada</label><input id="uberData" type="date"/></div><div class="field"><label>Faturamento no app Uber (R$)</label><input id="uberBruto" min="0" step=".01" type="number"/></div><div class="field"><label for="uberCreditado">Recebido na Uber Conta por corridas (R$)</label><input id="uberCreditado" min="0" step=".01" type="number" placeholder="Valor das corridas no extrato"/><small class="muted">Some os créditos de Ganhos Uber do dia no extrato. Informe o total mesmo quando for igual ao faturamento. Se não houve crédito, informe zero.</small></div><div class="field"><label for="uberCusto">Combustível (R$)</label><input id="uberCusto" min="0" step=".01" type="number" placeholder="0,00"/><label for="uberCombustivelConta">Pago por</label><select id="uberCombustivelConta"><option value="uber">Uber Conta</option><option value="itau">Itaú</option><option value="fora">Outra forma, fora das contas do DRE</option></select></div><div class="field"><label>Outras despesas do dia</label><p class="muted" style="margin:0">Escolha um tipo ou digite um novo nome e informe o valor. Use + Adicionar despesa para lançar mais de uma.</p><datalist id="uberTiposDespesa"></datalist><div id="uberDespesasItens"></div><button class="secondary" id="uberAdicionarDespesa" type="button">+ Adicionar despesa</button></div><div class="notice" id="uberResumo" aria-live="polite"></div><button class="primary" id="uberSalvar">Registrar dia</button><small class="muted">Use o Financeiro para Pix recebidos e outras movimentações avulsas da conta. As despesas registradas aqui já entram na conta escolhida.</small></div><div class="card scroll"><table class="table"><thead><tr><th>Dia</th><th>Faturamento</th><th>Custos</th><th>Resultado do dia</th><th>Movimento na Uber Conta</th><th>Ações</th></tr></thead><tbody id="uberLista"></tbody></table></div></div>
+<dialog id="uberEditarDialog" class="card" aria-labelledby="uberEditarTitulo">
+<form id="uberEditarForm" class="stack">
+<h3 id="uberEditarTitulo">Editar recebimento Uber</h3>
+<p id="uberEditarDia"></p>
+<div class="field"><label for="uberEditarValor">Recebido na Uber Conta por corridas (R$)</label><input id="uberEditarValor" type="number" min="0" step="0.01" required/></div>
+<p id="uberEditarDiferenca" aria-live="polite"></p>
+<p class="muted">O valor atualiza a receita vinculada no Financeiro. Se você já lançou um ajuste avulso para a mesma diferença, confira esse ajuste antes de salvar.</p>
+<div class="actions"><button class="primary" type="submit">Salvar recebimento</button><button class="secondary" type="button" id="uberEditarCancelar">Cancelar</button></div>
+</form>
+</dialog></section>
 <section class="page" id="rotas"><div class="top"><h2>Tabela de rotas</h2><span class="muted">Configuração interna</span></div><div class="cols"><div class="card stack scroll"><h3 style="margin:0">Cadastrar ou atualizar</h3><div class="field"><label>Origem</label><input id="rOrigem" value="Limeira, SP"/></div><div class="field"><label>Destino</label><input id="rDestino" placeholder="Ex.: Aeroporto de Guarulhos"/></div><div class="field"><label>Apelidos separados por vírgula</label><input id="rAliases" placeholder="GRU, Cumbica, Guarulhos"/></div><div class="field"><label>Rodovia principal</label><input id="rRodovia" placeholder="SP-348 Bandeirantes"/></div><div class="grid3"><div class="field"><label>Km ida</label><input id="rIda" min=".1" step=".1" type="number"/></div><div class="field"><label>Km volta</label><input id="rVolta" min=".1" step=".1" type="number"/></div><div class="field"><label>Pedágios</label><select id="rPedStatus"><option value="pendente">Não verificados</option><option value="nenhum">Sem pedágios</option><option value="valor">Com pedágios</option></select></div></div><div class="grid3"><div class="field"><label>Pedágio ida R$</label><input id="rPedIda" min="0" step=".01" type="number"/></div><div class="field"><label>Pedágio volta R$</label><input id="rPedVolta" min="0" step=".01" type="number"/></div></div><button class="primary" id="rSalvar">Salvar rota</button><span class="muted" id="rMsg"></span></div><div class="card scroll"><table class="table"><thead><tr><th>Origem → destino</th><th>Km</th><th>Ação</th></tr></thead><tbody id="rLista"></tbody></table></div></div></section>
 <section class="page" id="recuperacao"><div class="top"><h2>Recuperação dos lançamentos</h2></div><div class="card">Para recuperar lançamentos, use o seu backup JSON em Mais → Recuperar backup.</div></section><section class="page" id="config"><div class="top"><h2>Ajustes e backup</h2></div><div class="cols"><div class="card stack"><h3 style="margin:0">Valores de cálculo</h3><div class="field"><label>Passageiro ida (R$/km)</label><input id="cfgIda" min="0" step=".01" type="number"/></div><div class="field"><label>Retorno vazio (R$/km)</label><input id="cfgVazio" min="0" step=".01" type="number"/></div><div class="field"><label>Ida e volta com passageiro (R$/km)</label><input id="cfgVolta" min="0" step=".01" type="number"/></div><div class="field"><label>Margem (%)</label><input id="cfgMargem" min="0" step="1" type="number"/></div><button class="primary" id="cfgSalvar">Salvar ajustes</button><div class="notice" style="background:#e9f5f2;color:#19383c"><strong>Base offline de pedágios georreferenciados</strong><p>Importe um JSON de praças com latitude, longitude, tarifa, sentido e fonte verificada. Os dados ficam neste navegador, sem API paga.</p><input accept=".json,application/json" id="pedImport" type="file"/><div class="muted" id="pedImportStatus">Nenhuma base georreferenciada importada. Também é possível importar JSON oficial da ANTT para localização (sem tarifa).</div><button class="secondary" id="pedExportModelo" type="button">Baixar modelo JSON</button></div></div><div class="card stack"><h3 style="margin:0">Segurança dos dados</h3><p class="muted">Faça backup antes de limpar o navegador ou mudar de computador.</p><button class="secondary" id="exportar">Exportar backup JSON</button><div class="field"><label>Restaurar backup desta nova base</label><input accept=".json,application/json" id="importar" type="file"/></div><div class="notice">Esta nova base é independente. Ela consegue ler rotas da tabela antiga se você importar o JSON exportado na versão anterior, mas não migra automaticamente todo o aplicativo antigo.</div></div></div></section>
 <section class="page" id="nfDemo" aria-label="Demonstração de notas fiscais">
@@ -533,16 +543,18 @@ function uberTotais(bruto,creditado,combustivel,combustivelConta,despesas){
   const movimento=creditado-(combustivelConta==='uber'?combustivel:0)-somar('uber');
   return {outrasDespesas,custo,resultado:bruto-custo,movimento};
 }
-function uberAtualizarResumo(){
-  const {resultado,movimento}=uberTotais(num('uberBruto'),num('uberCreditado'),num('uberCusto'),$('uberCombustivelConta').value,uberDespesasDoFormulario());
-  $('uberResumo').textContent='Resultado do dia '+money(resultado)+' · Movimento na Uber Conta '+money(movimento);
-}
 const uberCredito=$('uberCreditado');
-let uberCreditoManual=false;
-$('uberBruto').addEventListener('input',()=>{if(!uberCreditoManual)uberCredito.value=$('uberBruto').value});
-uberCredito.addEventListener('input',()=>{
-  uberCreditoManual=uberCredito.value!=='';
-});
+function uberDiferenca(bruto,creditado){
+  const diferenca=Math.round((creditado-bruto)*100)/100;
+  return 'Diferença entre recebido e faturado: '+(diferenca>0?'+':'')+money(diferenca);
+}
+function uberAtualizarResumo(){
+  const bruto=num('uberBruto'),creditado=num('uberCreditado');
+  const {resultado,movimento}=uberTotais(bruto,creditado,num('uberCusto'),$('uberCombustivelConta').value,uberDespesasDoFormulario());
+  const resumo='Resultado do dia '+money(resultado);
+  $('uberResumo').textContent=uberCredito.value===''?resumo+' · Informe o total recebido para conferir o movimento':
+    resumo+' · Movimento na Uber Conta '+money(movimento)+' · '+uberDiferenca(bruto,creditado);
+}
 for(const event of ['input','change'])$('uber').addEventListener(event,uberAtualizarResumo);
 $('uberAdicionarDespesa').onclick=uberAdicionarDespesa;
 uberAtualizarTipos();
@@ -577,7 +589,6 @@ $('uberSalvar').onclick=()=>{
   uberAtualizarTipos();
   $('uberBruto').value='';
   uberCredito.value='';
-  uberCreditoManual=false;
   $('uberCusto').value='';
   $('uberCombustivelConta').value='uber';
   $('uberDespesasItens').replaceChildren();
@@ -588,6 +599,63 @@ $('uberSalvar').onclick=()=>{
   stats();
   alert('Dia registrado. Confira as movimentações das contas no Financeiro.');
 };
+const uberEditarDialog=$('uberEditarDialog');
+const uberEditarValor=$('uberEditarValor');
+let uberEmEdicao=null;
+function uberAbrirEdicao(registro){
+  uberEmEdicao={id:registro.id,date:registro.date,bruto:registro.bruto,creditado:registro.creditado??registro.bruto};
+  $('uberEditarDia').textContent=registro.date+' · Faturamento '+money(registro.bruto);
+  uberEditarValor.value=uberEmEdicao.creditado;
+  uberAtualizarDiferencaEdicao();
+  uberEditarDialog.showModal();
+}
+function uberAtualizarDiferencaEdicao(){
+  $('uberEditarDiferenca').textContent=uberEditarValor.value===''?'':uberDiferenca(uberEmEdicao.bruto,num('uberEditarValor'));
+}
+uberEditarValor.oninput=uberAtualizarDiferencaEdicao;
+$('uberEditarCancelar').onclick=()=>uberEditarDialog.close();
+$('uberEditarForm').onsubmit=event=>{
+  event.preventDefault();
+  if(!uberEmEdicao||!uberEditarValor.reportValidity())return;
+  const creditado=num('uberEditarValor');
+  if(!Number.isFinite(creditado)||creditado<0)return;
+  const anterior=db;
+  try{
+    const raw=localStorage.getItem(KEY);
+    const atual=JSON.parse(raw);
+    const registro=atual.uber.find(u=>u.id===uberEmEdicao.id);
+    if(!registro||registro.date!==uberEmEdicao.date||registro.bruto!==uberEmEdicao.bruto||
+        (registro.creditado??registro.bruto)!==uberEmEdicao.creditado){
+      alert('O lançamento mudou. Atualize a página e abra a edição novamente.');
+      return;
+    }
+    const origemId='uber:'+registro.id+':receita';
+    const receitas=atual.finance.filter(f=>f.origemId===origemId);
+    if(receitas.length>1||(!receitas.length&&uberEmEdicao.creditado>0)){
+      alert('A receita vinculada não pôde ser identificada com segurança. Confira este registro no Financeiro.');
+      return;
+    }
+    if(creditado!==uberEmEdicao.creditado){
+      localStorage.setItem(KEY+'_backup_uber_'+Date.now(),raw);
+      registro.creditado=creditado;
+      if(receitas.length){
+        receitas[0].valor=creditado;
+      }else{
+        const date=registro.date.split('/').reverse().join('-');
+        atual.finance.unshift({id:crypto.randomUUID(),origemId,date,desc:'Corridas Uber',categoria:'Uber',tipo:'entrada',valor:creditado,conta:'uber'});
+      }
+      db=atual;
+      save();
+    }
+  }catch(e){
+    db=anterior;
+    alert('Não foi possível salvar a alteração. Confira o espaço disponível e tente novamente.');
+    return;
+  }
+  uberEditarDialog.close();
+  renderUber();
+  stats();
+};
 function renderUber(){
   $('uberLista').replaceChildren();
   db.uber.forEach(u=>{
@@ -597,7 +665,7 @@ function renderUber(){
       +(u.despesas||[]).filter(d=>d.conta&&d.conta!=='uber').reduce((total,d)=>total+Number(d.valor),0);
     const custos=money(u.custo)+(u.despesas?.length?' · '+u.despesas.map(d=>d.tipo+': '+money(d.valor)).join(' / '):'');
     const creditoDiferente=Math.round((u.bruto-creditado)*100)!==0;
-    row($('uberLista'),[u.date,money(u.bruto),custos,money(u.bruto-u.custo),money(movimento)+(creditoDiferente?' · Corridas recebidas '+money(creditado):'')]);
+    row($('uberLista'),[u.date,money(u.bruto),custos,money(u.bruto-u.custo),money(movimento)+(creditoDiferente?' · Corridas recebidas '+money(creditado):'')],btn('Editar',()=>uberAbrirEdicao(u)));
   });
 }
 for(const [id,key] of [['cfgIda','ida'],['cfgVazio','vazio'],['cfgVolta','volta'],['cfgMargem','margem']])$(id).value=db.cfg[key];
