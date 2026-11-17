@@ -1710,7 +1710,7 @@ const favorites=[
  {name:'São Paulo, SP',detail:'Cidade',terms:'sao paulo capital'},
  {name:'Guarulhos, SP',detail:'Cidade',terms:'guarulhos cidade'}];
 
-function addAddressSuggestions(field, urban){
+function addAddressSuggestions(field, urban, onSelect){
  const selected=urban?urbanGpsPoints:travelPoints;
  field.removeAttribute('list');
  const list=document.createElement('div');
@@ -1726,36 +1726,57 @@ function addAddressSuggestions(field, urban){
  if(urban)holder.after(list,feedback);
  else holder.append(list,feedback);
  function render(items){
-   list.replaceChildren();
+   const existing=new Set([...list.children].map(option=>option.dataset.address));
    for(const {label,coords,detail} of items.slice(0,6)){
+     if(existing.has(label))continue;
      const option=document.createElement('button');
      option.type='button';
      option.className='secondary';
      option.style.cssText='width:100%;text-align:left;margin-bottom:4px';
      option.textContent=label;
+     option.dataset.address=label;
      if(detail){
        const line=document.createElement('small');
        line.style.display='block';
        line.textContent=detail;
        option.append(line);
      }
-     option.addEventListener('pointerdown',event=>event.preventDefault());
      option.onclick=()=>{
        clear();
        field.value=label;
        if(!urban)field.dispatchEvent(new Event('input',{bubbles:true}));
        if(coords)selected.set(field,{address:label,coords});
-       if(urban)urbanChanged();
+       if(urban){
+         onSelect();
+         urbanChanged();
+       }
        clear();
        feedback.textContent='Endereço selecionado.';
-       field.focus();
+       if(urban)field.blur();
+       else field.focus();
      };
      list.append(option);
    }
-   list.hidden=!list.childElementCount||document.activeElement!==field;
+   list.hidden=!list.childElementCount||(!choosing&&document.activeElement!==field&&!list.contains(document.activeElement));
  }
  let timer,controller;
+ let choosing=false,choiceTimer;
+ const finishChoice=()=>{
+   choosing=false;
+   clearTimeout(choiceTimer);
+   if(document.activeElement!==field&&!list.contains(document.activeElement))list.hidden=true;
+ };
+ list.addEventListener('pointerdown',()=>{
+   clearTimeout(choiceTimer);
+   choosing=true;
+   // Keep the option visible while Safari transfers focus away from the input.
+ });
+ list.addEventListener('pointerup',()=>{
+   choiceTimer=setTimeout(finishChoice,400);
+ });
+ list.addEventListener('pointercancel',finishChoice);
  const clear=()=>{
+   finishChoice();
    clearTimeout(timer);
    controller?.abort();
    controller=undefined;
@@ -1763,8 +1784,11 @@ function addAddressSuggestions(field, urban){
    list.hidden=true;
    feedback.textContent='';
  };
- field.addEventListener('blur',event=>{if(!list.contains(event.relatedTarget))list.hidden=true});
- list.addEventListener('focusout',event=>{if(!list.contains(event.relatedTarget))list.hidden=true});
+ const hideOnBlur=event=>{
+   if(!choosing&&event.relatedTarget!==field&&!list.contains(event.relatedTarget))list.hidden=true;
+ };
+ field.addEventListener('blur',hideOnBlur);
+ list.addEventListener('focusout',hideOnBlur);
  field.addEventListener('focus',()=>{list.hidden=!list.childElementCount});
  field.addEventListener('keydown',event=>{if(event.key==='Escape')clear()});
  field.addEventListener('input',()=>{
@@ -1844,8 +1868,11 @@ function addUrbanGps(field){
  const feedback=document.createElement('small');
  feedback.className='urb-gps-status';feedback.setAttribute('role','status');
  field.parentElement.after(button,feedback);
- const clearSuggestions=addAddressSuggestions(field,true);
  let fieldRevision=0;
+ const clearSuggestions=addAddressSuggestions(field,true,()=>{
+   fieldRevision++;
+   feedback.textContent='';
+ });
  field.addEventListener('input',()=>{fieldRevision++;urbanGpsPoints.delete(field);feedback.textContent=''});
  button.onclick=async()=>{
    if(!window.isSecureContext||!navigator.geolocation){
