@@ -454,6 +454,73 @@ function registerRecoveredPayment(legacy){
   alert(matches.length?'Este pagamento já estava registrado. Nenhuma receita duplicada.':'Pagamento registrado no Itaú. A reserva e a data da viagem foram preservadas.');
  }catch(e){alert('Não foi possível registrar o pagamento. Confira o armazenamento e tente novamente.');console.error(e)}
 }
+function appendTripPaymentActions(container,trip,linkedPayments){
+ const paid=trip.status==='Pago';
+ const payment=linkedPayments.length===1?linkedPayments[0]:null;
+ const canChangeAccount=paid&&trip.urban&&payment?.categoria==='Viagens particulares'&&payment.tipo==='entrada';
+ if(paid&&!canChangeAccount)return;
+ if(!paid&&linkedPayments.length>1)return;
+
+ const account=document.createElement('select');
+ if(trip.urban&&(paid||!payment)){
+  account.setAttribute('aria-label','Conta de recebimento da corrida particular');
+  account.append(new Option('Conta Uber','uber'),new Option('Itaú','itau'));
+  if(canChangeAccount&&payment.conta==='itau')account.value='itau';
+  container.append(account);
+ }
+ container.append(btn(canChangeAccount?'Alterar conta do recebimento':payment?'Confirmar pagamento vinculado':'Registrar pagamento',()=>{
+  if(!trip.urban&&trip.status!=='Reserva confirmada'){
+   alert('Confirme a reserva antes de registrar o pagamento.');
+   return;
+  }
+  const destination=payment&&!paid?payment.conta:trip.urban?account.value:'itau';
+  if(canChangeAccount&&destination===payment.conta)return;
+  const bank=destination==='uber'?'na Conta Uber':'no Itaú';
+  const question=payment&&!paid?'Marcar a viagem como paga usando o recebimento já vinculado?':
+   (canChangeAccount?'Salvar a conta do recebimento ':'Confirmar o recebimento ')+bank+'?';
+  if(!confirm(question))return;
+
+  try{
+   const raw=localStorage.getItem(KEY);
+   const fresh=JSON.parse(raw);
+   const current=fresh.trips.find(item=>item.id===trip.id);
+   const originId='reserva:'+trip.id;
+   const matches=fresh.finance.filter(item=>item.origemId===originId);
+   if(!current||current.status!==trip.status||current.total!==trip.total||!!current.urban!==!!trip.urban||
+      (canChangeAccount ? matches.length!==1||matches[0].id!==payment.id||matches[0].conta!==payment.conta||
+                          matches[0].categoria!=='Viagens particulares'||matches[0].tipo!=='entrada' :
+       payment ? matches.length!==1||matches[0].id!==payment.id : matches.length>0)){
+    alert('A viagem ou o pagamento mudou. Atualize a tela e confira o lançamento.');
+    return;
+   }
+
+   if(canChangeAccount){
+    localStorage.setItem(KEY+'_backup_conta_recebimento_'+Date.now(),raw);
+    matches[0].conta=destination;
+   }else if(payment){
+    current.status='Pago';
+   }else{
+    const amount=Number(current.total);
+    if(!Number.isFinite(amount)||amount<=0){alert('Valor da viagem inválido.');return}
+    const today=new Date();
+    const localDate=new Date(today.getTime()-today.getTimezoneOffset()*60000).toISOString().slice(0,10);
+    fresh.finance.unshift({id:crypto.randomUUID(),origemId:originId,
+     desc:'Viagem recebida: '+current.origin+' → '+current.dest,valor:amount,date:localDate,
+     tipo:'entrada',categoria:current.urban?'Viagens particulares':'Viagens executivas',conta:destination});
+    current.status='Pago';
+   }
+   localStorage.setItem(KEY,JSON.stringify(fresh));
+   db=fresh;
+  }catch(error){
+   console.error(error);
+   alert('Não foi possível salvar o recebimento. Confira o armazenamento e tente novamente.');
+   return;
+  }
+  renderTrips();renderFin();stats();
+  alert(canChangeAccount?'Conta do recebimento atualizada.':
+   payment?'Viagem marcada como paga com o recebimento já registrado.':'Pagamento registrado '+bank+'.');
+ }));
+}
 function renderTrips(){
  for(const id of ['listaViagens','listaAgenda'])$(id).replaceChildren();
  // Reserva histórica preservada; receita somente após confirmação explícita de recebimento.
@@ -485,19 +552,8 @@ function renderTrips(){
   const actions=document.createElement('div');actions.style.cssText='display:flex;gap:6px;flex-wrap:wrap';
   if(t.status!=='Pago'){
    actions.append(btn('Confirmar reserva',()=>{window.michelonOpenAvailability(t.id)}));
-   actions.append(btn('Registrar pagamento',()=>{
-    if(!t.urban&&t.status!=='Reserva confirmada'){alert('Confirme a reserva antes de registrar o pagamento.');return}
-    if(!confirm('Confirmar que o pagamento desta viagem foi realmente recebido?'))return;
-    const amount=Number(t.total);
-    if(!(amount>0)){alert('Valor da viagem inválido.');return}
-    const id='reserva:'+t.id;
-    const existing=db.finance.find(f=>f.origemId===id);
-    if(existing){t.status='Pago';save();renderTrips();renderFin();stats();alert('Este pagamento já estava registrado. Nenhuma receita duplicada.');return}
-    const today=new Date();const localDate=new Date(today.getTime()-today.getTimezoneOffset()*60000).toISOString().slice(0,10);
-    db.finance.unshift({id:crypto.randomUUID(),origemId:id,desc:'Viagem recebida: '+t.origin+' → '+t.dest,valor:amount,date:localDate,tipo:'entrada',categoria:t.urban?'Viagens particulares':'Viagens executivas',conta:'itau'});
-    t.status='Pago';save();renderTrips();renderFin();stats();alert('Pagamento registrado uma única vez no Meu Financeiro.');
-   }));
   }
+  appendTripPaymentActions(actions,t,linkedPayments);
   if(t.status==='Pago'&&linkedPayments.length===1){
    actions.append(btn('Emitir recibo',()=>window.dispatchEvent(new CustomEvent('michelon-open-receipt',{detail:{urban:!!t.urban,points:Array.isArray(t.points)&&t.points.length>=2?t.points:[t.origin,t.dest],total:linkedPayments[0].valor,client:t.name||t.client||'',form:t.paymentMethod||'',date:linkedPayments[0].date}}))));
   }
@@ -534,6 +590,7 @@ function renderTrips(){
      db.trips=db.trips.filter(x=>x.id!==t.id);save();renderTrips();stats();
     }));
    }
+   if(t.urban)appendTripPaymentActions(actionCell,t,linkedPayments);
    agendaRow.append(actionCell);$('listaAgenda').append(agendaRow);
  });
 }
@@ -611,10 +668,10 @@ $('rSalvar').onclick=()=>{const origem=$('rOrigem').value.trim(),destino=$('rDes
     db.finCategoriasPersonalizadas[tipo].push(nome);save();finAtualizarCategorias(nome);aplicarContaSugerida();$('finNovaCategoria').value='';
   };
   finAtualizarCategorias();$('finConta').value=contaSugerida();
- function finReset(){finEditId=null;$('finConta').value='uber';$('finDesc').value='';$('finValor').value='';$('finSalvar').textContent='Salvar lançamento';$('finCancelar').classList.add('hidden');finAtualizarCategorias()}
+ function finReset(){finEditId=null;$('finDesc').value='';$('finValor').value='';$('finSalvar').textContent='Salvar lançamento';$('finCancelar').classList.add('hidden');finAtualizarCategorias();aplicarContaSugerida()}
  $('finCancelar').onclick=finReset;
  $('finMes').onchange=renderFin;$('finFiltro').onchange=renderFin;
- function contaSugerida(){const tipo=$('finTipo').value,cat=String($('finCategoria').value||'').toLocaleLowerCase('pt-BR');return tipo==='entrada'&&(/viagens executivas|traslados|aeroportos|viagens particulares|serviços extras/.test(cat))?'itau':'uber'}
+ function contaSugerida(){const tipo=$('finTipo').value,cat=String($('finCategoria').value||'').toLocaleLowerCase('pt-BR');return tipo==='entrada'&&(/viagens executivas|traslados|aeroportos|serviços extras/.test(cat))?'itau':'uber'}
  function aplicarContaSugerida(){if(!finEditId)$('finConta').value=contaSugerida()}
  $('finTipo').onchange=()=>{finAtualizarCategorias();aplicarContaSugerida()};
  $('finCategoria').onchange=aplicarContaSugerida;
@@ -799,69 +856,6 @@ $('importar').onchange=async e=>{
  finally{e.target.value=''}
 };
 for(const id of ['finData','uberData'])$(id).value=new Date(Date.now()-new Date().getTimezoneOffset()*60000).toISOString().slice(0,10);function stats(){$('statTrips').textContent=db.trips.length;$('statRoutes').textContent=db.routes.length;renderFin()}stats();renderTrips();renderRoutes();renderUber();
-})();
-</script><script>
-/* Busca de locais separada do cálculo: sugestões não são quilômetros nem pedágios. */
-(()=>{'use strict';
-const favorites=[
- {name:'Aeroporto Internacional de Viracopos (VCP)',detail:'Campinas, São Paulo',terms:'viracopos vcp aeroporto campinas'},
- {name:'Aeroporto Internacional de Guarulhos (GRU)',detail:'Guarulhos, São Paulo',terms:'gru cumbica aeroporto guarulhos sao paulo'},
- {name:'Aeroporto de Congonhas (CGH)',detail:'São Paulo, SP',terms:'congonhas cgh aeroporto sao paulo'},
- {name:'Campinas, SP',detail:'Cidade',terms:'campinas'},
- {name:'Americana, SP',detail:'Cidade',terms:'americana'},
- {name:'Piracicaba, SP',detail:'Cidade',terms:'piracicaba'},
- {name:'Limeira, SP',detail:'Cidade',terms:'limeira'},
- {name:'São Paulo, SP',detail:'Cidade',terms:'sao paulo capital'},
- {name:'Guarulhos, SP',detail:'Cidade',terms:'guarulhos cidade'}];
-const clean=t=>String(t||'').normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase().trim();
-for(const id of ['origem','destino']){
- const input=document.getElementById(id);if(!input)continue;
- const parent=input.parentElement;parent.classList.add('smart-wrap');
-  const searchBtn=document.createElement('button');searchBtn.type='button';searchBtn.className='secondary';searchBtn.textContent='🔎 Buscar endereço';searchBtn.style.cssText='align-self:flex-start;padding:5px 9px;font-size:12px;margin-top:3px';parent.append(searchBtn);
- const list=document.createElement('div');list.className='smart-list';list.hidden=true;parent.append(list);
- const hint=document.createElement('div');hint.className='smart-hint';hint.textContent='Digite uma cidade, rua ou aeroporto';parent.append(hint);
- let timer=0,controller=null,seq=0;
- const show=(items,notice)=>{list.replaceChildren();if(!items.length){list.hidden=true;hint.textContent=notice||'Nenhuma sugestão encontrada';return}for(const item of items.slice(0,7)){
- const b=document.createElement('button');b.type='button';b.className='smart-choice';b.textContent=item.name;
- const small=document.createElement('span');small.className='smart-small';small.textContent=item.detail||'';b.append(small);
- b.addEventListener('mousedown',e=>e.preventDefault());b.addEventListener('click',()=>{input.value=item.name;list.hidden=true;hint.textContent='Local selecionado. O cálculo depende de uma rota disponível.';input.dispatchEvent(new Event('change',{bubbles:true}))});list.append(b)}list.hidden=false;hint.textContent=notice||'Selecione uma sugestão'};
- input.addEventListener('input',()=>{clearTimeout(timer);if(controller)controller.abort();const q=clean(input.value);const thisSeq=++seq;if(q.length<2){list.hidden=true;hint.textContent='Digite ao menos 2 letras';return}
- const local=favorites.filter(x=>clean(x.name+' '+x.terms).includes(q));show(local,'Buscando mais locais…');
- if(q.length<3)return;
- timer=setTimeout(async()=>{controller=new AbortController();try{
- const url='https://photon.komoot.io/api/?limit=6&lang=pt&q='+encodeURIComponent(input.value+', Brasil');
- const response=await fetch(url,{signal:controller.signal});if(!response.ok)throw Error('Serviço indisponível');
- const data=await response.json();if(thisSeq!==seq)return;
- const remote=(data.features||[]).filter(f=>f.properties?.countrycode==='BR').map(f=>{const p=f.properties||{};return {name:[p.name,p.city&&p.city!==p.name?p.city:null,p.state].filter(Boolean).join(', '),detail:[p.street,p.housenumber,p.country].filter(Boolean).join(' ')}}).filter(x=>x.name);
- const all=[...local];for(const r of remote)if(!all.some(x=>clean(x.name)===clean(r.name)))all.push(r);
- show(all,all.length?'Escolha o local correto':'Sem sugestões. Confira a internet ou digite o endereço completo.');
- }catch(err){if(err.name==='AbortError')return;if(thisSeq===seq)show(local,'Busca online indisponível; sugestões conhecidas continuam disponíveis.')}},400)
- });
- searchBtn.addEventListener('click',async()=>{
-   clearTimeout(timer);if(controller)controller.abort();++seq;
-   const q=input.value.trim();
-   if(q.length<3){hint.textContent='Digite pelo menos 3 letras para pesquisar.';return}
-   searchBtn.disabled=true;searchBtn.textContent='Pesquisando…';
-   hint.textContent='Consultando endereço. Aguarde…';
-   const local=favorites.filter(x=>clean(x.name+' '+x.terms).includes(clean(q)));
-   try{
-     const ac=new AbortController(),timeout=setTimeout(()=>ac.abort(),12000);
-     let data;
-     try{
-       const r=await fetch('https://nominatim.openstreetmap.org/search?format=jsonv2&addressdetails=1&limit=5&countrycodes=br&q='+encodeURIComponent(q),{signal:ac.signal});
-       if(!r.ok)throw Error('HTTP '+r.status);
-       data=await r.json();
-     }finally{clearTimeout(timeout)}
-     const remote=data.map(x=>({name:x.display_name,detail:x.type||'Endereço encontrado'}));
-     show([...local,...remote],remote.length?'Selecione um endereço na lista.':'Nenhum endereço online; confira as opções locais.');
-   }catch(e){
-     show(local,local.length?'Serviço online indisponível. Escolha uma das cidades conhecidas.':'Falha na consulta: '+(e.name==='AbortError'?'tempo esgotado':e.message)+'. Verifique a conexão ou tente novamente.');
-   }finally{searchBtn.disabled=false;searchBtn.textContent='🔎 Buscar endereço'}
- });
- input.addEventListener('keydown',e=>{if(e.key==='Escape')list.hidden=true});
- input.addEventListener('blur',()=>setTimeout(()=>list.hidden=true,180));
- input.addEventListener('focus',()=>{if(input.value.trim().length>=2)input.dispatchEvent(new Event('input'))});
- }
 })();
 </script><script>
 /* Consulta rodoviária independente: preserva o cálculo cadastrado e a interface aprovada. */
@@ -1361,22 +1355,7 @@ $('salvarViagem').addEventListener('click',e=>{if(!active)return;e.stopImmediate
 $('waEnviar').addEventListener('click',e=>{if(!active)return;e.stopImmediatePropagation();const msg=['*Michelon Viagens Executivas*','Proposta de viagem',...active.points.map((p,i)=>(i===0?'Origem':i===active.points.length-1?'Destino final':'Parada '+i)+': '+p),'Distância total: '+active.km.toFixed(1)+' km','Pedágios: '+fmt(active.toll),'Valor final: '+fmt(active.total),'Confirme a disponibilidade antes de fechar.'].join('\n');window.open('https://wa.me/?text='+encodeURIComponent(msg),'_blank','noopener')},true);
 })();</script><style id="smart-stops-fix">
 #paradasMichelon .multi-stop{position:relative;flex-wrap:wrap}#paradasMichelon .multi-stop>input{flex:1 1 calc(100% - 58px)}#paradasMichelon .stop-search{flex:1 1 100%;font-size:13px;text-align:left;padding:8px 11px}#paradasMichelon .stop-suggestions{position:relative;width:100%;flex:1 1 100%;background:#fff;border:1px solid #b6d5f1;border-radius:9px;max-height:220px;overflow:auto;z-index:40}#paradasMichelon .stop-suggestions[hidden]{display:none!important}#paradasMichelon .stop-suggestions button{display:block;width:100%;text-align:left;background:white;color:#153b67;border:0;border-bottom:1px solid #e1eaf4;padding:10px;white-space:normal;font-size:13px}#paradasMichelon .stop-status{font-size:11px;color:#607b94;flex:1 1 100%}
-</style><script id="smart-stops-script">(()=>{'use strict';
-const holder=document.getElementById('paradasMichelon');if(!holder)return;
-const normalize=s=>String(s||'').normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase();
-const local=[['Aeroporto Internacional de Viracopos, Campinas, SP','viracopos vcp aeroporto'],['Santa Gertrudes, SP','santa gertrudes'],['Limeira, SP','limeira'],['Campinas, SP','campinas'],['Aeroporto Internacional de Guarulhos, Guarulhos, SP','gru cumbica guarulhos'],['Aeroporto de Congonhas, São Paulo, SP','congonhas cgh']];
-function attach(row){if(row.dataset.smartStop)return;row.dataset.smartStop='1';const input=row.querySelector('input');if(!input)return;input.removeAttribute('list');
-const button=document.createElement('button');button.type='button';button.className='secondary stop-search';button.textContent='🔎 Buscar endereço';
-const status=document.createElement('span');status.className='stop-status';status.textContent='Digite para receber sugestões ou toque em Buscar endereço';
-const results=document.createElement('div');results.className='stop-suggestions';results.hidden=true;row.append(button,status,results);
-let timer,abort,sequence=0;
-function render(items,msg){results.replaceChildren();status.textContent=msg;items.slice(0,8).forEach(item=>{const b=document.createElement('button');b.type='button';b.textContent=item;b.onclick=()=>{input.value=item;input.dispatchEvent(new Event('input',{bubbles:true}));results.hidden=true;status.textContent='Local selecionado';};results.append(b)});results.hidden=!items.length}
-async function search(force=false){clearTimeout(timer);if(abort)abort.abort();const seq=++sequence,q=input.value.trim();if(q.length<2){results.hidden=true;status.textContent='Digite ao menos 2 letras';return}const found=local.filter(x=>normalize(x.join(' ')).includes(normalize(q))).map(x=>x[0]);render(found,'Buscando endereços…');if(q.length<3)return;
-const run=async()=>{abort=new AbortController();try{const response=await fetch('https://photon.komoot.io/api/?limit=8&q='+encodeURIComponent(q+', Brasil'),{signal:abort.signal});if(!response.ok)throw Error('Busca indisponível');const data=await response.json();if(seq!==sequence)return;const remote=(data.features||[]).filter(f=>!f.properties?.countrycode||f.properties.countrycode==='BR').map(f=>{const p=f.properties||{};return [p.name,p.city!==p.name?p.city:null,p.state].filter(Boolean).join(', ')}).filter(Boolean);const all=[...new Set([...found,...remote])];render(all,all.length?'Toque no endereço correto':'Nenhum endereço encontrado; tente cidade e estado');}catch(e){if(seq===sequence&&e.name!=='AbortError')render(found,'Busca online indisponível. Confira a conexão.')}};
-if(force)await run();else timer=setTimeout(run,450)}
-input.addEventListener('input',()=>search());button.onclick=()=>search(true);input.addEventListener('focus',()=>{if(input.value.trim().length>=2)search()});input.addEventListener('keydown',e=>{if(e.key==='Escape')results.hidden=true});}
-const observer=new MutationObserver(()=>holder.querySelectorAll('.multi-stop').forEach(attach));observer.observe(holder,{childList:true});holder.querySelectorAll('.multi-stop').forEach(attach);
-})();</script><script id="michelon-envio-financeiro-v1">(()=>{'use strict';const key='michelon_base_nova_v1';const btn=document.createElement('button');btn.type='button';btn.textContent='📤 Enviar lançamentos ao Meu Financeiro';btn.style.cssText='display:block;width:100%;max-width:480px;margin:12px auto;padding:14px;background:#1663ba;color:white;border:0;border-radius:12px;font-weight:700';const info=document.createElement('p');info.style.cssText='text-align:center;font-size:13px';info.textContent='Gera um arquivo para conferência. Nenhum saldo será alterado.';const host=document.querySelector('#finLista')?.closest('section')||document.querySelector('#finLista')?.parentElement||document.body;host.prepend(info);host.prepend(btn);btn.onclick=()=>{let db;try{db=JSON.parse(localStorage.getItem(key)||'{}')}catch{alert('Dados indisponíveis');return}const regs=[];const add=(id,tipo,valor,data,descricao,fonte)=>{if(!(Number(valor)>0))return;regs.push({origem_id:'michelon:'+id,tipo,valor:Number(valor),data,descricao,fonte})};(db.finance||[]).forEach((f,i)=>add('finance:'+String(f.id||i),f.tipo==='entrada'?'entrada':'saida',f.valor,f.date,f.desc||'Lançamento de viagem','viagens'));(db.uber||[]).forEach((u,i)=>{const id=u.id||u.date+':'+i;add('uber:'+id+':bruto','entrada',u.bruto,u.date,'Uber — faturamento bruto','uber_viagens');add('uber:'+id+':custo','saida',u.custo,u.date,'Uber — custos do trabalho','uber_viagens')});if(!regs.length){alert('Não há lançamentos financeiros ou Uber para enviar. Cotações não são receitas recebidas.');return}const blob=new Blob([JSON.stringify({formato:'michelon-conferencia-v1',registros:regs},null,2)],{type:'application/json'});const url=URL.createObjectURL(blob),a=document.createElement('a');a.href=url;a.download='Michelon_Para_Meu_Financeiro.json';document.body.append(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),30000);alert(regs.length+' lançamentos preparados. Abra Meu Financeiro e importe este JSON na área de conferência.');};})();</script>
+</style><script id="michelon-envio-financeiro-v1">(()=>{'use strict';const key='michelon_base_nova_v1';const btn=document.createElement('button');btn.type='button';btn.textContent='📤 Enviar lançamentos ao Meu Financeiro';btn.style.cssText='display:block;width:100%;max-width:480px;margin:12px auto;padding:14px;background:#1663ba;color:white;border:0;border-radius:12px;font-weight:700';const info=document.createElement('p');info.style.cssText='text-align:center;font-size:13px';info.textContent='Gera um arquivo para conferência. Nenhum saldo será alterado.';const host=document.querySelector('#finLista')?.closest('section')||document.querySelector('#finLista')?.parentElement||document.body;host.prepend(info);host.prepend(btn);btn.onclick=()=>{let db;try{db=JSON.parse(localStorage.getItem(key)||'{}')}catch{alert('Dados indisponíveis');return}const regs=[];const add=(id,tipo,valor,data,descricao,fonte)=>{if(!(Number(valor)>0))return;regs.push({origem_id:'michelon:'+id,tipo,valor:Number(valor),data,descricao,fonte})};(db.finance||[]).forEach((f,i)=>add('finance:'+String(f.id||i),f.tipo==='entrada'?'entrada':'saida',f.valor,f.date,f.desc||'Lançamento de viagem','viagens'));(db.uber||[]).forEach((u,i)=>{const id=u.id||u.date+':'+i;add('uber:'+id+':bruto','entrada',u.bruto,u.date,'Uber — faturamento bruto','uber_viagens');add('uber:'+id+':custo','saida',u.custo,u.date,'Uber — custos do trabalho','uber_viagens')});if(!regs.length){alert('Não há lançamentos financeiros ou Uber para enviar. Cotações não são receitas recebidas.');return}const blob=new Blob([JSON.stringify({formato:'michelon-conferencia-v1',registros:regs},null,2)],{type:'application/json'});const url=URL.createObjectURL(blob),a=document.createElement('a');a.href=url;a.download='Michelon_Para_Meu_Financeiro.json';document.body.append(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),30000);alert(regs.length+' lançamentos preparados. Abra Meu Financeiro e importe este JSON na área de conferência.');};})();</script>
 <style id="documentos-michelon-css">
 #docMichelon{position:fixed;inset:0;background:#071b35aa;z-index:9999;display:none;align-items:center;justify-content:center;padding:12px}#docMichelon.open{display:flex}#docMichelon .doc-panel{width:min(520px,100%);max-height:94dvh;overflow:auto;background:white;border-radius:16px;padding:15px;color:#17365c}#docMichelon .doc-preview{border:1px solid #e1c16d;border-radius:15px;overflow:hidden;background:#fff;margin:12px 0}#docMichelon .doc-head{background:#09284d;color:white;text-align:center;padding:19px 10px;border-bottom:5px solid #dbad43}#docMichelon .doc-body{padding:18px}#docMichelon .doc-price{background:#09284d;color:#eac46b;border-radius:12px;padding:17px;text-align:center;font-size:28px;font-weight:850}#docMichelon .doc-actions{display:grid;grid-template-columns:1fr 1fr;gap:8px}#docMichelon .doc-actions button{min-height:44px}#docMichelon label{display:block;font-weight:700;font-size:13px;margin-top:10px}#docMichelon select,#docMichelon input{width:100%}#docMichelon .doc-row{margin:12px 0;overflow-wrap:anywhere}#docMichelon .doc-small{font-size:12px;color:#62758b}#docMichelon .doc-head .doc-small{color:#eac46b}
 </style>
@@ -1479,7 +1458,8 @@ function linhaGrafico(pai,nome,valor,max){
 function categorias(destino,items,tipo){
  const el=$(destino);el.replaceChildren();const totais=new Map();
  items.filter(f=>f.tipo===tipo).forEach(f=>{
-  const nome=String(f.categoria||"Sem categoria");
+  const nome=tipo==="entrada"&&(f.categoria==="Uber"||/^uber:.*:receita$/.test(f.origemId||""))
+   ? "Uber pelo aplicativo" : String(f.categoria||"Sem categoria");
   totais.set(nome,(totais.get(nome)||0)+Number(f.valor||0));
  });
  const lista=[...totais].filter(x=>Number.isFinite(x[1])&&x[1]>0).sort((a,b)=>b[1]-a[1]);
@@ -1712,12 +1692,159 @@ function restoreUrbanDraft(){
    urbanDraftStatus('Não foi possível abrir o rascunho salvo.');
  }
 }
+const travelPoints = new WeakMap();
+const savedUrbanPlaces = [{
+ label:'Condomínio Residencial Jardim dos Ipês, Avenida Joinville, 390, Jardim das Laranjeiras, Limeira, SP',
+ terms:'condominio residencial jardim dos ipes avenida joinville joinvile 390 jardim das laranjeiras limeira sp 12p',
+ coords:[-47.4157432,-22.5386961],
+ detail:'Ponto do residencial no mapa'
+}];
+const favorites=[
+ {name:'Aeroporto Internacional de Viracopos (VCP)',detail:'Campinas, São Paulo',terms:'viracopos vcp aeroporto campinas'},
+ {name:'Aeroporto Internacional de Guarulhos (GRU)',detail:'Guarulhos, São Paulo',terms:'gru cumbica aeroporto guarulhos sao paulo'},
+ {name:'Aeroporto de Congonhas (CGH)',detail:'São Paulo, SP',terms:'congonhas cgh aeroporto sao paulo'},
+ {name:'Campinas, SP',detail:'Cidade',terms:'campinas'},
+ {name:'Americana, SP',detail:'Cidade',terms:'americana'},
+ {name:'Piracicaba, SP',detail:'Cidade',terms:'piracicaba'},
+ {name:'Limeira, SP',detail:'Cidade',terms:'limeira'},
+ {name:'São Paulo, SP',detail:'Cidade',terms:'sao paulo capital'},
+ {name:'Guarulhos, SP',detail:'Cidade',terms:'guarulhos cidade'}];
+
+function addAddressSuggestions(field, urban){
+ const selected=urban?urbanGpsPoints:travelPoints;
+ field.removeAttribute('list');
+ const list=document.createElement('div');
+ list.setAttribute('role','group');
+ list.setAttribute('aria-label','Sugestões de endereço');
+ list.hidden=true;
+ const feedback=document.createElement('small');
+ feedback.setAttribute('role','status');
+ const holder=field.closest('.multi-stop')||field.parentElement;
+ list.className='dre-address-choices';
+ list.style.cssText='width:100%;flex-basis:100%;display:grid;gap:4px';
+ list.style.removeProperty('display');
+ if(urban)holder.after(list,feedback);
+ else holder.append(list,feedback);
+ function render(items){
+   list.replaceChildren();
+   for(const {label,coords,detail} of items.slice(0,6)){
+     const option=document.createElement('button');
+     option.type='button';
+     option.className='secondary';
+     option.style.cssText='width:100%;text-align:left;margin-bottom:4px';
+     option.textContent=label;
+     if(detail){
+       const line=document.createElement('small');
+       line.style.display='block';
+       line.textContent=detail;
+       option.append(line);
+     }
+     option.addEventListener('pointerdown',event=>event.preventDefault());
+     option.onclick=()=>{
+       clear();
+       field.value=label;
+       if(!urban)field.dispatchEvent(new Event('input',{bubbles:true}));
+       if(coords)selected.set(field,{address:label,coords});
+       if(urban)urbanChanged();
+       clear();
+       feedback.textContent='Endereço selecionado.';
+       field.focus();
+     };
+     list.append(option);
+   }
+   list.hidden=!list.childElementCount||document.activeElement!==field;
+ }
+ let timer,controller;
+ const clear=()=>{
+   clearTimeout(timer);
+   controller?.abort();
+   controller=undefined;
+   list.replaceChildren();
+   list.hidden=true;
+   feedback.textContent='';
+ };
+ field.addEventListener('blur',event=>{if(!list.contains(event.relatedTarget))list.hidden=true});
+ list.addEventListener('focusout',event=>{if(!list.contains(event.relatedTarget))list.hidden=true});
+ field.addEventListener('focus',()=>{list.hidden=!list.childElementCount});
+ field.addEventListener('keydown',event=>{if(event.key==='Escape')clear()});
+ field.addEventListener('input',()=>{
+   selected.delete(field);
+   clear();
+   const value=field.value.trim();
+   const city=urban?$('dreUrbCidade').value.trim():'';
+   const cityName=norm(city.split(',')[0]);
+   if(value.length<2)return;
+   const terms=norm(value).split(/\s+/).filter(term=>!['de','da','das','do','dos','residencial','condominio'].includes(term));
+   const matches=(label, terms)=>terms.length>0&&terms.every(term=>norm(label).split(' ').some(word=>word.startsWith(term)));
+   const local=savedUrbanPlaces.filter(place=>(!cityName||cityName==='limeira')&&matches(place.terms,terms));
+   if(!urban)local.push(...favorites.filter(place=>matches(place.name+' '+place.terms,terms)).map(place=>({label:place.name})));
+   render(local);
+   if(value.length<3)return;
+   timer=setTimeout(async()=>{
+     const requestController=new AbortController();
+     controller=requestController;
+     const {signal}=controller;
+     const timeout=setTimeout(()=>requestController.abort(),8000);
+     const current=()=>field.isConnected&&isUrban()===urban&&field.value.trim()===value&&(!urban||$('dreUrbCidade').value.trim()===city);
+     feedback.textContent='Buscando endereços…';
+     try{
+       const query=cityName&&!norm(value).includes(cityName)?value+', '+city:value;
+       const params=new URLSearchParams({q:query+', Brasil',limit:'12'});
+       const originField=$(urban?'dreUrbOrigem':'origem');
+       const origin=selected.get(originField);
+       const near=origin?.address===originField.value?origin.coords:null;
+       if(near){params.set('lon',near[0]);params.set('lat',near[1]);}
+       const response=await fetch('https://photon.komoot.io/api/?'+params,{signal});
+       if(!response.ok)throw Error();
+       const data=await response.json();
+       if(signal.aborted||!current())return;
+       const seen=new Set(local.map(item=>norm(item.label)));
+       const remote=[];
+       for(const feature of data.features||[]){
+         const p=feature.properties||{};
+         const coords=feature.geometry?.coordinates;
+         if(!coords||coords.length!==2||!coords.every(Number.isFinite)||p.countrycode!=='BR')continue;
+         if(cityName&&![p.city,p.county,p.municipality,p.name].some(part=>norm(part)===cityName))continue;
+         const label=[...new Set([p.name,p.street,p.housenumber,p.locality,p.district,p.city||p.municipality,p.state].filter(Boolean))].join(', ');
+         if(seen.has(norm(label))||!matches(label,terms))continue;
+         seen.add(norm(label));
+         remote.push({label,coords});
+       }
+       const distance=coords=>(coords[0]-near[0])**2+(coords[1]-near[1])**2;
+       if(near)remote.sort((a,b)=>distance(a.coords)-distance(b.coords));
+       const items=[...local,...remote];
+       render(items);
+       feedback.textContent=items.length?'Selecione o endereço correto.':'Sem endereço correspondente. Digite o endereço completo.';
+     }catch{
+       if(current()&&controller===requestController)feedback.textContent=local.length?'Busca online indisponível. Confira a sugestão disponível.':'Busca indisponível. Digite o endereço completo.';
+     }finally{
+       clearTimeout(timeout);
+     }
+   },350);
+ });
+ if(urban)$('dreUrbCidade').addEventListener('input',()=>{
+   if(field.isConnected){clear();selected.delete(field);}
+ },{signal:urbanSuggestionLifetime(field)});
+ return clear;
+}
+function urbanSuggestionLifetime(field){
+ const controller=new AbortController();
+ if(field.id==='dreUrbOrigem')return controller.signal;
+ const observer=new MutationObserver(()=>{
+   if(field.isConnected)return;
+   controller.abort();
+   observer.disconnect();
+ });
+ observer.observe(urbanRows,{childList:true});
+ return controller.signal;
+}
 function addUrbanGps(field){
  const button=document.createElement('button');
  button.type='button';button.className='secondary urb-gps';button.textContent='📍 Usar minha localização';
  const feedback=document.createElement('small');
  feedback.className='urb-gps-status';feedback.setAttribute('role','status');
  field.parentElement.after(button,feedback);
+ const clearSuggestions=addAddressSuggestions(field,true);
  let fieldRevision=0;
  field.addEventListener('input',()=>{fieldRevision++;urbanGpsPoints.delete(field);feedback.textContent=''});
  button.onclick=async()=>{
@@ -1725,6 +1852,7 @@ function addUrbanGps(field){
      feedback.textContent='Abra o DRE pelo link publicado para usar a localização ou digite o endereço.';
      return;
    }
+   clearSuggestions();
    const generation=urbanGpsGeneration,revision=fieldRevision;
    const current=()=>isUrban()&&field.isConnected&&generation===urbanGpsGeneration&&revision===fieldRevision;
    button.disabled=true;
@@ -1926,7 +2054,8 @@ function preview(){
 function showCalculation(){preview();result.scrollIntoView({behavior:'smooth',block:'start'})}
 
 let tollLegs=[];
-function points(){return [$('origem').value.trim(),...[...document.querySelectorAll('#paradasMichelon input')].map(i=>i.value.trim()).filter(Boolean),$('destino').value.trim()]}
+function travelFieldsWithText(){return [$('origem'),...[...document.querySelectorAll('#paradasMichelon input')].filter(field=>field.value.trim()),$('destino')]}
+function points(){return travelFieldsWithText().map(field=>field.value.trim())}
 function selectedTolls(){return tollLegs.map(l=>({from:l.from,to:l.to,returnLeg:l.returnLeg,emptyBase:!!l.emptyBase,plazas:l.entries.filter(e=>e.cb.checked).map(e=>({name:e.name,road:e.road,value:decimal(e.price.value)}))}))}
 function sumTolls(){let sum=0,valid=true;for(const l of tollLegs)for(const e of l.entries)if(e.cb.checked){if(e.price.value===''||!Number.isFinite(decimal(e.price.value))||decimal(e.price.value)<=0)valid=false;else sum+=decimal(e.price.value)}$('drePedTotal').value=valid?sum.toFixed(2).replace('.',','):'';invalidate();preview();return valid}
 function renderTolls(){tollPanel.replaceChildren();tollLegs=[];const title=document.createElement('strong');title.textContent='🛣️ Pedágios por trecho';const note=document.createElement('p');note.textContent='Marque somente as praças atravessadas. A tarifa de referência cadastrada é preenchida ao marcar e pode ser corrigida. Confira o valor vigente. Ida e retorno são independentes.';note.className='muted';tollPanel.append(title,note);const pts=points();let legs=pts.slice(1).map((to,i)=>({from:pts[i],to,returnLeg:false}));const home=$('dreBase').value.trim();if(!same(home,pts[0]))legs.unshift({from:home,to:pts[0],emptyBase:true,returnLeg:false});if(!same(pts.at(-1),home))legs.push({from:pts.at(-1),to:home,returnLeg:true});
@@ -1936,6 +2065,21 @@ plazas.forEach(p=>add(...p));const custom=document.createElement('div');custom.c
 $('dreSemPedagio').addEventListener('change',()=>{if($('dreSemPedagio').checked){for(const l of tollLegs)for(const e of l.entries){e.cb.checked=false;e.price.disabled=true}sumTolls()}});
 ['origem','destino'].forEach(id=>$(id).addEventListener('input',renderTolls));const stops=$('paradasMichelon');stops?.addEventListener('input',()=>{request++;$('dreKmBase').value=same($('dreBase').value,$('origem').value)?'0':'';$('dreKmIda').value='';$('dreKmVolta').value='';renderTolls()});if(stops)new MutationObserver(()=>{request++;$('dreKmBase').value=same($('dreBase').value,$('origem').value)?'0':'';$('dreKmIda').value='';$('dreKmVolta').value='';renderTolls()}).observe(stops,{childList:true});
 renderTolls();
+for(const id of ['origem','destino'])addAddressSuggestions($(id),false);
+const boundStops=new WeakSet();
+function bindStopSuggestions(){
+ for(const field of stops.querySelectorAll('input')){
+   if(boundStops.has(field))continue;
+   boundStops.add(field);
+   addAddressSuggestions(field,false);
+ }
+}
+bindStopSuggestions();
+new MutationObserver(bindStopSuggestions).observe(stops,{childList:true});
+function selectedTravelCoords(field){
+ const selected=travelPoints.get(field);
+ return selected?.address===field.value?selected.coords:null;
+}
 function prefill(){const o=$('origem').value.trim(),d=$('destino').value.trim();if(!o||!d||points().length>2||!same($('dreBase').value,o))return false;const routes=dbRead().routes||[];const direct=routes.find(r=>match(o,r.origem)&&match(d,r.destino,r.aliases)),reverse=routes.find(r=>match(d,r.origem)&&match(o,r.destino,r.aliases)),r=direct||reverse;if(!r)return false;const a=Number(direct?r.ida:r.volta),b=Number(direct?r.volta:r.ida);if(!(a>0&&b>0))return false;$('dreKmIda').value=a.toFixed(1);$('dreKmVolta').value=b.toFixed(1);preview();status('Quilometragem recuperada da rota cadastrada. Confira e confirme.');return true}
 function canonicalPlace(place){const n=norm(place);if(/\bviracopos\b|\bvcp\b|^vira ?copos$|^vira$/.test(n))return 'Aeroporto Internacional de Viracopos, Campinas, SP';if(/^(gru|cumbica|guarulhos aeroporto)$/.test(n))return 'Aeroporto Internacional de Guarulhos, SP';return place}
 const routeLocations=new Map();
@@ -1943,7 +2087,10 @@ async function routeJson(url){const ctrl=new AbortController(),timer=setTimeout(
 async function locateRoute(place){place=canonicalPlace(place);const key=norm(place);if(key===norm('Aeroporto Internacional de Viracopos, Campinas, SP'))return [-47.1345,-23.0074];if(routeLocations.has(key))return routeLocations.get(key);const a=await routeJson('https://nominatim.openstreetmap.org/search?format=json&limit=1&countrycodes=br&q='+encodeURIComponent(place));if(!a.length)throw Error('Endereço não localizado: '+place);const coords=[Number(a[0].lon),Number(a[0].lat)];if(!coords.every(Number.isFinite))throw Error('Coordenadas inválidas: '+place);routeLocations.set(key,coords);return coords}
 async function routeKm(o,d,fromCoords,toCoords){const a=fromCoords??await locateRoute(o),b=toCoords??await locateRoute(d);const j=await routeJson('https://router.project-osrm.org/route/v1/driving/'+a.join(',')+';'+b.join(',')+'?overview=false');const distance=Number(j.routes?.[0]?.distance);if(j.code!=='Ok'||!Number.isFinite(distance)||distance<=0)throw Error('Não foi encontrada rota rodoviária');return distance/1000}
 
-async function calculate(e){e.preventDefault();e.stopImmediatePropagation();const seq=++request;invalidate();const o=$('origem').value.trim(),d=$('destino').value.trim();if(!o||!d){status('Preencha origem e destino.');return}if(prefill()){showCalculation();return}const ida=$('dreKmIda'),volta=$('dreKmVolta');if(Number(ida.value)>0&&volta.value!==''&&Number(volta.value)>=0&&$('dreKmBase').value!==''&&(same(o,$('dreBase').value)||Number($('dreKmBase').value)>0)){status('Distâncias preenchidas. Confira o cálculo e os pedágios.');showCalculation();return}status('Buscando distância rodoviária de ida e retorno…');result.textContent='Consultando os quilômetros rodoviários do percurso…';result.scrollIntoView({behavior:'smooth',block:'start'});try{const pts=points();const distances=await Promise.all(pts.slice(1).map((p,i)=>routeKm(pts[i],p)));const a=distances.reduce((s,n)=>s+n,0),b=same(d,$('dreBase').value)?0:await routeKm(d,$('dreBase').value);const empty=same(o,$('dreBase').value)?0:await routeKm($('dreBase').value,o);if(seq!==request)return;$('dreKmBase').value=empty.toFixed(1);ida.value=a.toFixed(1);volta.value=b.toFixed(1);preview();status('Distâncias rodoviárias preenchidas. Confira os valores e os pedágios antes de confirmar.');showCalculation()}catch(err){if(seq!==request)return;result.textContent='Não foi possível consultar os quilômetros: '+err.message+'. Confira os campos de distância abaixo.';status('Não foi possível obter os quilômetros automaticamente ('+err.message+'). Preencha os quilômetros da base até o embarque, do percurso com cliente e do retorno à base com distâncias conferidas e toque em Confirmar valores.' )}}
+async function calculate(e){e.preventDefault();e.stopImmediatePropagation();const seq=++request;invalidate();const o=$('origem').value.trim(),d=$('destino').value.trim();if(!o||!d){status('Preencha origem e destino.');return}if(!travelFieldsWithText().some(selectedTravelCoords)&&prefill()){showCalculation();return}const ida=$('dreKmIda'),volta=$('dreKmVolta');if(Number(ida.value)>0&&volta.value!==''&&Number(volta.value)>=0&&$('dreKmBase').value!==''&&(same(o,$('dreBase').value)||Number($('dreKmBase').value)>0)){status('Distâncias preenchidas. Confira o cálculo e os pedágios.');showCalculation();return}status('Buscando distância rodoviária de ida e retorno…');result.textContent='Consultando os quilômetros rodoviários do percurso…';result.scrollIntoView({behavior:'smooth',block:'start'});try{const fields=travelFieldsWithText(),pts=points(),coords=fields.map(selectedTravelCoords);
+const distances=await Promise.all(pts.slice(1).map((p,i)=>routeKm(pts[i],p,coords[i],coords[i+1])));
+const a=distances.reduce((s,n)=>s+n,0),b=same(d,$('dreBase').value)?0:await routeKm(d,$('dreBase').value,coords.at(-1));
+const empty=same(o,$('dreBase').value)?0:await routeKm($('dreBase').value,o,null,coords[0]);if(seq!==request)return;$('dreKmBase').value=empty.toFixed(1);ida.value=a.toFixed(1);volta.value=b.toFixed(1);preview();status('Distâncias rodoviárias preenchidas. Confira os valores e os pedágios antes de confirmar.');showCalculation()}catch(err){if(seq!==request)return;result.textContent='Não foi possível consultar os quilômetros: '+err.message+'. Confira os campos de distância abaixo.';status('Não foi possível obter os quilômetros automaticamente ('+err.message+'). Preencha os quilômetros da base até o embarque, do percurso com cliente e do retorno à base com distâncias conferidas e toque em Confirmar valores.' )}}
 // Captura no documento antes dos diversos cálculos antigos, evitando sobrescritas e botões desabilitados.
 window.addEventListener('click',e=>{const t=e.target.closest?.('#calcular,#salvarViagem,#waEnviar');if(!t)return;if(t.id==='calcular'){if(isUrban()){e.preventDefault();e.stopImmediatePropagation();calculateUrban()}else calculate(e);return}e.preventDefault();e.stopPropagation();e.stopImmediatePropagation();if(!approved){status('Confirme os valores antes de continuar.');return}if(t.id==='salvarViagem'){try{const db=dbRead();db.trips=Array.isArray(db.trips)?db.trips:[];const id=(typeof crypto!=='undefined' && typeof crypto.randomUUID==='function'?crypto.randomUUID():'cot-'+Date.now());const day=$('dreDataViagem').value;if(!/^\d{4}-\d{2}-\d{2}$/.test(day)){status('Selecione a data da viagem antes de salvar.');return}const date=day.slice(8,10)+'/'+day.slice(5,7)+'/'+day.slice(0,4);db.trips.unshift({...approved,id,date,status:'Cotação'});localStorage.setItem(KEY,JSON.stringify(db));if(!dbRead().trips.some(t=>t.id===id))throw Error('A cotação não foi encontrada após gravar.');if(approved.urban)discardUrbanDraft();sessionStorage.setItem('dre_abrir_agenda_apos_salvar',id);window.location.reload()}catch(err){status('Erro ao salvar: '+err.message)}}else{const lines=['*Michelon Viagens Executivas*','Proposta de viagem','Origem: '+approved.origin,'Destino: '+approved.dest,'Valor: '+money(approved.total),'Confirme a disponibilidade para agendar.'];window.location.href='https://wa.me/?text='+encodeURIComponent(lines.join('\n'))}},true);
 $('dreBase').addEventListener('input',()=>{request++;invalidate();$('dreKmBase').value='';$('dreKmBase').value=same($('dreBase').value,$('origem').value)?'0':'';$('dreKmIda').value='';$('dreKmVolta').value='';renderTolls()});
@@ -2694,7 +2841,7 @@ $('avSave').onclick=async()=>{const a=$('avDayStart').value,b=$('avDayEnd').valu
           const tipo = linha.filter(item => item.x < 150).map(item => item.s).join(' ') || 'Sem tipo informado no PDF';
           const descricao = texto.filter(item => item.x >= 150 && item.x < 330 && Math.abs(item.y - data.y) < 11)
             .map(item => item.s).join(' ');
-          movimentos.push({date: iso(dataHora.exec(data.s)[1]), valor: quantia, desc: [tipo, descricao].filter(Boolean).join(' · '), corridas: tipo === 'Ganhos Uber' && quantia > 0});
+          movimentos.push({date: iso(dataHora.exec(data.s)[1]), valor: quantia, pix: quantia > 0 && /\bpix\b/i.test(tipo), desc: [tipo, descricao].filter(Boolean).join(' · '), corridas: tipo === 'Ganhos Uber' && quantia > 0});
         }
         page.cleanup();
       }
@@ -2727,7 +2874,8 @@ $('avSave').onclick=async()=>{const a=$('avDayStart').value,b=$('avDayEnd').valu
         date: String(item.date || '').slice(0, 10),
         valor: centavos(item.valor) * (item.tipo === 'entrada' ? 1 : -1),
         desc: item.desc || item.categoria || 'Movimentação financeira',
-        corridas: item.tipo === 'entrada' && (item.categoria === 'Uber' || /^uber:.*:receita$/.test(item.origemId || ''))
+        particular: item.tipo === 'entrada' && item.categoria === 'Viagens particulares',
+        corridas: item.tipo === 'entrada' && item.categoria !== 'Viagens particulares' && (item.categoria === 'Uber' || /^uber:.*:receita$/.test(item.origemId || ''))
       }))
     };
   }
@@ -2747,6 +2895,7 @@ $('avSave').onclick=async()=>{const a=$('avDayStart').value,b=$('avDayEnd').valu
     const app = agruparCorridas(dreItens);
     const revisao = [];
     let coincidem = 0;
+    let pixParticulares = 0;
     const datas = new Set([...banco.totais.keys(), ...app.totais.keys()]);
     for (const date of datas) {
       const pdf = banco.totais.get(date) || 0;
@@ -2769,16 +2918,17 @@ $('avSave').onclick=async()=>{const a=$('avDayStart').value,b=$('avDayEnd').valu
     for (const chave of new Set([...gruposBanco.keys(), ...gruposDre.keys()])) {
       const pdf = gruposBanco.get(chave) || [];
       const dre = gruposDre.get(chave) || [];
-      if (pdf.length === 1 && dre.length === 1) {
+      if (pdf.length === 1 && dre.length === 1 && (!dre[0].particular || pdf[0].pix)) {
+        if (dre[0].particular) pixParticulares++;
         coincidem++;
         continue;
       }
-      const motivo = pdf.length && dre.length ? 'Revisar valores repetidos' : 'Sem valor correspondente na mesma data';
+      const motivo = pdf.length === 1 && dre.length === 1 ? 'Revisar tipo do recebimento' : pdf.length && dre.length ? 'Revisar valores repetidos' : 'Sem valor correspondente na mesma data';
       for (const [origem, itens] of [['Extrato', pdf], ['DRE', dre]]) {
         for (const item of itens) revisao.push({date: item.date, texto: motivo + ' · ' + origem + ' · ' + item.desc + ' · ' + brl(item.valor)});
       }
     }
-    return {coincidem, revisao: revisao.sort((a, b) => b.date.localeCompare(a.date))};
+    return {coincidem, pixParticulares, revisao: revisao.sort((a, b) => b.date.localeCompare(a.date))};
   }
 
   function mostrar() {
@@ -2798,9 +2948,9 @@ $('avSave').onclick=async()=>{const a=$('avDayStart').value,b=$('avDayEnd').valu
     el('Dre').textContent = 'Saldo da Uber Conta no DRE até ' + formatoData(ate) + ': ' + brl(saldoDre) +
       ' · Diferença (DRE menos extrato): ' + brl(saldoDre - extrato.fechamento) +
       '. O DRE usa a data inteira. Confira se o PDF foi emitido após a última movimentação do dia.';
-    const {coincidem, revisao} = comparar(extrato.movimentos.filter(emPeriodo), dre.movimentos.filter(emPeriodo));
+    const {coincidem, pixParticulares, revisao} = comparar(extrato.movimentos.filter(emPeriodo), dre.movimentos.filter(emPeriodo));
     el('Resumo').textContent = formatoData(de) + ' a ' + formatoData(ate) + ' · ' + coincidem +
-      ' correspondência(s) por data e valor · ' + revisao.length + ' item(ns) para revisar.';
+      ' correspondência(s) por data e valor · ' + pixParticulares + ' Pix de corrida particular conciliado(s) · ' + revisao.length + ' item(ns) para revisar.';
     const itens = el('Itens');
     itens.replaceChildren();
     el('Divergencias').hidden = revisao.length === 0;
