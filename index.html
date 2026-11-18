@@ -428,6 +428,33 @@ button.dre-month-row:hover{border-color:#5385af}
     return {itau,uber};
   }
 </script>
+<dialog id="dreEditarCotacao" class="card" aria-labelledby="dreEditarCotacaoTitulo" style="width:min(92vw,500px);max-height:85dvh;overflow:auto">
+<form id="dreEditarCotacaoForm" class="stack">
+<h3 id="dreEditarCotacaoTitulo">Editar cotação</h3>
+<p id="dreEditarPercurso"></p>
+<p id="dreEditarPrecoBase"></p>
+<div class="field"><label for="dreEditarDescontoTipo">Tipo de desconto</label><select id="dreEditarDescontoTipo"><option value="reais">Valor (R$)</option><option value="percentual">Porcentagem (%)</option></select></div>
+<div class="field"><label for="dreEditarDesconto">Desconto</label><input id="dreEditarDesconto" inputmode="decimal" required></div>
+<div class="field"><label for="dreEditarAcrescimoTipo">Tipo de acréscimo</label><select id="dreEditarAcrescimoTipo"><option value="reais">Valor (R$)</option><option value="percentual">Porcentagem (%)</option></select></div>
+<div class="field"><label for="dreEditarAcrescimo">Acréscimo</label><input id="dreEditarAcrescimo" inputmode="decimal"></div>
+<p id="dreEditarTotal" role="status"></p>
+<p id="dreEditarErro" role="alert"></p>
+<div class="actions"><button class="secondary" id="dreEditarCancelar" type="button">Cancelar</button><button class="primary" id="dreEditarSalvar" type="submit">Salvar alterações</button></div>
+</form>
+</dialog>
+<script>
+function michelonCalcularAjustes(gross, discount, type, extra, surchargeType){
+ const decimal=raw=>Number(raw.trim().replace(',','.'));
+ const value=decimal(discount),surchargeValue=decimal(extra);
+ const amount=type==='percentual'?gross*value/100:value;
+ const surcharge=surchargeType==='percentual'?gross*(surchargeValue/100):surchargeValue;
+ const total=Math.round((gross+surcharge-amount)*100)/100;
+ const valid=discount.trim()!==''&&Number.isFinite(value)&&value>=0
+   &&(type!=='percentual'||value<=100)&&amount<=gross
+   &&Number.isFinite(surchargeValue)&&surchargeValue>=0&&Number.isFinite(total);
+ return {value,type,amount,surchargeValue,surchargeType,surcharge,valid,total};
+}
+</script>
 <script>
 (()=>{'use strict';const KEY='michelon_base_nova_v1',LEGACY='michelon_tabela_rotas_v1';const $=id=>document.getElementById(id),money=n=>Number(n).toLocaleString('pt-BR',{style:'currency',currency:'BRL'}),norm=s=>String(s||'').normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase().replace(/[^a-z0-9]/g,' ').replace(/\s+/g,' ').trim(),num=id=>Number($(id).value);
 const defaults={routes:[],trips:[],finance:[],uber:[],contas:{itauInicial:0,uberInicial:0,cartaoLimite:0,cartaoUsado:0},cfg:{ida:2.1,vazio:1.5,volta:3,margem:10}};
@@ -547,6 +574,71 @@ function appendTripPaymentActions(container,trip,linkedPayments){
    payment?'Viagem marcada como paga com o recebimento já registrado.':'Pagamento registrado '+bank+'.');
  }));
 }
+const quoteEditor=$('dreEditarCotacao'),quoteForm=$('dreEditarCotacaoForm');
+let quoteEdit=null;
+function canEditQuote(trip, payments){
+ return trip.id!=='MV-2026-0001'&&!trip.historicalProtected
+   &&trip.status!=='Pago'&&!payments.length&&Number.isFinite(Number(trip.total));
+}
+function editQuotePrice(trip){
+ const discount=Number(trip.desconto)||0,extra=Number(trip.acrescimo)||0;
+ const base=Math.round((trip.valorOriginal??(Number(trip.total)+discount-extra))*100)/100;
+ if(!Number.isFinite(base)||base<0){alert('Confira o valor original da cotação.');return}
+ quoteEdit={id:trip.id,version:JSON.stringify(trip),base};
+ const fields=[['Desconto',trip.descontoTipo,trip.descontoValor,discount],
+   ['Acrescimo',trip.acrescimoTipo,trip.acrescimoValor,extra]];
+ for(const [field,type,value,amount] of fields){
+   $('dreEditar'+field+'Tipo').value=type==='percentual'&&value!=null?'percentual':'reais';
+   $('dreEditar'+field).value=String(value??amount).replace('.',',');
+ }
+ const points=trip.points?.length>=2?trip.points:[trip.origin,...(trip.stops||[]),trip.dest];
+ $('dreEditarPercurso').textContent=[trip.date,points.join(' → ')].filter(Boolean).join(' · ');
+ $('dreEditarPrecoBase').textContent='Valor calculado: '+money(base)+' · Total atual: '+money(trip.total);
+ $('dreEditarErro').textContent='';
+ previewQuoteEdit();
+ quoteEditor.showModal();
+}
+function previewQuoteEdit(){
+ const change=michelonCalcularAjustes(quoteEdit.base,$('dreEditarDesconto').value,$('dreEditarDescontoTipo').value,
+   $('dreEditarAcrescimo').value,$('dreEditarAcrescimoTipo').value);
+ const valid=change.valid&&change.total>0;
+ $('dreEditarTotal').textContent=valid?'Novo total: '+money(change.total):'Confira os ajustes. O total deve ser maior que zero.';
+ $('dreEditarSalvar').disabled=!valid;
+ return valid?change:null;
+}
+quoteForm.addEventListener('input',previewQuoteEdit);
+$('dreEditarCancelar').onclick=()=>quoteEditor.close();
+quoteForm.addEventListener('submit',event=>{
+ event.preventDefault();
+ const change=previewQuoteEdit();
+ if(!change)return;
+ let updated;
+ try{
+   const raw=localStorage.getItem(KEY);
+   const fresh=JSON.parse(raw);
+   const trip=fresh.trips.find(item=>item.id===quoteEdit.id);
+   const payments=fresh.finance.filter(item=>item.origemId==='reserva:'+quoteEdit.id);
+   if(!trip||!canEditQuote(trip,payments)||JSON.stringify(trip)!==quoteEdit.version){
+     $('dreEditarSalvar').disabled=true;
+     $('dreEditarErro').textContent='A reserva mudou. Feche esta edição, atualize a tela e abra a reserva novamente.';
+     return;
+   }
+   updated=Object.assign(trip,{total:change.total,valorOriginal:quoteEdit.base,
+     desconto:change.amount,descontoTipo:change.type,descontoValor:change.value,
+     acrescimo:change.surcharge,acrescimoTipo:change.surchargeType,acrescimoValor:change.surchargeValue});
+   localStorage.setItem(KEY+'_backup_editar_cotacao',raw);
+   localStorage.setItem(KEY,JSON.stringify(fresh));
+   db=fresh;
+ }catch(error){
+   console.error(error);
+   $('dreEditarErro').textContent='Não foi possível salvar os ajustes. Confira o armazenamento e tente novamente.';
+   return;
+ }
+ quoteEditor.close();
+ renderTrips();
+ stats();
+ window.dispatchEvent(new CustomEvent('michelon-open-saved-quote',{detail:updated}));
+});
 function renderTrips(){
  for(const id of ['listaViagens','listaAgenda'])$(id).replaceChildren();
  // Reserva histórica preservada; receita somente após confirmação explícita de recebimento.
@@ -580,6 +672,7 @@ function renderTrips(){
    actions.append(btn('Confirmar reserva',()=>{window.michelonOpenAvailability(t.id)}));
   }
   appendTripPaymentActions(actions,t,linkedPayments);
+  if(canEditQuote(t,linkedPayments))actions.append(btn('Editar cotação',()=>editQuotePrice(t)));
   if(t.status==='Pago'&&linkedPayments.length===1){
    actions.append(btn('Emitir recibo',()=>window.dispatchEvent(new CustomEvent('michelon-open-receipt',{detail:{urban:!!t.urban,points:Array.isArray(t.points)&&t.points.length>=2?t.points:[t.origin,t.dest],total:linkedPayments[0].valor,client:t.name||t.client||'',form:t.paymentMethod||'',date:linkedPayments[0].date}}))));
   }
@@ -600,6 +693,7 @@ function renderTrips(){
     const cell=document.createElement('td');cell.textContent=String(v);agendaRow.append(cell);
    }
    const actionCell=document.createElement('td');
+   if(canEditQuote(t,linkedPayments))actionCell.append(btn('Editar cotação',()=>editQuotePrice(t)));
    if(t.status==='Pago'||db.finance.some(f=>f.origemId==='reserva:'+t.id)){
     actionCell.textContent='Pagamento vinculado';
    }else{
@@ -1764,7 +1858,7 @@ $('waEnviar').addEventListener('click',e=>{if(!active)return;e.stopImmediateProp
 <script id="documentos-michelon-script">(()=>{'use strict';
 const $=id=>document.getElementById(id),modal=$('docMichelon'),send=$('waEnviar');let current=null;
 const money=n=>Number(n).toLocaleString('pt-BR',{style:'currency',currency:'BRL'}),safe=s=>String(s||'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
-function data(){let q=null;try{q=JSON.parse(send.dataset.manualQuote||'null')}catch{};if(!q||!Number.isFinite(Number(q.total)))return null;return {urban:!!q.urban,points:Array.isArray(q.points)&&q.points.length>1?q.points:[q.origin,q.dest],total:Number(q.total),original:Math.round((Number(q.total)+Math.max(0,Number(q.desconto)||0))*100)/100,discount:Math.max(0,Number(q.desconto)||0)}}
+function documentQuote(q){if(!q||!Number.isFinite(Number(q.total)))return null;return {urban:!!q.urban,points:Array.isArray(q.points)&&q.points.length>1?q.points:[q.origin,q.dest],total:Number(q.total),original:Math.round((Number(q.total)+Math.max(0,Number(q.desconto)||0))*100)/100,discount:Math.max(0,Number(q.desconto)||0)}}
 function fields(){
  if(current?.urban)return {urban:true,points:[],total:current.total,original:current.total,discount:0,type:$('docTipo').value,client:$('docCliente').value.trim(),form:$('docForma').value.trim(),date:$('docData').value,tripDate:$('docViagemData').value,tripTime:$('docViagemHora').value};
  if($('docInicio').value===''||$('docFim').value==='')return null;const points=current.points,from=Number($('docInicio').value),to=Number($('docFim').value);if(!(from>=0&&to>from&&to<points.length))return null;return {original:current.original,discount:Math.round((current.discount+Math.min(current.total,Math.max(0,Number($('docDesconto').value)||0)))*100)/100,points:points.slice(from,to+1),total:Math.max(0,Math.round((current.total-Math.min(current.total,Math.max(0,Number($('docDesconto').value)||0)))*100)/100),type:$('docTipo').value,client:$('docCliente').value.trim(),form:$('docForma').value.trim(),date:$('docData').value,tripDate:$('docViagemData').value,tripTime:$('docViagemHora').value}}
@@ -1811,7 +1905,14 @@ function paintReceipt(f){
 
 function paint(f){if(f.type==='recibo')return paintReceipt(f);const canvas=document.createElement('canvas');canvas.width=900;canvas.height=Math.max(1250,900+f.points.join('').length*45+f.points.length*130);const c=canvas.getContext('2d');c.fillStyle='#fff';c.fillRect(0,0,900,canvas.height);c.fillStyle='#09284d';c.fillRect(0,0,900,300);c.fillStyle='#dbad43';c.fillRect(0,290,900,10);c.textAlign='center';c.fillStyle='#fff';c.font='bold 74px Arial';c.fillText('MICHELON',450,125);c.fillStyle='#eac46b';c.font='bold 30px Arial';c.fillText('V I A G E N S   E X E C U T I V A S',450,175);c.font='bold 34px Arial';c.fillText(title(f.type),450,250);if(f.type==='recibo'){c.fillStyle='#fff';c.font='20px Arial';c.fillText('CNPJ: 34.811.990/0001-60',450,280)}c.textAlign='left';let y=370;const wrap=(str,max=690)=>{const words=String(str).split(' '),lines=[];let line='';for(const w of words){const next=line?line+' '+w:w;if(c.measureText(next).width>max&&line){lines.push(line);line=w}else line=next}lines.push(line);return lines};for(const [label,place] of (f.urban?[]:[['EMBARQUE',f.points[0]],...f.points.slice(1,-1).map((p,i)=>['PARADA '+(i+1),p]),['DESTINO',f.points.at(-1)]])){c.fillStyle='#63738a';c.font='bold 23px Arial';c.fillText(label,80,y);y+=39;c.fillStyle='#09284d';c.font='bold 31px Arial';for(const l of wrap(place)){c.fillText(l,80,y);y+=41}y+=26}y+=16;const hasDiscount=f.discount>0,cardHeight=hasDiscount?294:174;c.fillStyle='#09284d';c.fillRect(55,y,790,cardHeight);c.strokeStyle='#dbad43';c.strokeRect(55,y,790,cardHeight);if(hasDiscount){c.font='28px Arial';c.fillStyle='#fff';c.textAlign='left';c.fillText('Valor original',85,y+45);c.textAlign='right';c.font='bold 31px Arial';c.fillText(money(f.original),815,y+45);c.textAlign='left';c.fillStyle='#a9ecc4';c.font='28px Arial';c.fillText('Desconto aplicado',85,y+94);c.textAlign='right';c.font='bold 31px Arial';c.fillText('− '+money(f.discount),815,y+94);c.strokeStyle='#53677d';c.beginPath();c.moveTo(85,y+119);c.lineTo(815,y+119);c.stroke()}c.textAlign='center';c.fillStyle='#fff';c.font='bold 28px Arial';c.fillText(hasDiscount?'VALOR FINAL COM DESCONTO':'VALOR TOTAL DA VIAGEM',450,y+(hasDiscount?161:49));c.fillStyle='#eac46b';c.font='bold 66px Arial';c.fillText(money(f.total),450,y+(hasDiscount?231:125));if(hasDiscount){c.fillStyle='#a9ecc4';c.font='25px Arial';c.fillText('Você economiza '+money(f.discount),450,y+271)}c.fillStyle='#09284d';c.font='24px Arial';c.fillText('Conforto  •  Segurança  •  Pontualidade',450,y+cardHeight+50);c.font='20px Arial';c.fillText(f.type==='orcamento'?'Sujeito à confirmação de disponibilidade':`Reserva confirmada • ${f.tripDate.split('-').reverse().join('/')} • ${f.tripTime}`,450,y+cardHeight+91);const output=document.createElement('canvas');output.width=900;output.height=y+cardHeight+130;output.getContext('2d').drawImage(canvas,0,0);return output}
 async function imageFile(f){const canvas=paint(f);if(!canvas){alert('Muitas paradas para este cartão. Use a opção Copiar texto.');return null}return await new Promise(resolve=>canvas.toBlob(b=>resolve(b?new File([b],'Michelon_'+f.type+'.png',{type:'image/png'}):null),'image/png'))}
-window.addEventListener('click',e=>{if(e.target!==send&&!send.contains(e.target))return;const q=data();if(!q)return;e.preventDefault();e.stopImmediatePropagation();current=q;for(const id of ['docInicio','docFim'])$(id).replaceChildren();q.points.forEach((p,i)=>{for(const id of ['docInicio','docFim']){const o=document.createElement('option');o.value=i;o.textContent=(i+1)+'. '+p;$(id).append(o)}});for(const id of ['docInicio','docFim']){const opt=document.createElement('option');opt.value='';opt.textContent=id==='docInicio'?'Selecione o embarque real do cliente':'Selecione o destino real do cliente';$(id).prepend(opt);$(id).value=id==='docInicio'?'0':String(q.points.length-1)}$('docCliente').value='';$('docTipo').value='orcamento';$('docDesconto').value='0';$('docPago').checked=false;$('docViagemData').value='';$('docViagemHora').value='';$('docData').value=new Date(Date.now()-new Date().getTimezoneOffset()*60000).toISOString().slice(0,10);modal.classList.add('open');render()},true);
+function openQuote(quote){current=documentQuote(quote);if(!current)return;const q=current;for(const id of ['docInicio','docFim'])$(id).replaceChildren();q.points.forEach((p,i)=>{for(const id of ['docInicio','docFim']){const o=document.createElement('option');o.value=i;o.textContent=(i+1)+'. '+p;$(id).append(o)}});for(const id of ['docInicio','docFim']){const opt=document.createElement('option');opt.value='';opt.textContent=id==='docInicio'?'Selecione o embarque real do cliente':'Selecione o destino real do cliente';$(id).prepend(opt);$(id).value=id==='docInicio'?'0':String(q.points.length-1)}$('docCliente').value=quote.name||quote.client||'';$('docTipo').value='orcamento';$('docDesconto').value='0';$('docPago').checked=false;$('docViagemData').value='';$('docViagemHora').value='';$('docData').value=new Date(Date.now()-new Date().getTimezoneOffset()*60000).toISOString().slice(0,10);modal.classList.add('open');render()}
+window.addEventListener('click',e=>{
+ if(e.target!==send&&!send.contains(e.target))return;
+ let quote;try{quote=JSON.parse(send.dataset.manualQuote||'null')}catch{return}
+ if(!documentQuote(quote))return;
+ e.preventDefault();e.stopImmediatePropagation();openQuote(quote);
+},true);
+window.addEventListener('michelon-open-saved-quote',e=>openQuote(e.detail));
 window.addEventListener('michelon-open-receipt',e=>{const d=e.detail;if(!d||!Array.isArray(d.points)||d.points.length<2)return;current={urban:!!d.urban,points:d.points,total:Number(d.total),original:Number(d.total),discount:0};for(const id of ['docInicio','docFim']){$(id).replaceChildren();d.points.forEach((p,i)=>{const o=document.createElement('option');o.value=i;o.textContent=p;$(id).append(o)})}$('docInicio').value='0';$('docFim').value=String(d.points.length-1);$('docCliente').value=d.client||'';$('docTipo').value='recibo';$('docDesconto').value='0';$('docForma').value=d.form||'';$('docData').value=d.date||'';$('docPago').checked=false;modal.classList.add('open');render()});
 ['docCliente','docTipo','docInicio','docFim','docForma','docData','docDesconto','docViagemData','docViagemHora'].forEach(id=>$(id).addEventListener('input',render));$('docFechar').onclick=()=>modal.classList.remove('open');
 const urbanWhatsApp=document.createElement('button');
@@ -2498,15 +2599,8 @@ const plazas=[['Limeira A','SP-330',9.70],['Limeira B','SP-348',9.70],['Nova Ode
 const decimal=v=>Number(String(v).trim().replace(',','.'));
 $('dreAplicarDesconto').addEventListener('click',()=>$('dreConfirmarCotacao').click());
 function priceAdjustments(gross){
- const value=decimal($('dreDescontoValor').value),type=$('dreDescontoTipo').value;
- const amount=type==='percentual'?gross*value/100:value;
- const surchargeValue=decimal($('dreAcrescimoValor').value),surchargeType=$('dreAcrescimoTipo').value;
- const surcharge=surchargeType==='percentual'?gross*(surchargeValue/100):surchargeValue;
- const total=Math.round((gross+surcharge-amount)*100)/100;
- const valid=$('dreDescontoValor').value.trim()!==''&&Number.isFinite(value)&&value>=0
-   &&(type!=='percentual'||value<=100)&&amount<=gross
-   &&Number.isFinite(surchargeValue)&&surchargeValue>=0&&Number.isFinite(total);
- return {value,type,amount,surchargeValue,surchargeType,surcharge,valid,total};
+ return michelonCalcularAjustes(gross,$('dreDescontoValor').value,$('dreDescontoTipo').value,
+   $('dreAcrescimoValor').value,$('dreAcrescimoTipo').value);
 }
 function pricePreview(gross, adjustment){
  return 'Valor calculado: '+money(gross)+' • Acréscimo: '+money(adjustment.surcharge)
