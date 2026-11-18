@@ -2028,11 +2028,13 @@ const urbanRows=$('dreUrbTrechos');
 const urbanGpsPoints=new WeakMap();
 let urbanGpsGeneration=0;
 let urbanQuoteDetails,travelQuoteDetails;
-const quoteDetails=()=>({date:$('dreDataViagem').value,discountType:$('dreDescontoTipo').value,discount:$('dreDescontoValor').value});
+const quoteDetails=()=>({date:$('dreDataViagem').value,discountType:$('dreDescontoTipo').value,discount:$('dreDescontoValor').value, surchargeType:$('dreAcrescimoTipo').value, surcharge:$('dreAcrescimoValor').value});
 function applyQuoteDetails(details){
  $('dreDataViagem').value=details.date;
  $('dreDescontoTipo').value=details.discountType;
  $('dreDescontoValor').value=details.discount;
+ $('dreAcrescimoTipo').value=details.surchargeType==='percentual'?'percentual':'reais';
+ $('dreAcrescimoValor').value=details.surcharge??'0';
  $('dreDescontoPrevia').textContent='';
 }
 const urbanDraftKey='michelon_cotacao_urbana_rascunho_v1';
@@ -2078,7 +2080,7 @@ function restoreUrbanDraft(){
    $('dreUrbCidade').value=draft.city??'Limeira, SP';
    $('dreUrbMinimo').value=draft.minimum??'';
    urbanQuoteDetails={date:draft.date||$('dreDataViagem').value,
-     discountType:draft.discountType==='percentual'?'percentual':'reais',discount:draft.discount??'0'};
+     discountType:draft.discountType==='percentual'?'percentual':'reais',discount:draft.discount??'0',surchargeType:draft.surchargeType,surcharge:draft.surcharge};
    urbanRows.replaceChildren();
    for(const saved of draft.rows){
      const row=addUrbanRow();
@@ -2472,18 +2474,18 @@ async function calculateUrban(){
    result.textContent='Confira o valor mínimo e as tarifas cadastradas no DRE.';
    return;
  }
- const d=discountFor(gross);
+ const d=priceAdjustments(gross);
  const total=d.total;
  if(!d.valid||total<=0||total<minimum){
-   result.textContent='Confira o desconto. O valor final precisa ser positivo e respeitar o mínimo informado.';
+   result.textContent='Confira o desconto e o acréscimo. O valor final precisa ser positivo e respeitar o mínimo informado.';
    return;
  }
  const points=[origin,...legs.map(leg=>leg.to)];
  approved={origin,dest:points.at(-1),points,stops:points.slice(1,-1),km,total,valorOriginal:gross,
-   desconto:d.amount,descontoTipo:d.type,descontoValor:d.value,manual:true,toll:0,
+   desconto:d.amount,descontoTipo:d.type,descontoValor:d.value,acrescimo:d.surcharge,acrescimoTipo:d.surchargeType,acrescimoValor:d.surchargeValue,manual:true,toll:0,
    urban:true,urbanLegs:legs};
  result.textContent='Orçamento final: '+money(total)+' • '+legs.length+' trecho(s) • '+km.toLocaleString('pt-BR',{maximumFractionDigits:2})+' km';
- $('dreDescontoPrevia').textContent='Antes: '+money(gross)+' • Desconto: '+money(d.amount)+' • Total: '+money(total);
+ $('dreDescontoPrevia').textContent=pricePreview(gross,d);
  waBtn.dataset.manualQuote=JSON.stringify(approved);
  waBtn.disabled=false;
  saveBtn.disabled=false;
@@ -2494,9 +2496,34 @@ async function calculateUrban(){
 const tollPanel=document.createElement('div');tollPanel.id='dreListaPedagios';$('drePedTotal').parentElement.before(tollPanel);
 const plazas=[['Limeira A','SP-330',9.70],['Limeira B','SP-348',9.70],['Nova Odessa','SP-330',12.80],['Sumaré','SP-348',12.80],['Valinhos','SP-330',14.30],['Itupeva','SP-348',14.30],['Perus','SP-330',14.50],['Campo Limpo/Caieiras','SP-348',14.50]];
 const decimal=v=>Number(String(v).trim().replace(',','.'));
-const discountBox=document.createElement('div');discountBox.id='dreDescontoBox';discountBox.innerHTML='<strong>🏷️ Desconto negociado</strong><div class="dreDiscountFields"><label>Tipo de desconto<select id="dreDescontoTipo"><option value="reais">Valor (R$)</option><option value="percentual">Porcentagem (%)</option></select></label><label>Desconto<input id="dreDescontoValor" type="text" inputmode="decimal" value="0" aria-describedby="dreDescontoPrevia"></label></div><div id="dreDescontoPrevia" role="status" aria-live="polite"></div>';$('dreConfirmarCotacao').before(discountBox);
-function discountFor(gross){const value=decimal($('dreDescontoValor').value),type=$('dreDescontoTipo').value,amount=type==='percentual'?gross*value/100:value,valid=$('dreDescontoValor').value.trim()!==''&&Number.isFinite(value)&&value>=0&&(type!=='percentual'||value<=100)&&amount<=gross;return {value,type,amount,valid,total:Math.round((gross-amount)*100)/100}}
-for(const id of ['dreDescontoTipo','dreDescontoValor'])$(id).addEventListener('input',()=>{invalidate();if(isUrban()){urbanChanged();$('dreDescontoPrevia').textContent='Calcule novamente para aplicar o desconto.';return}status('Desconto alterado. Confirme novamente para liberar agenda e WhatsApp.');preview()});
+const discountBox=document.createElement('div');discountBox.id='dreDescontoBox';discountBox.innerHTML='<strong>🏷️ Desconto negociado</strong><div class="dreDiscountFields"><label>Tipo de desconto<select id="dreDescontoTipo"><option value="reais">Valor (R$)</option><option value="percentual">Porcentagem (%)</option></select></label><label>Desconto<input id="dreDescontoValor" type="text" inputmode="decimal" value="0" aria-describedby="dreDescontoPrevia"></label></div><div class="dreDiscountFields"><label>Tipo de acréscimo<select id="dreAcrescimoTipo"><option value="reais">Valor (R$)</option><option value="percentual">Porcentagem (%)</option></select></label><label>Acréscimo<input id="dreAcrescimoValor" type="text" inputmode="decimal" value="0" aria-describedby="dreDescontoPrevia"></label></div><div id="dreDescontoPrevia" role="status" aria-live="polite"></div>';$('dreConfirmarCotacao').before(discountBox);
+function priceAdjustments(gross){
+ const value=decimal($('dreDescontoValor').value),type=$('dreDescontoTipo').value;
+ const amount=type==='percentual'?gross*value/100:value;
+ const surchargeValue=decimal($('dreAcrescimoValor').value),surchargeType=$('dreAcrescimoTipo').value;
+ const surcharge=surchargeType==='percentual'?gross*(surchargeValue/100):surchargeValue;
+ const total=Math.round((gross+surcharge-amount)*100)/100;
+ const valid=$('dreDescontoValor').value.trim()!==''&&Number.isFinite(value)&&value>=0
+   &&(type!=='percentual'||value<=100)&&amount<=gross
+   &&Number.isFinite(surchargeValue)&&surchargeValue>=0&&Number.isFinite(total);
+ return {value,type,amount,surchargeValue,surchargeType,surcharge,valid,total};
+}
+function pricePreview(gross, adjustment){
+ return 'Valor calculado: '+money(gross)+' • Acréscimo: '+money(adjustment.surcharge)
+   +' • Desconto: '+money(adjustment.amount)+' • Total: '+money(adjustment.total);
+}
+for(const id of ['dreDescontoTipo','dreDescontoValor','dreAcrescimoTipo','dreAcrescimoValor']){
+ $(id).addEventListener('input',()=>{
+   invalidate();
+   if(isUrban()){
+     urbanChanged();
+     $('dreDescontoPrevia').textContent='Calcule novamente para aplicar os ajustes.';
+     return;
+   }
+   status('Confirme os ajustes de preço para liberar agenda e WhatsApp.');
+   preview();
+ });
+}
 const totals=document.createElement('div');totals.id='dreTotaisAoVivo';totals.setAttribute('aria-live','polite');$('dreConfirmarCotacao').before(totals);
 function preview(){
  if(isUrban())return;
@@ -2506,7 +2533,7 @@ function preview(){
  if(!valid){result.textContent='Preencha o percurso e toque em Calcular orçamento para consultar os quilômetros.';return}
  const rateIda=Number(tipo==='buscar'?c.vazio:tipo==='volta'?c.volta:c.ida),rateVolta=Number(tipo==='buscar'?c.ida:tipo==='volta'?c.volta:c.vazio),base=baseCost(ida,volta,c,tipo),subtotal=base+toll,margin=subtotal*Number(c.margem)/100,total=Math.round((subtotal+margin)*100)/100;
  const rows=[['Conferência interna do cálculo',approved?'Cotação confirmada':'Prévia — confira os pedágios'],['Base → embarque (vazio)',empty.toFixed(1)+' km × '+money(c.vazio)+' = '+money(empty*Number(c.vazio))],['Percurso: '+points().join(' → '),ida.toFixed(1)+' km × '+money(rateIda)+' = '+money(ida*rateIda)],['Destino → base',volta.toFixed(1)+' km × '+money(rateVolta)+' = '+money(volta*rateVolta)],['Quilometragem total',(empty+ida+volta).toFixed(1)+' km'],['Valor pelos quilômetros',money(base)],['Pedágios selecionados',$('drePedTotal').value===''?'Preencha as tarifas':money(toll)]];
- if($('drePedTotal').value!==''&&Number.isFinite(total)){rows.push(['Subtotal',money(subtotal)],['Margem ('+c.margem+'%)',money(margin)],['Valor antes do desconto',money(total)]);const d=discountFor(total);rows.push(['Desconto aplicado',d.valid?money(d.amount):'Confira o desconto'],['Orçamento total',d.valid?money(d.total):'Desconto inválido']);$('dreDescontoPrevia').textContent=d.valid?'Antes: '+money(total)+' • Desconto: '+money(d.amount)+' • Total: '+money(d.total):'Informe um desconto válido, de zero até o valor da viagem (máximo 100%).';totals.textContent+=' • Total da viagem: '+(d.valid?money(d.total):'confira o desconto')}
+ if($('drePedTotal').value!==''&&Number.isFinite(total)){rows.push(['Subtotal',money(subtotal)],['Margem ('+c.margem+'%)',money(margin)],['Valor calculado',money(total)]);const d=priceAdjustments(total);rows.push(['Acréscimo aplicado',d.valid?money(d.surcharge):'Confira os ajustes'],['Desconto aplicado',d.valid?money(d.amount):'Confira o desconto'],['Orçamento total',d.valid?money(d.total):'Ajuste inválido']);$('dreDescontoPrevia').textContent=d.valid?pricePreview(total,d):'Confira o acréscimo e o desconto. Use valores positivos ou zero e limite o desconto a 100% do preço calculado.';totals.textContent+=' • Total da viagem: '+(d.valid?money(d.total):'confira os ajustes')}
  result.replaceChildren();for(const [name,value] of rows){const line=document.createElement('div');line.className='mini';const a=document.createElement('span'),b=document.createElement('strong');a.textContent=name;b.textContent=value;line.append(a,b);result.append(line)}
  const note=document.createElement('p');note.className='muted';note.textContent='Base, trajetos vazios, quilômetros e composição do preço são apenas para sua conferência interna.';result.append(note);
 }
@@ -2556,7 +2583,7 @@ $('dreBase').addEventListener('input',()=>{request++;invalidate();$('dreKmBase')
 ['origem','destino','tipo'].forEach(id=>$(id).addEventListener(id==='tipo'?'change':'input',()=>{request++;invalidate();$('dreKmBase').value=same($('dreBase').value,$('origem').value)?'0':'';$('dreKmIda').value='';$('dreKmVolta').value='';preview();status('Percurso alterado. Clique em Calcular orçamento.')}));
 ['dreKmBase','dreKmIda','dreKmVolta','drePedTotal','dreSemPedagio'].forEach(id=>$(id).addEventListener('input',()=>{invalidate();preview()}));
 $('dreSemPedagio').addEventListener('change',()=>{if($('dreSemPedagio').checked)$('drePedTotal').value='0'});
-$('dreConfirmarCotacao').addEventListener('click',async()=>{if(isUrban()){calculateUrban();return}const origin=$('origem').value.trim(),dest=$('destino').value.trim();if(!sumTolls()){status('Informe um valor positivo para cada praça selecionada.');return}if(!origin||!dest){status('Preencha origem e destino.');return}if(!$('dreKmIda').value||!$('dreKmVolta').value||$('dreKmBase').value===''||(!same(origin,$('dreBase').value)&&!(Number($('dreKmBase').value)>0))){const btn=$('dreConfirmarCotacao');btn.disabled=true;try{await calculate({preventDefault(){},stopImmediatePropagation(){}})}finally{btn.disabled=false}if(origin!==$('origem').value.trim()||dest!==$('destino').value.trim())return;}const ida=Number($('dreKmIda').value),volta=Number($('dreKmVolta').value),toll=decimal($('drePedTotal').value),sem=$('dreSemPedagio').checked;if(!(ida>0&&volta>=0&&(volta>0||same(dest,$('dreBase').value))&&Number.isFinite(ida)&&Number.isFinite(volta))){status('Não foi possível concluir a busca. Confira os três campos de distância acima: base → embarque, percurso com cliente e destino → base.');return}if(!Number.isFinite(toll)||toll<0||(!sem&&toll===0)||(sem&&toll!==0)){status('Confira o pedágio: para rota sem pedágio marque a opção e use R$ 0.');return}const db=dbRead(),c={ida:2.1,vazio:1.5,volta:3,margem:10,...db.cfg},tipo=$('tipo').value;const base=baseCost(ida,volta,c,tipo),gross=Math.round((base+toll)*(1+Number(c.margem)/100)*100)/100,d=discountFor(gross);if(!d.valid){status('Confira o desconto: ele não pode ser negativo nem maior que a viagem (máximo 100%).');return}const total=d.total;if(!(total>=0&&gross>0&&Number.isFinite(total))){status('Valor inválido. Confira os ajustes de preço.');return}const empty=Number($('dreKmBase').value);if(!Number.isFinite(empty)||empty<0||(!same(origin,$('dreBase').value)&&!(empty>0))){status('Informe os quilômetros da base até o embarque.');return}approved={origin,dest,tipo,baseOrigin:$('dreBase').value.trim(),kmBase:empty,internalPoints:[$('dreBase').value.trim(),...points(),$('dreBase').value.trim()],km:empty+ida+volta,kmIda:ida,kmVolta:volta,total,valorOriginal:gross,desconto:d.amount,descontoTipo:d.type,descontoValor:d.value,toll,road:'Distâncias conferidas',manual:true,points:points(),stops:points().slice(1,-1),tollLegs:selectedTolls()};result.replaceChildren();for(const [name,value] of [['Origem',origin],['Destino',dest],['Ida',ida.toFixed(1)+' km'],['Retorno',volta.toFixed(1)+' km'],['Pedágios',money(toll)],['Orçamento final',money(total)]]){const line=document.createElement('div');line.className='mini';const a=document.createElement('span'),b=document.createElement('strong');a.textContent=name;b.textContent=value;line.append(a,b);result.append(line)}try{if(points().length===2&&same(origin,$('dreBase').value)){db.routes=Array.isArray(db.routes)?db.routes:[];const idx=db.routes.findIndex(r=>norm(r.origem)===norm(origin)&&norm(r.destino)===norm(dest));const route={...(idx>=0?db.routes[idx]:{}),origem:origin,destino:dest,ida,volta,pedStatus:sem?'nenhum':'valor',pedIda:selectedTolls().filter(l=>!l.returnLeg).reduce((s,l)=>s+l.plazas.reduce((n,p)=>n+p.value,0),0),pedVolta:selectedTolls().filter(l=>l.returnLeg).reduce((s,l)=>s+l.plazas.reduce((n,p)=>n+p.value,0),0),tollLegs:selectedTolls()};if(idx>=0)db.routes[idx]=route;else db.routes.push({...route,id:'rota-'+Date.now()});localStorage.setItem(KEY,JSON.stringify(db))}}catch(err){console.warn('Rota não salva',err)}waBtn.dataset.manualQuote=JSON.stringify(approved);saveBtn.disabled=false;waBtn.disabled=false;preview();status('Cotação confirmada. Agenda e WhatsApp liberados.');showCalculation()});
+$('dreConfirmarCotacao').addEventListener('click',async()=>{if(isUrban()){calculateUrban();return}const origin=$('origem').value.trim(),dest=$('destino').value.trim();if(!sumTolls()){status('Informe um valor positivo para cada praça selecionada.');return}if(!origin||!dest){status('Preencha origem e destino.');return}if(!$('dreKmIda').value||!$('dreKmVolta').value||$('dreKmBase').value===''||(!same(origin,$('dreBase').value)&&!(Number($('dreKmBase').value)>0))){const btn=$('dreConfirmarCotacao');btn.disabled=true;try{await calculate({preventDefault(){},stopImmediatePropagation(){}})}finally{btn.disabled=false}if(origin!==$('origem').value.trim()||dest!==$('destino').value.trim())return;}const ida=Number($('dreKmIda').value),volta=Number($('dreKmVolta').value),toll=decimal($('drePedTotal').value),sem=$('dreSemPedagio').checked;if(!(ida>0&&volta>=0&&(volta>0||same(dest,$('dreBase').value))&&Number.isFinite(ida)&&Number.isFinite(volta))){status('Não foi possível concluir a busca. Confira os três campos de distância acima: base → embarque, percurso com cliente e destino → base.');return}if(!Number.isFinite(toll)||toll<0||(!sem&&toll===0)||(sem&&toll!==0)){status('Confira o pedágio: para rota sem pedágio marque a opção e use R$ 0.');return}const db=dbRead(),c={ida:2.1,vazio:1.5,volta:3,margem:10,...db.cfg},tipo=$('tipo').value;const base=baseCost(ida,volta,c,tipo),gross=Math.round((base+toll)*(1+Number(c.margem)/100)*100)/100,d=priceAdjustments(gross);if(!d.valid){status('Confira o acréscimo e o desconto. Use valores positivos ou zero e limite o desconto a 100% do preço calculado.');return}const total=d.total;if(!(total>=0&&gross>0&&Number.isFinite(total))){status('Valor inválido. Confira os ajustes de preço.');return}const empty=Number($('dreKmBase').value);if(!Number.isFinite(empty)||empty<0||(!same(origin,$('dreBase').value)&&!(empty>0))){status('Informe os quilômetros da base até o embarque.');return}approved={origin,dest,tipo,baseOrigin:$('dreBase').value.trim(),kmBase:empty,internalPoints:[$('dreBase').value.trim(),...points(),$('dreBase').value.trim()],km:empty+ida+volta,kmIda:ida,kmVolta:volta,total,valorOriginal:gross,desconto:d.amount,descontoTipo:d.type,descontoValor:d.value,acrescimo:d.surcharge,acrescimoTipo:d.surchargeType,acrescimoValor:d.surchargeValue,toll,road:'Distâncias conferidas',manual:true,points:points(),stops:points().slice(1,-1),tollLegs:selectedTolls()};result.replaceChildren();for(const [name,value] of [['Origem',origin],['Destino',dest],['Ida',ida.toFixed(1)+' km'],['Retorno',volta.toFixed(1)+' km'],['Pedágios',money(toll)],['Orçamento final',money(total)]]){const line=document.createElement('div');line.className='mini';const a=document.createElement('span'),b=document.createElement('strong');a.textContent=name;b.textContent=value;line.append(a,b);result.append(line)}try{if(points().length===2&&same(origin,$('dreBase').value)){db.routes=Array.isArray(db.routes)?db.routes:[];const idx=db.routes.findIndex(r=>norm(r.origem)===norm(origin)&&norm(r.destino)===norm(dest));const route={...(idx>=0?db.routes[idx]:{}),origem:origin,destino:dest,ida,volta,pedStatus:sem?'nenhum':'valor',pedIda:selectedTolls().filter(l=>!l.returnLeg).reduce((s,l)=>s+l.plazas.reduce((n,p)=>n+p.value,0),0),pedVolta:selectedTolls().filter(l=>l.returnLeg).reduce((s,l)=>s+l.plazas.reduce((n,p)=>n+p.value,0),0),tollLegs:selectedTolls()};if(idx>=0)db.routes[idx]=route;else db.routes.push({...route,id:'rota-'+Date.now()});localStorage.setItem(KEY,JSON.stringify(db))}}catch(err){console.warn('Rota não salva',err)}waBtn.dataset.manualQuote=JSON.stringify(approved);saveBtn.disabled=false;waBtn.disabled=false;preview();status('Cotação confirmada. Agenda e WhatsApp liberados.');showCalculation()});
 const clearBtn=$('dreLimparCotacao');
 clearBtn.addEventListener('click',()=>{
  if(isUrban()&&([...urbanBox.querySelectorAll('#dreUrbOrigem,#dreUrbMinimo,.urb-dest,.urb-km')]
@@ -2568,7 +2595,7 @@ clearBtn.addEventListener('click',()=>{
    urbanBox.querySelector('.urb-gps-status').textContent='';
    $('dreUrbOrigem').value='';
    $('dreUrbMinimo').value='';
-   $('dreDescontoTipo').value='reais';$('dreDescontoValor').value='0';$('dreDescontoPrevia').textContent='';
+   $('dreDescontoTipo').value='reais';$('dreDescontoValor').value='0';$('dreAcrescimoTipo').value='reais';$('dreAcrescimoValor').value='0';$('dreDescontoPrevia').textContent='';
    $('dreDataViagem').value=new Date(Date.now()-new Date().getTimezoneOffset()*60000).toISOString().slice(0,10);
    urbanRows.replaceChildren();addUrbanRow();$('dreUrbOrigem').focus();return;
  }
@@ -2577,7 +2604,7 @@ clearBtn.addEventListener('click',()=>{
  for(const id of ['dreKmBase','dreKmIda','dreKmVolta'])$(id).value='';
  $('dreDataViagem').value=new Date(Date.now()-new Date().getTimezoneOffset()*60000).toISOString().slice(0,10);
  $('dreSemPedagio').checked=false;
- $('dreDescontoTipo').value='reais';$('dreDescontoValor').value='0';$('dreDescontoPrevia').textContent='';
+ $('dreDescontoTipo').value='reais';$('dreDescontoValor').value='0';$('dreAcrescimoTipo').value='reais';$('dreAcrescimoValor').value='0';$('dreDescontoPrevia').textContent='';
  for(const id of ['docDesconto','desconto'])if($(id))$(id).value='0';
  renderTolls();preview();status('Cotação limpa. Informe o embarque e o destino para começar.');
  $('origem').scrollIntoView({behavior:'smooth',block:'center'});$('origem').focus({preventScroll:true});
@@ -3727,9 +3754,9 @@ function setup(){
  if(!actions||!box)return;
  const calculate=document.getElementById('calcular');
  actions.insertBefore(box,calculate);
- const heading=box.querySelector('strong');heading.textContent='🏷️ Desconto em R$ ou %';
+ const heading=box.querySelector('strong');heading.textContent='Desconto e acréscimo em R$ ou %';
  let apply=document.getElementById('dreAplicarDesconto');
- if(!apply){apply=document.createElement('button');apply.id='dreAplicarDesconto';apply.type='button';apply.className='secondary';apply.textContent='🏷️ Aplicar desconto';box.append(apply);apply.addEventListener('click',()=>document.getElementById('dreConfirmarCotacao').click())}
+ if(!apply){apply=document.createElement('button');apply.id='dreAplicarDesconto';apply.type='button';apply.className='secondary';apply.textContent='Aplicar ajustes de preço';box.append(apply);apply.addEventListener('click',()=>document.getElementById('dreConfirmarCotacao').click())}
 }
 if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',setup);else setup();
 })();
