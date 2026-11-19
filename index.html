@@ -923,35 +923,95 @@ function pacoteWrite(data){
  stats();
  document.dispatchEvent(new Event('dre-contas-alteradas'));
 }
-function pacotePdf(title,lines){
+function pacotePdf(title,lines,orcamento){
  const winAnsi=new TextDecoder('windows-1252').decode(Uint8Array.from({length:256},(_,i)=>i));
  const hex=text=>Array.from(text.normalize('NFC').replaceAll('→','›'),char=>{
   const index=winAnsi.indexOf(char);
   return (index<0?63:index).toString(16).padStart(2,'0');
  }).join('');
  const measure=document.createElement('canvas').getContext('2d');
+ const azul='0.05 0.12 0.21';
+ const ouro='0.77 0.61 0.32';
+ const branco='1 1 1';
+ const cinza='0.30 0.36 0.44';
  const pages=[''];
  let y=788;
- function addLine(text,size,bold){
+ const append=part=>{pages[pages.length-1]+=part+'\n'};
+ const rect=(x,bottom,width,height,color)=>append(`${color} rg ${x} ${bottom} ${width} ${height} re f`);
+ const write=(text,x,baseline,size,bold,color)=>
+  append(`BT /${bold?'F2':'F1'} ${size} Tf ${color} rg ${x} ${baseline} Td <${hex(text)}> Tj ET`);
+ function newPage(){
+  pages.push('');
+  y=788;
+  if(orcamento)header(true);
+ }
+ function wrap(text,size,bold,width){
   measure.font=(bold?'bold ':'')+size+'px Helvetica, Arial, sans-serif';
-  const write=row=>{
-   if(y<48){pages.push('');y=788;}
-   pages[pages.length-1]+=`BT /${bold?'F2':'F1'} ${size} Tf 0.08 0.23 0.38 rg 44 ${y} Td <${hex(row)}> Tj ET\n`;
-   y-=size+5;
-  };
+  const rows=[];
   for(const paragraph of String(text??'').split(/\r?\n/)){
    let row='';
    for(const word of paragraph.split(/\s+/)){
     const next=row?row+' '+word:word;
-    if(row&&measure.measureText(next).width>495){write(row);row=word;}
-    else row=next;
+    if(row&&measure.measureText(next).width>width){rows.push(row);row='';}
+    for(const char of (row?' '+word:word)){
+     if(row&&measure.measureText(row+char).width>width){rows.push(row);row='';}
+     row+=char;
+    }
    }
-   write(row);
+   rows.push(row);
   }
-  y-=6;
+  return rows;
  }
- addLine(title,19,true);
- for(const line of lines)addLine(line,12,false);
+ function addLine(text,size,bold,{x=44,width=495,color=azul,after=6}={}){
+  for(const row of wrap(text,size,bold,width)){
+   if(y<48)newPage();
+   write(row,x,y,size,bold,color);
+   y-=size+5;
+  }
+  y-=after;
+ }
+ function header(continuacao){
+  const bottom=continuacao?748:702;
+  rect(0,bottom,595,842-bottom,azul);
+  rect(0,bottom,595,4,ouro);
+  write('MICHELON VIAGENS EXECUTIVAS',44,798,12,true,ouro);
+  write('Orçamento de pacote',44,continuacao?770:748,continuacao?20:32,true,branco);
+  y=bottom-32;
+ }
+ if(orcamento){
+  const {cliente,pontos,periodo,ida,volta,datas,total}=orcamento;
+  header(false);
+  addLine('CLIENTE',10,true,{color:cinza,after:2});
+  addLine(cliente,20,true,{after:14});
+  if(y<185)newPage();
+  rect(44,y-69,507,80,'0.94 0.96 0.98');
+  write('PERÍODO',60,y-12,10,true,cinza);
+  write('LEVAR',310,y-12,10,true,cinza);
+  write('BUSCAR',430,y-12,10,true,cinza);
+  write(periodo,60,y-39,14,true,azul);
+  write(ida,310,y-39,18,true,azul);
+  write(volta,430,y-39,18,true,azul);
+  y-=102;
+  addLine('ITINERÁRIO',13,true,{after:8});
+  pontos.forEach((endereco,i)=>{
+   if(y<92)newPage();
+   rect(44,y-21,3,31,ouro);
+   const label=i===0?'Embarque':i===pontos.length-1?'Destino':'Parada '+i;
+   addLine(label,10,true,{x:57,width:494,color:cinza,after:1});
+   addLine(endereco,12,false,{x:57,width:488,after:10});
+  });
+  if(y<94)newPage();
+  addLine(datas.length===1?'1 DIA DE TRANSPORTE':datas.length+' DIAS DE TRANSPORTE',12,true);
+  addLine(datas.join('  ·  '),11,false,{color:cinza,after:13});
+  if(y<125)newPage();
+  rect(44,y-71,507,84,azul);
+  rect(44,y-71,4,84,ouro);
+  write('TOTAL DO PACOTE',62,y-12,11,true,ouro);
+  write(total,62,y-50,30,true,branco);
+ }else{
+  addLine(title,19,true);
+  for(const line of lines)addLine(line,12,false);
+ }
  const objects=[
   '<< /Type /Catalog /Pages 2 0 R >>',
   `<< /Type /Pages /Count ${pages.length} /Kids [${pages.map((_,i)=>(5+i*2)+' 0 R').join(' ')}] >>`,
@@ -962,6 +1022,7 @@ function pacotePdf(title,lines){
   objects.push(`<< /Type /Page /Parent 2 0 R /MediaBox [0 0 595 842] /Resources << /Font << /F1 3 0 R /F2 4 0 R >> >> /Contents ${objects.length+2} 0 R >>`);
   objects.push(`<< /Length ${stream.length} >>\nstream\n${stream}endstream`);
  }
+ objects.push(`<< /Title <${hex(title)}> /Author (Michelon Viagens Executivas) >>`);
  let pdf='%PDF-1.4\n';
  const offsets=objects.map((object,i)=>{
   const offset=pdf.length;
@@ -971,13 +1032,13 @@ function pacotePdf(title,lines){
  const xref=pdf.length;
  pdf+=`xref\n0 ${objects.length+1}\n0000000000 65535 f \n`;
  for(const offset of offsets)pdf+=String(offset).padStart(10,'0')+' 00000 n \n';
- pdf+=`trailer\n<< /Size ${objects.length+1} /Root 1 0 R >>\nstartxref\n${xref}\n%%EOF\n`;
+ pdf+=`trailer\n<< /Size ${objects.length+1} /Root 1 0 R /Info ${objects.length} 0 R >>\nstartxref\n${xref}\n%%EOF\n`;
  return new Blob([pdf],{type:'application/pdf'});
 }
-function pacoteDocumento(title,lines,abrirNaMesmaAba=false){
- const pdf=pacotePdf(title,lines);
+function pacoteDocumento(title,lines,orcamento){
+ const pdf=pacotePdf(title,lines,orcamento);
  const url=URL.createObjectURL(pdf);
- if(abrirNaMesmaAba){
+ if(orcamento){
   window.location.assign(url);
   return;
  }
@@ -1011,10 +1072,11 @@ pacoteForm.onsubmit=e=>{
   const slots=dias.flatMap(day=>['ida','volta'].map(type=>pacoteFaixa(day,{inicio:f[type+'Inicio'],hora:f[type+'Hora'],fim:f[type+'Fim']},type)));
   if(f.idaFim>f.voltaInicio)throw Error('O horário de levar precisa terminar antes da ocupação para buscar.');
   if(e.submitter.value==='orcamento'){
-   pacoteDocumento('Michelon Viagens Executivas · Orçamento de pacote',[
-    cliente,pacotePontos(origem,destino,f).join(' → '),pacoteData(f.inicio)+' a '+pacoteData(f.fim),
-    'Levar às '+f.idaHora+' · Buscar às '+f.voltaHora,
-    dias.length+' dias: '+dias.map(pacoteData).join(', '),'Total do pacote: '+money(total)],true);
+   pacoteDocumento('Orçamento de pacote - Michelon Viagens Executivas',[],{
+    cliente,pontos:pacotePontos(origem,destino,f),
+    periodo:pacoteData(f.inicio)+' a '+pacoteData(f.fim),
+    ida:f.idaHora,volta:f.voltaHora,datas:dias.map(pacoteData),total:money(total)
+   });
    return;
   }
   const data=pacoteRead();
