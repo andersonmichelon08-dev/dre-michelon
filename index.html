@@ -923,17 +923,63 @@ function pacoteWrite(data){
  stats();
  document.dispatchEvent(new Event('dre-contas-alteradas'));
 }
+function pacotePdf(title,lines){
+ const winAnsi=new TextDecoder('windows-1252').decode(Uint8Array.from({length:256},(_,i)=>i));
+ const hex=text=>Array.from(text.normalize('NFC').replaceAll('→','›'),char=>{
+  const index=winAnsi.indexOf(char);
+  return (index<0?63:index).toString(16).padStart(2,'0');
+ }).join('');
+ const measure=document.createElement('canvas').getContext('2d');
+ const pages=[''];
+ let y=788;
+ function addLine(text,size,bold){
+  measure.font=(bold?'bold ':'')+size+'px Helvetica, Arial, sans-serif';
+  const write=row=>{
+   if(y<48){pages.push('');y=788;}
+   pages[pages.length-1]+=`BT /${bold?'F2':'F1'} ${size} Tf 0.08 0.23 0.38 rg 44 ${y} Td <${hex(row)}> Tj ET\n`;
+   y-=size+5;
+  };
+  for(const paragraph of String(text??'').split(/\r?\n/)){
+   let row='';
+   for(const word of paragraph.split(/\s+/)){
+    const next=row?row+' '+word:word;
+    if(row&&measure.measureText(next).width>495){write(row);row=word;}
+    else row=next;
+   }
+   write(row);
+  }
+  y-=6;
+ }
+ addLine(title,19,true);
+ for(const line of lines)addLine(line,12,false);
+ const objects=[
+  '<< /Type /Catalog /Pages 2 0 R >>',
+  `<< /Type /Pages /Count ${pages.length} /Kids [${pages.map((_,i)=>(5+i*2)+' 0 R').join(' ')}] >>`,
+  '<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica /Encoding /WinAnsiEncoding >>',
+  '<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica-Bold /Encoding /WinAnsiEncoding >>'
+ ];
+ for(const stream of pages){
+  objects.push(`<< /Type /Page /Parent 2 0 R /MediaBox [0 0 595 842] /Resources << /Font << /F1 3 0 R /F2 4 0 R >> >> /Contents ${objects.length+2} 0 R >>`);
+  objects.push(`<< /Length ${stream.length} >>\nstream\n${stream}endstream`);
+ }
+ let pdf='%PDF-1.4\n';
+ const offsets=objects.map((object,i)=>{
+  const offset=pdf.length;
+  pdf+=`${i+1} 0 obj\n${object}\nendobj\n`;
+  return offset;
+ });
+ const xref=pdf.length;
+ pdf+=`xref\n0 ${objects.length+1}\n0000000000 65535 f \n`;
+ for(const offset of offsets)pdf+=String(offset).padStart(10,'0')+' 00000 n \n';
+ pdf+=`trailer\n<< /Size ${objects.length+1} /Root 1 0 R >>\nstartxref\n${xref}\n%%EOF\n`;
+ return new Blob([pdf],{type:'application/pdf'});
+}
 function pacoteDocumento(title,lines){
- const w=window.open('','_blank');
- if(!w)throw Error('Permita abrir a janela de impressão e tente novamente.');
- const d=w.document;
- d.title=title;
- const style=d.createElement('style');
- style.textContent='body{font:16px system-ui;color:#153a60;max-width:800px;margin:28px auto;padding:0 16px}h1{font-size:25px}p{white-space:pre-wrap;break-inside:avoid}button{padding:10px}@media print{button{display:none}}';
- d.head.append(style);
- const h=d.createElement('h1');h.textContent=title;d.body.append(h);
- for(const line of lines){const p=d.createElement('p');p.textContent=line;d.body.append(p)}
- const print=d.createElement('button');print.textContent='Imprimir ou salvar PDF';print.onclick=()=>w.print();d.body.prepend(print);
+ const pdf=pacotePdf(title,lines);
+ const url=URL.createObjectURL(pdf);
+ const popup=window.open(url,'_blank');
+ if(!popup)window.location.assign(url);
+ setTimeout(()=>URL.revokeObjectURL(url),300000);
 }
 let pacoteEmEdicao=null;
 function pacoteModoEdicao(id=null){
