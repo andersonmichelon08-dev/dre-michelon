@@ -582,7 +582,7 @@ body > header .dre-brand { display:flex; align-items:center; gap:8px; color:var(
    <small>Confira os quilômetros. Informe zero nos deslocamentos vazios que não fizer. O pacote reserva horários na agenda interna do DRE.</small>
   </div>
   <p id="pacoteStatus" role="status"></p>
-  <div class="actions"><button class="secondary" type="submit" value="orcamento">Gerar orçamento</button><button class="primary" type="submit" id="pacoteConfirmar" value="confirmar">Confirmar e agendar</button><button class="secondary" type="button" id="pacoteCancelarEdicao" hidden>Cancelar edição</button></div>
+  <div class="actions"><button class="secondary" type="button" id="pacoteGerarOrcamento">Gerar orçamento</button><a id="pacoteBaixarOrcamento" hidden download="Orcamento-Michelon.pdf">Baixar PDF</a><button class="primary" type="submit" id="pacoteConfirmar" value="confirmar">Confirmar e agendar</button><button class="secondary" type="button" id="pacoteCancelarEdicao" hidden>Cancelar edição</button></div>
  </form>
  <div class="card"><h3>Pacotes confirmados</h3><div id="pacoteLista"></div></div>
 </section>
@@ -1035,13 +1035,8 @@ function pacotePdf(title,lines,orcamento){
  pdf+=`trailer\n<< /Size ${objects.length+1} /Root 1 0 R /Info ${objects.length} 0 R >>\nstartxref\n${xref}\n%%EOF\n`;
  return new Blob([pdf],{type:'application/pdf'});
 }
-function pacoteDocumento(title,lines,orcamento){
- const pdf=pacotePdf(title,lines,orcamento);
- const url=URL.createObjectURL(pdf);
- if(orcamento){
-  window.location.assign(url);
-  return;
- }
+function pacoteDocumento(title,lines){
+ const url=URL.createObjectURL(pacotePdf(title,lines));
  const popup=window.open(url,'_blank');
  if(!popup)window.location.assign(url);
  setTimeout(()=>URL.revokeObjectURL(url),300000);
@@ -1062,6 +1057,40 @@ function pacoteLimparForm(){
  for(const id of ['pacoteRenovacao','pacoteCalculo','pacoteStatus'])$(id).textContent='';
 }
 $('pacoteCancelarEdicao').onclick=pacoteLimparForm;
+$('pacoteGerarOrcamento').onclick=()=>{
+ const status=$('pacoteStatus'),baixar=$('pacoteBaixarOrcamento');
+ if(baixar.hasAttribute('href'))URL.revokeObjectURL(baixar.href);
+ baixar.removeAttribute('href');
+ baixar.hidden=true;
+ status.textContent='';
+ try{
+  const f=Object.fromEntries(new FormData(pacoteForm));
+  const cliente=f.cliente.trim(),origem=f.origem.trim(),destino=f.destino.trim();
+  if(!cliente||!origem||!destino)throw Error('Preencha cliente, embarque e destino.');
+  if(!f.idaHora||!f.voltaHora)throw Error('Informe os horários de embarque para levar e buscar.');
+  if(pacoteForm.elements.valor.validity.badInput)throw Error('Informe um valor válido para o pacote.');
+  const campos=f.valor!==''?['valor']:['tarifa','vazio','pedagio','margem',...pacoteSeg.map((_,i)=>'km'+i)];
+  for(const nome of campos){
+   const campo=pacoteForm.elements[nome];
+   if(!campo.validity.valid){
+    if(campo.validity.valueMissing)throw Error('Preencha os quilômetros e as tarifas ou informe um valor fechado.');
+    throw Error('Confira o campo '+campo.labels[0].textContent.trim()+'.');
+   }
+  }
+  const calculo=f.valor!==''?{dias:pacoteDatas(f),total:Number(f.valor)}:pacoteCalcular();
+  if(!(calculo.total>0&&Number.isSafeInteger(pacoteCentavos(calculo.total))))throw Error('Informe um valor válido para o pacote.');
+  const total=new Intl.NumberFormat('pt-BR',{style:'currency',currency:'BRL'}).format(calculo.total);
+  const pdf=pacotePdf('Orçamento de pacote - Michelon Viagens Executivas',[],{
+   cliente,pontos:pacotePontos(origem,destino,f),
+   periodo:pacoteData(f.inicio)+' a '+pacoteData(f.fim),
+   ida:f.idaHora,volta:f.voltaHora,datas:calculo.dias.map(pacoteData),total
+  });
+  baixar.href=URL.createObjectURL(pdf);
+  baixar.hidden=false;
+  status.textContent='PDF gerado. Se ele não abrir, toque em Baixar PDF.';
+  window.location.assign(baixar.href);
+ }catch(e){status.textContent=e.message;}
+};
 pacoteForm.onsubmit=e=>{
  e.preventDefault();
  const status=$('pacoteStatus');
@@ -1071,14 +1100,6 @@ pacoteForm.onsubmit=e=>{
   if(!cliente||!origem||!destino||!f.base.trim())throw Error('Preencha cliente, embarque, destino e base.');
   const slots=dias.flatMap(day=>['ida','volta'].map(type=>pacoteFaixa(day,{inicio:f[type+'Inicio'],hora:f[type+'Hora'],fim:f[type+'Fim']},type)));
   if(f.idaFim>f.voltaInicio)throw Error('O horário de levar precisa terminar antes da ocupação para buscar.');
-  if(e.submitter.value==='orcamento'){
-   pacoteDocumento('Orçamento de pacote - Michelon Viagens Executivas',[],{
-    cliente,pontos:pacotePontos(origem,destino,f),
-    periodo:pacoteData(f.inicio)+' a '+pacoteData(f.fim),
-    ida:f.idaHora,volta:f.voltaHora,datas:dias.map(pacoteData),total:money(total)
-   });
-   return;
-  }
   const data=pacoteRead();
   data.pacotes??=[];
   const diasSemana=pacoteDiasSelecionados();
