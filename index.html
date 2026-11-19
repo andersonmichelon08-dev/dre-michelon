@@ -974,9 +974,13 @@ function pacotePdf(title,lines){
  pdf+=`trailer\n<< /Size ${objects.length+1} /Root 1 0 R >>\nstartxref\n${xref}\n%%EOF\n`;
  return new Blob([pdf],{type:'application/pdf'});
 }
-function pacoteDocumento(title,lines){
+function pacoteDocumento(title,lines,abrirNaMesmaAba=false){
  const pdf=pacotePdf(title,lines);
  const url=URL.createObjectURL(pdf);
+ if(abrirNaMesmaAba){
+  window.location.assign(url);
+  return;
+ }
  const popup=window.open(url,'_blank');
  if(!popup)window.location.assign(url);
  setTimeout(()=>URL.revokeObjectURL(url),300000);
@@ -1010,7 +1014,7 @@ pacoteForm.onsubmit=e=>{
    pacoteDocumento('Michelon Viagens Executivas · Orçamento de pacote',[
     cliente,pacotePontos(origem,destino,f).join(' → '),pacoteData(f.inicio)+' a '+pacoteData(f.fim),
     'Levar às '+f.idaHora+' · Buscar às '+f.voltaHora,
-    dias.length+' dias: '+dias.map(pacoteData).join(', '),'Total do pacote: '+money(total)]);
+    dias.length+' dias: '+dias.map(pacoteData).join(', '),'Total do pacote: '+money(total)],true);
    return;
   }
   const data=pacoteRead();
