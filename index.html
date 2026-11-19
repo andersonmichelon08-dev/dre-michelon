@@ -582,7 +582,14 @@ body > header .dre-brand { display:flex; align-items:center; gap:8px; color:var(
    <small>Confira os quilômetros. Informe zero nos deslocamentos vazios que não fizer. O pacote reserva horários na agenda interna do DRE.</small>
   </div>
   <p id="pacoteStatus" role="status"></p>
-  <div class="actions"><button class="secondary" type="button" id="pacoteGerarOrcamento">Gerar orçamento</button><a id="pacoteBaixarOrcamento" hidden download="Orcamento-Michelon.pdf">Baixar PDF</a><button class="primary" type="submit" id="pacoteConfirmar" value="confirmar">Confirmar e agendar</button><button class="secondary" type="button" id="pacoteCancelarEdicao" hidden>Cancelar edição</button></div>
+  <div class="actions"><button class="secondary" type="button" id="pacoteGerarOrcamento">Gerar orçamento</button><button class="primary" type="submit" id="pacoteConfirmar" value="confirmar">Confirmar e agendar</button><button class="secondary" type="button" id="pacoteCancelarEdicao" hidden>Cancelar edição</button></div>
+  <div id="pacotePdfAcoes" hidden>
+   <div class="actions">
+    <button class="primary" type="button" id="pacoteCompartilharOrcamento">Compartilhar PDF</button>
+    <button class="secondary" type="button" id="pacoteAbrirOrcamento">Abrir PDF</button>
+    <button class="secondary" type="button" id="pacoteBaixarOrcamento">Baixar PDF</button>
+   </div>
+  </div>
  </form>
  <div class="card"><h3>Pacotes confirmados</h3><div id="pacoteLista"></div></div>
 </section>
@@ -1048,6 +1055,7 @@ function pacoteModoEdicao(id=null){
  $('pacoteCancelarEdicao').hidden=!id;
 }
 function pacoteLimparForm(){
+ pacoteLimparPdf();
  pacoteModoEdicao();
  pacoteForm.reset();
  pacoteMostrarPontoExtra();
@@ -1057,11 +1065,41 @@ function pacoteLimparForm(){
  for(const id of ['pacoteRenovacao','pacoteCalculo','pacoteStatus'])$(id).textContent='';
 }
 $('pacoteCancelarEdicao').onclick=pacoteLimparForm;
+let pacotePdfGerado=null;
+function pacoteLimparPdf(){
+ if(pacotePdfGerado)URL.revokeObjectURL(pacotePdfGerado.url);
+ pacotePdfGerado=null;
+ $('pacotePdfAcoes').hidden=true;
+}
+$('pacoteAbrirOrcamento').onclick=()=>{
+ if(pacotePdfGerado)window.open(pacotePdfGerado.url,'_blank','noopener');
+};
+$('pacoteBaixarOrcamento').onclick=()=>{
+ if(!pacotePdfGerado)return;
+ const link=document.createElement('a');
+ link.href=pacotePdfGerado.url;
+ link.download='Orcamento-Michelon.pdf';
+ document.body.append(link);
+ link.click();
+ link.remove();
+};
+$('pacoteCompartilharOrcamento').onclick=async()=>{
+ if(!pacotePdfGerado)return;
+ const status=$('pacoteStatus');
+ try{
+  const arquivo=new File([pacotePdfGerado.blob],'Orcamento-Michelon.pdf',{type:'application/pdf'});
+  if(navigator.share&&navigator.canShare?.({files:[arquivo]})){
+   await navigator.share({files:[arquivo]});
+   return;
+  }
+ }catch(e){
+  if(e.name==='AbortError')return;
+ }
+ status.textContent='Toque em Baixar PDF e anexe o arquivo como documento no WhatsApp.';
+};
 $('pacoteGerarOrcamento').onclick=()=>{
- const status=$('pacoteStatus'),baixar=$('pacoteBaixarOrcamento');
- if(baixar.hasAttribute('href'))URL.revokeObjectURL(baixar.href);
- baixar.removeAttribute('href');
- baixar.hidden=true;
+ const status=$('pacoteStatus');
+ pacoteLimparPdf();
  status.textContent='';
  try{
   const f=Object.fromEntries(new FormData(pacoteForm));
@@ -1085,10 +1123,9 @@ $('pacoteGerarOrcamento').onclick=()=>{
    periodo:pacoteData(f.inicio)+' a '+pacoteData(f.fim),
    ida:f.idaHora,volta:f.voltaHora,datas:calculo.dias.map(pacoteData),total
   });
-  baixar.href=URL.createObjectURL(pdf);
-  baixar.hidden=false;
-  status.textContent='PDF gerado. Se ele não abrir, toque em Baixar PDF.';
-  window.location.assign(baixar.href);
+  pacotePdfGerado={blob:pdf,url:URL.createObjectURL(pdf)};
+  $('pacotePdfAcoes').hidden=false;
+  status.textContent='PDF pronto. Toque em Compartilhar PDF e escolha o WhatsApp.';
  }catch(e){status.textContent=e.message;}
 };
 pacoteForm.onsubmit=e=>{
