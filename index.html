@@ -206,6 +206,9 @@ header{height:58px!important;background:linear-gradient(110deg,#063568,#0865ab)!
 #uberExtrato > label.primary { color: #fff; font-weight: 700; text-align: center; }
 #uberExtrato > label:focus-within { outline: 2px solid #07588f; outline-offset: 2px; }
 #uberExtratoStatus:empty { display: none; }
+#uberFechamento { width: min(36rem, 92vw); max-height: 85vh; overflow: auto; }
+#uberFechamentoTotais dt { margin-top: .65rem; }
+#uberFechamentoTotais dd { margin: .15rem 0 0; font-weight: 700; font-variant-numeric: tabular-nums; }
 @media (max-width: 900px) {
   #uber > .cols { align-items: stretch; }
   #uber input[type="date"] { min-width: 0; max-width: 100%; }
@@ -345,8 +348,15 @@ body > .shell > .main { background: var(--dre-canvas) !important; }
 #dreHomeOverview .dre-report-tile strong { font-size: clamp(1rem, 2.4vw, 1.22rem); }
 #dreHomeOverview .dre-income strong { color: var(--dre-mint); }
 #dreHomeOverview .dre-loss strong { color: var(--dre-pink); }
-#dreHomeOverview .dre-home-result, #dreHomeOverview .dre-home-total { grid-column: 1 / -1; }
+#dreHomeOverview .dre-home-result, #dreHomeOverview .dre-home-total, #dreHomeOverview .dre-home-card-limit { grid-column: 1 / -1; }
 #dreHomeOverview .dre-home-total { background: #162333; }
+#dreHomeOverview .dre-account-label { display: flex; align-items: center; gap: 8px; }
+#dreHomeOverview .dre-account-mark {
+  display: inline-grid; place-items: center; flex: 0 0 auto; min-width: 30px; height: 26px;
+  padding: 0 4px; border-radius: 6px; font-size: 12px; font-weight: 800; letter-spacing: -.025em;
+}
+#dreHomeOverview .dre-mark-itau { color: #003399; background: #ff7900; }
+#dreHomeOverview .dre-mark-uber { color: #fff; background: #000; border: 1px solid #536171; }
 #dreHomeOverview .dre-home-result {
   display: flex;
   justify-content: space-between;
@@ -511,8 +521,9 @@ body > header .dre-brand { display:flex; align-items:center; gap:8px; color:var(
   <h3>Saldos das contas</h3>
   <div class="dre-home-grid">
    <div class="dre-report-tile dre-home-total"><span>Saldo total</span><strong id="dreHomeTotal">—</strong></div>
-   <div class="dre-report-tile dre-home-uber"><span>Conta Uber</span><strong id="dreHomeUber">—</strong></div>
-   <div class="dre-report-tile dre-home-itau"><span>Conta Itaú</span><strong id="dreHomeItau">—</strong></div>
+   <div class="dre-report-tile dre-home-uber"><span class="dre-account-label"><span class="dre-account-mark dre-mark-uber" aria-hidden="true">Uber</span>Conta Uber</span><strong id="dreHomeUber">—</strong></div>
+   <div class="dre-report-tile dre-home-itau"><span class="dre-account-label"><span class="dre-account-mark dre-mark-itau" aria-hidden="true">Itaú</span>Conta Itaú</span><strong id="dreHomeItau">—</strong></div>
+   <div class="dre-report-tile dre-home-card-limit"><span class="dre-account-label"><span class="dre-account-mark dre-mark-itau" aria-hidden="true">Itaú</span>Limite disponível do cartão Itaú</span><strong id="dreHomeCardAvailable">—</strong></div>
   </div>
  </div>
 </section><div id="drePainelInicio" aria-label="Avisos e planejamento financeiro"></div><p id="dreAvisoMensagem" class="muted" role="status"></p>
@@ -586,12 +597,14 @@ body > header .dre-brand { display:flex; align-items:center; gap:8px; color:var(
   <div id="pacotePdfAcoes" hidden>
    <style>#pacoteAbrirOrcamento{display:inline-flex;align-items:center;justify-content:center;padding:10px 14px;border-radius:10px;text-decoration:none}</style>
    <div class="actions">
+    <button class="secondary" type="button" id="pacoteSalvarOrcamento">Salvar orçamento</button>
     <button class="primary" type="button" id="pacoteCompartilharOrcamento">Compartilhar PDF</button>
     <a class="secondary" id="pacoteAbrirOrcamento" target="_blank" rel="noopener">Abrir PDF</a>
     <button class="secondary" type="button" id="pacoteBaixarOrcamento">Baixar PDF</button>
    </div>
   </div>
  </form>
+ <div class="card"><h3>Orçamentos salvos</h3><div id="pacoteOrcamentos"></div></div>
  <div class="card"><h3>Pacotes confirmados</h3><div id="pacoteLista"></div></div>
 </section>
 <dialog id="pacoteModal" aria-labelledby="pacoteModalTitulo">
@@ -696,6 +709,18 @@ body > header .dre-brand { display:flex; align-items:center; gap:8px; color:var(
         </div>
       </div>
     </dialog>
+    <button id="uberFechamentoAbrir" class="secondary" type="button">Fechamento diário</button>
+    <dialog id="uberFechamento" class="card" aria-labelledby="uberFechamentoTitulo">
+      <h3 id="uberFechamentoTitulo">Fechamento diário da Uber</h3>
+      <label class="field">Data do fechamento <input id="uberFechamentoData" type="date"></label>
+      <p id="uberFechamentoStatus" role="status"></p>
+      <dl id="uberFechamentoTotais"></dl>
+      <details id="uberFechamentoRevisao" hidden>
+        <summary>Ver movimentações para revisar</summary>
+        <ul id="uberFechamentoItens"></ul>
+      </details>
+      <form method="dialog"><button class="secondary">Fechar</button></form>
+    </dialog>
     <div id="uberExtratoStatus" role="status"></div>
     <div id="uberExtratoResultado" hidden>
       <p id="uberExtratoSaldo"></p>
@@ -750,6 +775,12 @@ body > header .dre-brand { display:flex; align-items:center; gap:8px; color:var(
     const itau=(Number(c.itauInicial)||0)+delta('itau');
     const uber=(Number(c.uberInicial)||0)+delta('uber');
     return {itau,uber};
+  }
+  function dreCardLimit(contas,finance){
+    const compras=finance.filter(f=>f.conta==='cartao'&&f.tipo==='saida').reduce((total,f)=>total+(Number(f.valor)||0),0);
+    const usado=(Number(contas.cartaoUsado)||0)+compras;
+    const limite=Number(contas.cartaoLimite)||0;
+    return {limite,usado,disponivel:limite-usado};
   }
 </script>
 <dialog id="dreEditarCotacao" class="card" aria-labelledby="dreEditarCotacaoTitulo" style="width:min(92vw,500px);max-height:85dvh;overflow:auto">
@@ -1131,7 +1162,10 @@ $('pacoteGerarOrcamento').onclick=()=>{
    periodo:pacoteData(f.inicio)+' a '+pacoteData(f.fim),
    ida:f.idaHora,volta:f.voltaHora,datas:calculo.dias.map(pacoteData),total
   });
-  pacotePdfGerado={blob:pdf,url:URL.createObjectURL(pdf)};
+  pacotePdfGerado={blob:pdf,url:URL.createObjectURL(pdf),orcamento:{
+   cliente,origem,destino,inicio:f.inicio,fim:f.fim,total:calculo.total,diasSemana:pacoteDiasSelecionados(),calculo:f
+  }};
+  $('pacoteSalvarOrcamento').disabled=false;
   const abrir=$('pacoteAbrirOrcamento');
   abrir.href=pacotePdfGerado.url;
   $('pacotePdfAcoes').hidden=false;
@@ -1141,6 +1175,18 @@ $('pacoteGerarOrcamento').onclick=()=>{
   status.textContent=e.message;
   status.focus();
  }
+};
+$('pacoteSalvarOrcamento').onclick=()=>{
+ if(!pacotePdfGerado||$('pacoteSalvarOrcamento').disabled)return;
+ const status=$('pacoteStatus');
+ try{
+  const data=pacoteRead();
+  data.orcamentosPacote??=[];
+  data.orcamentosPacote.unshift({...pacotePdfGerado.orcamento,id:crypto.randomUUID()});
+  pacoteWrite(data);
+  $('pacoteSalvarOrcamento').disabled=true;
+  status.textContent='Orçamento salvo. A agenda será reservada quando você confirmar o pacote.';
+ }catch(e){status.textContent='Não foi possível salvar o orçamento. '+e.message;}
 };
 pacoteForm.onsubmit=e=>{
  e.preventDefault();
@@ -1316,6 +1362,10 @@ function pacotePreencher(pacote,periodo={}){
  $('pacotes').scrollTop=0;
  pacoteForm.elements.cliente.focus({preventScroll:true});
 }
+function pacoteDuplicar(pacote){
+ pacotePreencher(pacote,{inicio:'',fim:'',excecoes:'',valor:''});
+ $('pacoteRenovacao').textContent='Cópia de '+pacote.cliente+' · Informe o novo período e confira o valor.';
+}
 function pacoteEditar(id){
  const pacote=pacoteRead().pacotes?.find(p=>p.id===id);
  if(!pacote)return;
@@ -1372,9 +1422,29 @@ function pacoteOpcoesClientes(pacotes){
  pacoteClienteSalvo.replaceChildren(...options);
  $('pacoteClienteSalvoCampo').hidden=options.length===1;
 }
+function renderPacoteOrcamentos(data){
+ const list=$('pacoteOrcamentos');
+ list.replaceChildren();
+ for(const orcamento of data.orcamentosPacote??[]){
+  const card=document.createElement('div'),info=document.createElement('p'),acoes=document.createElement('div');
+  card.className='card';
+  acoes.className='actions';
+  info.textContent=orcamento.cliente+' · '+pacoteData(orcamento.inicio)+' a '+pacoteData(orcamento.fim)+' · '+money(orcamento.total);
+  acoes.append(btn('Duplicar orçamento',()=>pacoteDuplicar(orcamento)),btn('Excluir orçamento',()=>{
+   if(!confirm('Excluir este orçamento salvo?'))return;
+   const atual=pacoteRead();
+   atual.orcamentosPacote=atual.orcamentosPacote.filter(item=>item.id!==orcamento.id);
+   pacoteWrite(atual);
+  }));
+  card.append(info,acoes);
+  list.append(card);
+ }
+ if(!list.childElementCount)list.textContent='Gere um orçamento e toque em Salvar orçamento para reutilizar depois.';
+}
 function renderPacotes(){
  const data=pacoteRead();
  pacoteOpcoesClientes(data.pacotes||[]);
+ renderPacoteOrcamentos(data);
  const list=$('pacoteLista');
  list.replaceChildren();
  for(const p of data.pacotes||[]){
@@ -1383,7 +1453,7 @@ function renderPacotes(){
   title.textContent=p.cliente+' · '+pacotePontos(p.origem,p.destino,p.calculo).join(' → ');
   const received=pacoteRecebido(data,p.id),total=pacoteCentavos(p.total);
   info.textContent=pacoteData(p.inicio)+' a '+pacoteData(p.fim)+' · '+money(p.total)+' · '+(received===0?'Aguardando pagamento':received<total?'Pagamento parcial':'Pagamento concluído')+' · Saldo a receber '+money((total-received)/100);
-  actions.append(btn('Renovar pacote',()=>pacoteRenovar(p.id)),btn('Gerar relatório',()=>pacoteRelatorio(p.id)));
+  actions.append(btn('Duplicar orçamento',()=>pacoteDuplicar(p)),btn('Renovar pacote',()=>pacoteRenovar(p.id)),btn('Gerar relatório',()=>pacoteRelatorio(p.id)));
   actions.append(btn('Editar pacote',()=>pacoteEditar(p.id)),btn('Excluir pacote',()=>pacoteExcluir(p.id)));
   if(received<total)actions.append(btn('Registrar recebimento',()=>pacotePagamento(p.id)));
   card.append(title,info,actions);
@@ -1710,15 +1780,14 @@ $('rSalvar').onclick=()=>{const origem=$('rOrigem').value.trim(),destino=$('rDes
   function renderContas(){
     const c=db.contas||{},all=Array.isArray(db.finance)?db.finance:[];
     const {itau,uber}=dreAccountBalances(c,all);
-    const used=(Number(c.cartaoUsado)||0)+all.filter(f=>f.conta==='cartao'&&f.tipo==='saida').reduce((v,f)=>v+(Number(f.valor)||0),0);
-    const limit=Number(c.cartaoLimite)||0;
+    const {limite,usado,disponivel}=dreCardLimit(c,all);
     const chequeLimite=Number(c.chequeLimite)||0;
     const chequeUsado=Math.max(0,-itau);
     $('dreChequeDisponivel').textContent=money(Math.max(0,chequeLimite-chequeUsado));
     $('dreChequeDetalhe').textContent='Limite total: '+money(chequeLimite)+' · Saldo a descoberto: '+money(chequeUsado);
     $('dreSaldoItau').textContent=money(itau);$('dreSaldoUber').textContent=money(uber);
-    $('dreSaldoContas').textContent=money(itau+uber);$('dreLimiteDisponivel').textContent=money(limit-used);
-    $('dreLimiteDetalhe').textContent='Limite total: '+money(limit)+' · Utilizado: '+money(used);
+    $('dreSaldoContas').textContent=money(itau+uber);$('dreLimiteDisponivel').textContent=money(disponivel);
+    $('dreLimiteDetalhe').textContent='Limite total: '+money(limite)+' · Utilizado: '+money(usado);
   }
   const contaFields=[['dreItauInicial','itauInicial'],['dreUberInicial','uberInicial'],['dreCartaoLimite','cartaoLimite'],['dreCartaoUsado','cartaoUsado'],['dreChequeLimite','chequeLimite']];
   for(const [id,key] of contaFields)$(id).value=Number(db.contas[key])||0;
@@ -4261,13 +4330,14 @@ try { d = JSON.parse(raw) || {}; } catch { d = {}; }
 const tomorrow = next(now),month = now.slice(0,7);
 const items=Array.isArray(d.contasPagar)?d.contasPagar:[],finance=Array.isArray(d.finance)?d.finance:[];
 const {itau,uber}=dreAccountBalances(d.contas||{},finance);
+const {disponivel:cartaoDisponivel}=dreCardLimit(d.contas||{},finance);
 const monthEntries=finance.filter(f=>Number.isFinite(Number(f.valor))&&Number(f.valor)>0&&
   /^\d{4}-\d{2}-\d{2}/.test(String(f.date||''))&&String(f.date).slice(0,7)===month);
 const sumMonth=tipo=>monthEntries.filter(f=>f.tipo===tipo).reduce((sum,f)=>sum+Number(f.valor),0);
 const income=sumMonth('entrada'),cost=sumMonth('saida');
 const [year,monthNumber]=month.split('-').map(Number);
 document.getElementById('dreHomeMonth').textContent=monthLabel.format(new Date(year,monthNumber-1,1));
-for(const [id,value] of Object.entries({dreHomeUber:uber,dreHomeItau:itau,dreHomeTotal:itau+uber,
+for(const [id,value] of Object.entries({dreHomeUber:uber,dreHomeItau:itau,dreHomeTotal:itau+uber,dreHomeCardAvailable:cartaoDisponivel,
   dreHomeIncome:income,dreHomeCost:cost,dreHomeNet:income-cost})){
   const amount=document.getElementById(id);
   amount.textContent=money(value);
@@ -4918,6 +4988,82 @@ $('avSave').onclick=async()=>{const a=$('avDayStart').value,b=$('avDayEnd').valu
     }
   }
 
+  const fechamento = document.getElementById('uberFechamento');
+  const fecharDia = sufixo => document.getElementById('uberFechamento' + sufixo);
+
+  function mostrarFechamento() {
+    const data = fecharDia('Data').value;
+    const totais = fecharDia('Totais');
+    const lista = fecharDia('Itens');
+    const revisao = fecharDia('Revisao');
+    totais.replaceChildren();
+    lista.replaceChildren();
+    revisao.hidden = true;
+    const status = fecharDia('Status');
+    if (!data) {
+      status.textContent = 'Escolha a data do fechamento.';
+      return;
+    }
+    try {
+      const base = JSON.parse(localStorage.getItem('michelon_base_nova_v1') || '{}');
+      const diaSalvo = (base.uber ?? []).filter(item => item.date === formatoData(data) || item.date === data);
+      const faturamentoDigitado = document.getElementById('uberBruto');
+      const brutoEmEdicao = data === dataTrabalhada.value && faturamentoDigitado.value !== '' &&
+        faturamentoDigitado.validity.valid ? centavos(faturamentoDigitado.value) : null;
+      const faturado = brutoEmEdicao ?? (diaSalvo.length ?
+        diaSalvo.reduce((total, item) => total + centavos(item.bruto), 0) : null);
+      const dre = lerDre().movimentos.filter(item => item.date === data);
+      const temExtrato = extrato && data >= extrato.de && data <= extrato.ate;
+      const itens = temExtrato ? extrato.movimentos.filter(item => item.date === data) : dre;
+      const creditos = agruparCorridas(itens).totais.get(data);
+      const recebidoDigitado = data === dataTrabalhada.value && recebido.value !== '' &&
+        recebido.validity.valid ? centavos(recebido.value) : null;
+      const recebidoCorridas = temExtrato ? creditos ?? 0 : recebidoDigitado ?? creditos ?? null;
+      const entradas = itens.reduce((total, item) => total + Math.max(0, item.valor), 0);
+      const saidas = itens.reduce((total, item) => total + Math.max(0, -item.valor), 0);
+      const diferenca = faturado !== null && recebidoCorridas !== null ? recebidoCorridas - faturado : null;
+      const resumo = [
+        [brutoEmEdicao === null ? 'Faturamento no Uber Driver' : 'Faturamento no Uber Driver (em preenchimento)', faturado],
+        [!temExtrato && recebidoDigitado !== null ? 'Recebido por corridas (em preenchimento)' : 'Recebido por corridas na Conta Uber', recebidoCorridas],
+        ['Entradas na Conta Uber', temExtrato || dre.length ? entradas : null],
+        ['Saídas da Conta Uber', temExtrato || dre.length ? saidas : null],
+        ['Movimento líquido na Conta Uber', temExtrato || dre.length ? entradas - saidas : null],
+        ['Diferença entre recebido por corridas e faturado no app', diferenca]
+      ];
+      if (temExtrato) {
+        const movimentoDre = dre.reduce((total, item) => total + item.valor, 0);
+        resumo.push(['Movimento líquido registrado no DRE', movimentoDre],
+          ['Diferença de movimentação (extrato menos DRE)', entradas - saidas - movimentoDre]);
+      }
+      for (const [rotulo, valor] of resumo) {
+        const termo = document.createElement('dt'), quantia = document.createElement('dd');
+        termo.textContent = rotulo;
+        quantia.textContent = valor === null ? 'Sem informação' : brl(valor);
+        totais.append(termo, quantia);
+      }
+      status.textContent = temExtrato ? 'Movimentações do PDF emitido em ' + extrato.corte + '.' :
+        'Movimentações registradas no DRE. Importe um PDF que inclua essa data para conferir com a Conta Uber.';
+      if (temExtrato) {
+        const {revisao: pendencias} = comparar(itens, dre);
+        revisao.hidden = pendencias.length === 0;
+        revisao.open = false;
+        for (const item of pendencias) {
+          const linha = document.createElement('li');
+          linha.textContent = item.texto;
+          lista.append(linha);
+        }
+      }
+    } catch (error) {
+      status.textContent = 'Não foi possível conferir o dia. ' + error.message;
+    }
+  }
+
+  fecharDia('Abrir').onclick = () => {
+    fecharDia('Data').value = dataTrabalhada.value;
+    mostrarFechamento();
+    fechamento.showModal();
+  };
+  fecharDia('Data').addEventListener('change', mostrarFechamento);
   inicio.addEventListener('change', mostrar);
   arquivo.addEventListener('change', async () => {
     const file = arquivo.files[0];
