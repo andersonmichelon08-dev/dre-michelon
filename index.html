@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html lang="pt-BR"><head>
-<meta charset="utf-8"/><meta content="width=device-width,initial-scale=1" name="viewport"/><title>DRE Michelon | Versão 8.2.5</title>
+<meta charset="utf-8"/><meta content="width=device-width,initial-scale=1" name="viewport"/><title>DRE Michelon | Versão 8.2.7</title>
 <style>
 :root{font-family:system-ui,Arial,sans-serif;color:#19383c;background:#edf4f3}*{box-sizing:border-box}body{margin:0}button,input,select{font:inherit}button{cursor:pointer}header{height:58px;background:#087f78;color:white;display:flex;align-items:center;justify-content:space-between;padding:0 22px}header strong{font-size:20px}.shell{height:calc(100dvh - 58px);display:grid;grid-template-columns:185px 1fr}.nav{background:#fff;border-right:1px solid #d7e5e2;padding:12px;display:flex;flex-direction:column;gap:7px}.nav button{background:transparent;border:0;border-radius:12px;padding:12px;text-align:left;color:#28474a;font-weight:700}.nav button.active{background:#ddf3ee;color:#076a62}.main{min-height:0;padding:16px;overflow:hidden}.page{height:100%;display:none;min-height:0}.page.active{display:flex;flex-direction:column;gap:12px}.top{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-shrink:0}.top h2{margin:0;font-size:23px}.muted{color:#698080;font-size:13px}.cols{display:grid;grid-template-columns:minmax(300px,1fr) minmax(280px,1fr);gap:14px;min-height:0;flex:1}.card{background:#fff;border:1px solid #d8e8e4;border-radius:16px;padding:18px;min-height:0;box-shadow:0 3px 12px #114d4310}.stack{display:flex;flex-direction:column;gap:12px}.field{display:flex;flex-direction:column;gap:5px}.field label{font-size:13px;font-weight:700}input,select{width:100%;padding:10px 11px;border:1px solid #c9dcd8;border-radius:9px;background:white;color:#183b3c;min-height:41px}.primary{background:#087f78;color:white;border:0;border-radius:10px;padding:12px;font-weight:800}.secondary{background:#e9f5f2;border:1px solid #b8ddd5;color:#087268;border-radius:9px;padding:9px 12px;font-weight:700}.danger{color:#a23c36}.result{background:#eff8f5;border-radius:12px;padding:15px;min-height:140px}.result h3{margin:0 0 12px}.metric{font-size:28px;font-weight:800;color:#087f78}.mini{display:flex;justify-content:space-between;gap:8px;padding:6px 0;border-bottom:1px solid #d9eae5}.scroll{overflow:auto;min-height:0;flex:1}.table{width:100%;border-collapse:collapse;font-size:13px}.table th,.table td{text-align:left;padding:9px;border-bottom:1px solid #e0ebe8}.table th{position:sticky;top:0;background:#fff}.actions{display:flex;gap:8px;flex-wrap:wrap}.grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}.stat{font-size:25px;font-weight:800;color:#087f78}.notice{background:#fff8e7;padding:10px;border-radius:9px;color:#715620;font-size:13px}.hidden{display:none!important}@media(max-width:1280px){header{height:52px}.shell{height:calc(100dvh - 52px);display:flex;flex-direction:column}.nav{order:2;flex-direction:row;overflow:auto;padding:5px;border-top:1px solid #ddd;flex-shrink:0}.nav button{white-space:nowrap;padding:9px}.main{flex:1;padding:9px}.cols{grid-template-columns:1fr;overflow:auto}.page.active{overflow:auto}.card{padding:12px}.grid3{grid-template-columns:1fr 1fr}.top h2{font-size:19px}}
 </style><style>
@@ -468,7 +468,16 @@ body > header .dre-brand { display:flex; align-items:center; gap:8px; color:var(
 .agenda-history summary { cursor:pointer; font-weight:700; padding:.65rem 0; }
 .agenda-history .table { margin-top:.5rem; }
 </style>
-</head><body><header><strong class="dre-brand"><span aria-hidden="true">M</span> Michelon <small>DRE 8.2.5</small></strong><span style="font-size:12px">MINHAS VIAGENS · MEU FINANCEIRO</span><div id="msync"><button id="msyncToggle" type="button">☁️ Sincronizar</button><div id="msyncPanel"><strong>DRE Michelon · Nuvem</strong><p style="font-size:12px">Entre com o mesmo e-mail nos dois aparelhos. O primeiro envio só ocorre com sua confirmação. Depois de vincular, sincroniza automaticamente a cada 15 segundos enquanto o app está aberto. Conflitos são bloqueados e cada troca tem backup.</p><div id="msyncAuth"><input id="msyncEmail" type="email" placeholder="Seu e-mail" autocomplete="email"><input id="msyncPass" type="password" placeholder="Senha" autocomplete="current-password"><button id="msyncLogin" class="syncPrimary" type="button">Entrar</button><button id="msyncSignup" type="button">Criar acesso</button></div><div id="msyncActions" style="display:none"><button id="msyncSend" class="syncPrimary" type="button">Enviar dados deste aparelho</button><button id="msyncReceive" type="button">Receber dados da nuvem</button><button id="msyncBackup" type="button">Exportar backups</button><button id="msyncLogout" type="button">Sair</button></div><div id="msyncStatus" role="status">Seus dados locais continuam preservados.</div><small>Antes de receber dados, o aplicativo baixa uma cópia de segurança automaticamente.</small></div></div></header>
+<style>
+#pacotes .card{margin:12px 0}
+#pacotes .field,#pacoteModal .field{display:grid;gap:5px}
+#pacotes .cols,#pacoteModal .cols{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(240px,100%),1fr));gap:9px}
+#pacotes .actions{display:flex;gap:8px;flex-wrap:wrap}
+#pacoteDias input{width:auto}
+#pacoteDias label{display:flex;align-items:center;gap:4px}
+#pacoteModal{width:min(560px,calc(100% - 32px));max-height:90dvh;color:#153a60;border:1px solid #c6d7e7;border-radius:18px;padding:20px}
+#pacoteModal::backdrop{background:#071321aa}
+</style></head><body><header><strong class="dre-brand"><span aria-hidden="true">M</span> Michelon <small>DRE 8.2.7</small></strong><span style="font-size:12px">MINHAS VIAGENS · MEU FINANCEIRO</span><div id="msync"><button id="msyncToggle" type="button">☁️ Sincronizar</button><div id="msyncPanel"><strong>DRE Michelon · Nuvem</strong><p style="font-size:12px">Entre com o mesmo e-mail nos dois aparelhos. O primeiro envio só ocorre com sua confirmação. Depois de vincular, sincroniza automaticamente a cada 15 segundos enquanto o app está aberto. Conflitos são bloqueados e cada troca tem backup.</p><div id="msyncAuth"><input id="msyncEmail" type="email" placeholder="Seu e-mail" autocomplete="email"><input id="msyncPass" type="password" placeholder="Senha" autocomplete="current-password"><button id="msyncLogin" class="syncPrimary" type="button">Entrar</button><button id="msyncSignup" type="button">Criar acesso</button></div><div id="msyncActions" style="display:none"><button id="msyncSend" class="syncPrimary" type="button">Enviar dados deste aparelho</button><button id="msyncReceive" type="button">Receber dados da nuvem</button><button id="msyncBackup" type="button">Exportar backups</button><button id="msyncLogout" type="button">Sair</button></div><div id="msyncStatus" role="status">Seus dados locais continuam preservados.</div><small>Antes de receber dados, o aplicativo baixa uma cópia de segurança automaticamente.</small></div></div></header>
 <div class="shell"><nav class="nav" id="nav"><button class="active" aria-current="page" data-page="inicio"><span class="nav-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.65" stroke-linecap="round" stroke-linejoin="round"><path d="M3 10.5 12 3l9 7.5V21h-6v-7H9v7H3Z"/></svg></span><span class="nav-label">Início</span></button><button data-page="cotacao"><span class="nav-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.65" stroke-linecap="round" stroke-linejoin="round"><path d="M6 3h8l4 4v14H6ZM14 3v5h4M9 12h6m-6 4h6"/></svg></span><span class="nav-label">Cotação</span></button><button data-page="viagens"><span class="nav-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.65" stroke-linecap="round" stroke-linejoin="round"><path d="M3 8h18v12H3ZM8 8V5h8v3M3 13h18"/></svg></span><span class="nav-label">Viagens</span></button><button data-page="agenda"><span class="nav-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.65" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18v15H3ZM7 3v6m10-6v6M3 11h18"/></svg></span><span class="nav-label">Agenda</span></button><button data-page="financeiro"><span class="nav-icon">💰</span><span class="nav-label">Financeiro</span></button><button data-page="reciboAvulso"><span class="nav-icon">🧾</span><span class="nav-label">Recibo avulso</span></button><button data-page="nfDemo"><span class="nav-icon">🧾</span><span class="nav-label">Notas fiscais</span></button><button data-page="uber"><span class="nav-icon">🚕</span><span class="nav-label">Uber</span></button><button data-page="rotas"><span class="nav-icon">🛣️</span><span class="nav-label">Rotas</span></button><button data-page="cartao"><span class="nav-icon">💳</span><span class="nav-label">Cartão</span></button><button data-page="recuperacao"><span class="nav-icon">📦</span><span class="nav-label">Recuperação</span></button><button data-page="config"><span class="nav-icon">⚙️</span><span class="nav-label">Ajustes</span></button><button aria-expanded="false" id="maisMenu" type="button"><span class="nav-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.65" stroke-linecap="round" stroke-linejoin="round"><path d="M4 6h16M4 12h16M4 18h16"/></svg></span><span class="nav-label">Mais</span></button></nav>
 <main class="main">
 <section class="page" id="cartao"><div class="top"><h2>📇 Meu Cartão Digital</h2></div><div class="card stack scroll" style="max-width:640px;width:100%;margin:0 auto;text-align:center;align-items:stretch"><h2>MICHELON</h2><strong style="font-size:22px">Anderson Michelon</strong><p>Viagens Executivas · Limeira – SP</p><p>Mais que viagens, conexões que importam.</p><a class="primary" href="https://andersonmichelon08-dev.github.io/cartao-michelon/" rel="noopener" style="text-decoration:none" target="_blank">📇 Abrir cartão digital completo</a><a class="secondary" href="https://wa.me/5519992462362" target="_blank">💬 WhatsApp</a><a class="secondary" href="tel:+5519992462362">📞 Ligar</a><button class="secondary" onclick="navigator.share?navigator.share({title:'Michelon Viagens Executivas',url:'https://andersonmichelon08-dev.github.io/cartao-michelon/'}).catch(()=&gt;{}):prompt('Copie o link:','https://andersonmichelon08-dev.github.io/cartao-michelon/')">🔗 Compartilhar cartão</button><img alt="QR Code do cartão" height="170" src="https://api.qrserver.com/v1/create-qr-code/?size=170x170&amp;data=https%3A%2F%2Fandersonmichelon08-dev.github.io%2Fcartao-michelon%2F" style="margin:auto" width="170"/></div></section><section class="page active" id="inicio"><div class="top">
@@ -518,7 +527,58 @@ body > header .dre-brand { display:flex; align-items:center; gap:8px; color:var(
   </form>
 </dialog><div class="card stack"><h3 style="margin:0">O que deseja fazer?</h3><div class="actions"><button id="nfHomeButton" class="secondary" data-go="nfDemo" type="button"><span class="action-icon">🧾</span><span>Notas fiscais</span></button><button class="primary" data-go="cotacao"><span class="action-icon">📋</span><span>Nova cotação</span></button><button class="secondary" data-go="agenda"><span class="action-icon">📅</span><span>Abrir agenda</span></button><button class="secondary" data-go="financeiro"><span class="action-icon">💰</span><span>Meu Financeiro</span></button><button class="secondary" data-go="cartao"><span class="action-icon">💳</span><span>💳 Cartão digital</span></button></div><p class="muted">Os registros desta versão são salvos neste navegador. Faça backup antes de trocar de aparelho.</p></div><div class="grid3"><div class="card"><div class="muted">Viagens salvas</div><div class="stat" id="statTrips">0</div></div><div class="card"><div class="muted">Rotas cadastradas</div><div class="stat" id="statRoutes">0</div></div><div class="card"><div class="muted">Resultado acumulado do DRE</div><div class="stat" id="statBalance">R$ 0</div></div></div><div class="card stack" id="recoverySafe" style="border:2px solid #1063a0"><strong>📦 Recuperar meu backup</strong><p>Selecione o arquivo JSON que você guardou. Os registros atuais serão mantidos e uma cópia será salva antes da recuperação.</p><button type="button" class="primary" id="recoveryChoose">Selecionar backup JSON</button><input type="file" accept=".json,application/json" id="recoveryFile" hidden><p id="recoveryStatus" role="status"></p></div></section>
 <section class="page" id="cotacao"><div class="top"><h2>Nova cotação</h2><span class="muted">Origem livre • cálculo pela tabela</span></div><div class="cols"><div class="card stack"><div class="field"><label>Origem</label><input id="origem" list="sugestoes" placeholder="Digite a origem" value="Limeira, SP"/></div><div class="field"><label>Destino</label><input id="destino" list="sugestoes" placeholder="Ex.: GRU, Campinas, Viracopos"/></div><datalist id="sugestoes"></datalist><div class="field"><label>Viagem</label><select id="tipo"><option value="ida">Somente ida (retorno vazio)</option><option value="volta">Ida e volta com passageiro</option><option value="buscar">Buscar passageiro (ida vazia)</option></select></div><div class="actions"><button class="wa-button" id="waAbrir" type="button">📲 Importar WhatsApp</button></div><div class="muted">A busca aceita apelidos cadastrados, como GRU, Cumbica e Viracopos.</div><div id="dreDescontoBox" role="group" aria-label="Desconto e acréscimo"><div class="dreDiscountFields"><label>Tipo de desconto<select id="dreDescontoTipo"><option value="reais">Valor (R$)</option><option value="percentual">Porcentagem (%)</option></select></label><label>Desconto<input id="dreDescontoValor" type="text" inputmode="decimal" value="0" aria-describedby="dreDescontoPrevia"></label></div><div class="dreDiscountFields"><label>Tipo de acréscimo<select id="dreAcrescimoTipo"><option value="reais">Valor (R$)</option><option value="percentual">Porcentagem (%)</option></select></label><label>Acréscimo<input id="dreAcrescimoValor" type="text" inputmode="decimal" value="0" aria-describedby="dreDescontoPrevia"></label></div><div id="dreDescontoPrevia" role="status" aria-live="polite"></div><button class="secondary" id="dreAplicarDesconto" type="button">Aplicar ajustes de preço</button></div></div><div class="card stack"><h3 style="margin:0">Resultado</h3><div class="result" id="resultado"><span class="muted">Preencha origem e destino e clique em calcular.</span></div><div id="dreCotacaoAcoes" aria-label="Ações da cotação"><button class="primary" id="calcular" style="flex:1;min-height:52px;display:block!important;visibility:visible!important" type="button">Calcular orçamento</button><button class="secondary" id="dreLimparCotacao" type="button">🧹 Limpar cotação</button><button class="secondary" disabled="" id="salvarViagem">Salvar cotação na agenda</button><button class="wa-button" disabled="" id="waEnviar" type="button">📲 Enviar proposta pelo WhatsApp</button></div><div class="muted">Sem distância conferida, não será exibido um preço inventado.</div></div></div></section>
-<section class="page" id="viagens"><div class="top"><h2>Minhas viagens</h2><button class="secondary" data-go="cotacao">+ Nova cotação</button></div><div class="card scroll"><table class="table"><thead><tr><th>Data</th><th>Percurso</th><th>Valor</th><th>Ação</th></tr></thead><tbody id="listaViagens"></tbody></table></div></section>
+<section class="page" id="pacotes">
+ <div class="top"><h2>Pacotes de viagens</h2><button class="secondary" data-go="viagens">Voltar a Viagens</button></div>
+ <p id="pacoteRenovacao" role="status"></p>
+ <form id="pacoteForm">
+  <div class="card"><h3>Detalhes do pacote</h3>
+   <div class="cols">
+    <label class="field">Cliente<input name="cliente" required></label>
+    <label class="field">Embarque do cliente<input name="origem" required></label>
+    <label class="field">Destino do cliente<input name="destino" required></label>
+    <label class="field">Base do veículo · uso interno<input name="base" value="Limeira, SP" required></label>
+    <label class="field">Partida para buscar · se diferente da base<input name="baseBusca" placeholder="Usa a base se vazio"></label>
+    <label class="field">Primeiro dia<input type="date" name="inicio" required></label>
+    <label class="field">Último dia<input type="date" name="fim" required></label>
+   </div>
+   <fieldset><legend>Dias de atendimento</legend><div id="pacoteDias" class="actions"></div></fieldset>
+   <label class="field">Datas sem atendimento, como feriados <input name="excecoes" placeholder="DD/MM/AAAA, DD/MM/AAAA"></label>
+  </div>
+  <div class="card"><h3>Horários e agenda</h3>
+   <div class="cols">
+    <label class="field">Levar · início da ocupação<input name="idaInicio" type="time" required></label>
+    <label class="field">Levar · embarque do cliente<input name="idaHora" type="time" required></label>
+    <label class="field">Levar · disponível novamente<input name="idaFim" type="time" required></label>
+    <label class="field">Buscar · início da ocupação<input name="voltaInicio" type="time" required></label>
+    <label class="field">Buscar · embarque do cliente<input name="voltaHora" type="time" required></label>
+    <label class="field">Buscar · disponível novamente<input name="voltaFim" type="time" required></label>
+   </div>
+  </div>
+  <div class="card"><h3>Cálculo interno</h3>
+   <div class="cols" id="pacoteKm"></div>
+   <button type="button" class="secondary" id="pacoteRotas">Buscar quilômetros por endereço</button>
+   <div class="cols">
+    <label class="field">Tarifa com passageiro (R$/km)<input name="tarifa" type="number" min="0" step=".01" required></label>
+    <label class="field">Tarifa vazio (R$/km)<input name="vazio" type="number" min="0" step=".01" required></label>
+    <label class="field">Pedágios por dia (R$)<input name="pedagio" type="number" min="0" step=".01" value="0" required></label>
+    <label class="field">Margem (%)<input name="margem" type="number" min="0" step=".01" required></label>
+    <label class="field">Valor fechado do pacote (R$)<input name="valor" type="number" min=".01" step=".01" placeholder="Usa o total calculado se vazio"></label>
+   </div>
+   <p id="pacoteCalculo" role="status"></p>
+   <small>Confira os quilômetros. Informe zero nos deslocamentos vazios que não fizer. O pacote reserva horários na agenda interna do DRE.</small>
+  </div>
+  <p id="pacoteStatus" role="status"></p>
+  <div class="actions"><button class="secondary" type="submit" value="orcamento">Gerar orçamento</button><button class="primary" type="submit" value="confirmar">Confirmar e agendar</button></div>
+ </form>
+ <div class="card"><h3>Pacotes confirmados</h3><div id="pacoteLista"></div></div>
+</section>
+<dialog id="pacoteModal" aria-labelledby="pacoteModalTitulo">
+ <h3 id="pacoteModalTitulo"></h3><form id="pacoteModalForm"><div id="pacoteModalCampos" class="cols"></div>
+ <p id="pacoteModalErro" role="status"></p>
+ <div class="actions"><button type="button" class="secondary" id="pacoteModalFechar">Voltar</button><button class="primary" id="pacoteModalAcao"></button></div>
+ </form>
+</dialog>
+<section class="page" id="viagens"><div class="top"><h2>Minhas viagens</h2><div class="actions"><button class="primary" data-go="pacotes">Pacotes de viagens</button><button class="secondary" data-go="cotacao">+ Nova cotação</button></div></div><div class="card scroll"><table class="table"><thead><tr><th>Data</th><th>Percurso</th><th>Valor</th><th>Ação</th></tr></thead><tbody id="listaViagens"></tbody></table></div></section>
 <section class="page" id="agenda"><div class="top"><h2>Agenda</h2><button class="secondary" data-go="cotacao">+ Nova cotação</button></div><div class="card scroll"><table class="table"><thead><tr><th>Data</th><th>Origem</th><th>Destino</th><th>Situação</th><th>Ação</th></tr></thead><tbody id="listaAgenda"></tbody></table>
 <p id="agendaVazia" hidden>Nenhuma reserva ou cotação na Agenda.</p>
 <details class="agenda-history" id="agendaHistorico">
@@ -708,17 +768,324 @@ const save=(salvarRecibosPendentes=false)=>{try{const persisted=JSON.parse(local
 // Contas a pagar são gravadas por outro módulo: preservar seus pagamentos mesmo se a tela financeira mantiver uma cópia antiga.
 if(Array.isArray(persisted.finance)){const current=Array.isArray(db.finance)?db.finance:[];const currentIds=new Set(current.map(f=>String(f.id)));const pendingPayments=persisted.finance.filter(f=>String(f.origemId||'').startsWith('contapagar:')&&!currentIds.has(String(f.id)));if(pendingPayments.length)db.finance=[...pendingPayments,...current]}
 }catch(e){console.warn('Falha ao reconciliar dados antes de salvar',e)}localStorage.setItem(KEY,JSON.stringify(db))};save();let quote=null;
+const pacoteForm=$('pacoteForm');
+const pacoteHoje=()=>new Intl.DateTimeFormat('sv-SE',{timeZone:'America/Sao_Paulo'}).format(new Date());
+const pacoteData=d=>d.split('-').reverse().join('/');
+const pacoteSeg=[
+ ['Base → embarque do cliente','base','origem',false],
+ ['Cliente → trabalho','origem','destino',true],
+ ['Trabalho → base','destino','base',false],
+ ['Partida para buscar → trabalho','baseBusca','destino',false],
+ ['Trabalho → residência','destino','origem',true],
+ ['Residência → base','origem','base',false]
+];
+const pacoteDiasSemana=['Dom','Seg','Ter','Qua','Qui','Sex','Sáb'];
+function pacoteCampo(container,label,name,type,value='',attrs={}){
+ const field=document.createElement('label');
+ field.className='field';
+ field.textContent=label;
+ const input=document.createElement('input');
+ Object.assign(input,{name,type,value,...attrs});
+ field.append(input);
+ container.append(field);
+ return input;
+}
+for(const [i,label] of pacoteDiasSemana.entries()){
+ const field=document.createElement('label'),input=document.createElement('input');
+ Object.assign(input,{type:'checkbox',name:'dia',value:i,checked:i>0&&i<6});
+ field.append(input,document.createTextNode(' '+label));
+ $('pacoteDias').append(field);
+}
+for(const [i,[label]] of pacoteSeg.entries())
+ pacoteCampo($('pacoteKm'),label+' (km)','km'+i,'number','',{min:0,step:'.01',required:true});
+function pacoteDefaults(){
+ const {ida,vazio,margem}=db.cfg;
+ for(const [key,value] of Object.entries({tarifa:ida,vazio,margem}))
+  pacoteForm.elements[key].value=value;
+}
+pacoteDefaults();
+const pacoteDiasSelecionados=()=>new FormData(pacoteForm).getAll('dia').map(Number);
+function pacoteDatas(f){
+ const start=Date.parse(f.inicio+'T00:00:00Z'),end=Date.parse(f.fim+'T00:00:00Z');
+ if(!(end>=start&&end-start<366*86400000))throw Error('Escolha um período válido de até 366 dias.');
+ const omitidas=new Set(f.excecoes.split(',').map(x=>x.trim()).filter(Boolean).map(x=>{
+  if(!/^\d{2}\/\d{2}\/\d{4}$/.test(x))throw Error('Use DD/MM/AAAA nas datas sem atendimento.');
+  const iso=x.split('/').reverse().join('-'), parsed=new Date(iso+'T00:00:00Z');
+  if(!Number.isFinite(+parsed)||parsed.toISOString().slice(0,10)!==iso||+parsed<start||+parsed>end)
+   throw Error('Confira as datas sem atendimento. Elas devem estar dentro do período.');
+  return iso;
+ }));
+ const dias=[];
+ const semana=new Set(pacoteDiasSelecionados());
+ for(let t=start;t<=end;t+=86400000){
+  const d=new Date(t),day=d.toISOString().slice(0,10);
+  if(semana.has(d.getUTCDay())&&!omitidas.has(day))dias.push(day);
+ }
+ if(!dias.length)throw Error('Selecione pelo menos um dia de atendimento.');
+ return dias;
+}
+const pacoteCentavos=v=>Math.round(v*100);
+function pacoteCalcular(){
+ const f=Object.fromEntries(new FormData(pacoteForm));
+ const dias=pacoteDatas(f);
+ const kms=pacoteSeg.map((_,i)=>f['km'+i]);
+ if(kms.some(x=>x==='')||[f.tarifa,f.vazio,f.pedagio,f.margem].includes(''))throw Error('Preencha os quilômetros e as tarifas.');
+ const kmCliente=Number(kms[1])+Number(kms[4]),kmVazio=Number(kms[0])+Number(kms[2])+Number(kms[3])+Number(kms[5]);
+ if(!(Number(kms[1])>0&&Number(kms[4])>0))throw Error('Informe a distância com passageiro na ida e na volta.');
+ const diario=(kmCliente*Number(f.tarifa)+kmVazio*Number(f.vazio)+Number(f.pedagio))*(1+Number(f.margem)/100);
+ const sugerido=pacoteCentavos(diario*dias.length)/100;
+ const total=f.valor===''?sugerido:Number(f.valor);
+ if(!(total>0&&Number.isSafeInteger(pacoteCentavos(total))))throw Error('Informe um valor válido para o pacote.');
+ return {f,dias,kmCliente,kmVazio,diario,sugerido,total};
+}
+function pacotePreview(){
+ const output=$('pacoteCalculo');
+ try{
+  const {dias,kmCliente,kmVazio,diario,sugerido,total}=pacoteCalcular();
+  output.textContent=dias.length+' dias · '+dias.length*2+' trajetos · '+kmCliente.toFixed(2)+' km com passageiro e '+kmVazio.toFixed(2)+' km vazios por dia · '+money(diario)+'/dia · sugerido '+money(sugerido)+' · total '+money(total);
+ }catch(e){output.textContent=e.message}
+}
+pacoteForm.addEventListener('input',pacotePreview);
+$('pacoteRotas').onclick=async()=>{
+ const button=$('pacoteRotas'),status=$('pacoteStatus');
+ const f=Object.fromEntries(new FormData(pacoteForm));
+ if(!['origem','destino','base'].every(k=>f[k].trim())){status.textContent='Preencha base, embarque e destino.';return}
+ button.disabled=true;
+ status.textContent='Buscando quilômetros rodoviários…';
+ try{
+  const km=[];
+  for(const [,origem,destino] of pacoteSeg){
+   const partida=f[origem].trim()||f.base.trim(),chegada=f[destino].trim();
+   km.push(partida.toLocaleLowerCase()===chegada.toLocaleLowerCase()?0:await window.michelonPacoteRota(partida,chegada));
+  }
+  if(!['origem','destino','base','baseBusca'].every(k=>pacoteForm.elements[k].value===f[k]))
+   throw Error('Os endereços mudaram durante a busca.');
+  km.forEach((v,i)=>{pacoteForm.elements['km'+i].value=v.toFixed(2)});
+  pacotePreview();
+  status.textContent='Quilômetros preenchidos. Confira os trechos efetivamente percorridos.';
+ }catch(e){status.textContent=e.message+' · Você pode informar os quilômetros manualmente.'}
+ finally{button.disabled=false}
+};
+function pacoteFaixa(day,t,type){
+ const {inicio,hora,fim}=t;
+ if(!inicio||!hora||!fim||inicio>hora||hora>=fim)
+  throw Error('Confira a ordem dos horários de ocupação e embarque.');
+ return {id:crypto.randomUUID(),day,inicio,hora,fim,type,status:'Agendada',
+  availabilityStart:day+'T'+inicio+':00-03:00',availabilityEnd:day+'T'+fim+':00-03:00'};
+}
+function pacoteConflito(data,slot){
+ if(window.michelonAvailabilityRules.conflict(data.trips,slot.id,Date.parse(slot.availabilityStart),Date.parse(slot.availabilityEnd),data.pacotes))
+  throw Error('Horário ocupado em '+pacoteData(slot.day)+' às '+slot.inicio+'. Confira a agenda ou exclua a data da programação.');
+}
+function pacoteRead(){return JSON.parse(localStorage.getItem(KEY))}
+function pacoteWrite(data){
+ localStorage.setItem(KEY,JSON.stringify(data));
+ db=data;
+ renderPacotes();
+ renderTrips();
+ stats();
+ document.dispatchEvent(new Event('dre-contas-alteradas'));
+}
+function pacoteDocumento(title,lines){
+ const w=window.open('','_blank');
+ if(!w)throw Error('Permita abrir a janela de impressão e tente novamente.');
+ const d=w.document;
+ d.title=title;
+ const style=d.createElement('style');
+ style.textContent='body{font:16px system-ui;color:#153a60;max-width:800px;margin:28px auto;padding:0 16px}h1{font-size:25px}p{white-space:pre-wrap;break-inside:avoid}button{padding:10px}@media print{button{display:none}}';
+ d.head.append(style);
+ const h=d.createElement('h1');h.textContent=title;d.body.append(h);
+ for(const line of lines){const p=d.createElement('p');p.textContent=line;d.body.append(p)}
+ const print=d.createElement('button');print.textContent='Imprimir ou salvar PDF';print.onclick=()=>w.print();d.body.prepend(print);
+}
+pacoteForm.onsubmit=e=>{
+ e.preventDefault();
+ const status=$('pacoteStatus');
+ try{
+  const {f,dias,total}=pacoteCalcular();
+  const cliente=f.cliente.trim(),origem=f.origem.trim(),destino=f.destino.trim();
+  if(!cliente||!origem||!destino||!f.base.trim())throw Error('Preencha cliente, embarque, destino e base.');
+  const slots=dias.flatMap(day=>['ida','volta'].map(type=>pacoteFaixa(day,{inicio:f[type+'Inicio'],hora:f[type+'Hora'],fim:f[type+'Fim']},type)));
+  if(f.idaFim>f.voltaInicio)throw Error('O horário de levar precisa terminar antes da ocupação para buscar.');
+  if(e.submitter.value==='orcamento'){
+   pacoteDocumento('Michelon Viagens Executivas · Orçamento de pacote',[
+    cliente,origem+' ⇄ '+destino,pacoteData(f.inicio)+' a '+pacoteData(f.fim),
+    'Levar às '+f.idaHora+' · Buscar às '+f.voltaHora,
+    dias.length+' dias: '+dias.map(pacoteData).join(', '),'Total do pacote: '+money(total)]);
+   return;
+  }
+  const data=pacoteRead();
+  slots.forEach(slot=>pacoteConflito(data,slot));
+  data.pacotes??=[];
+  data.pacotes.unshift({id:crypto.randomUUID(),cliente,origem,destino,total,inicio:f.inicio,fim:f.fim,diasSemana:pacoteDiasSelecionados(),slots,calculo:f});
+  pacoteWrite(data);
+  pacoteForm.reset();
+  $('pacoteRenovacao').textContent='';
+  pacoteDefaults();
+  $('pacoteCalculo').textContent='';
+  status.textContent='Pacote confirmado. '+slots.length+' horários registrados na agenda interna.';
+ }catch(err){status.textContent=err.message}
+};
+function pacoteModal(title,action,setup){
+ const modal=$('pacoteModal'),form=$('pacoteModalForm'),fields=$('pacoteModalCampos');
+ fields.replaceChildren();
+ $('pacoteModalTitulo').textContent=title;
+ $('pacoteModalAcao').textContent=action;
+ $('pacoteModalErro').textContent='';
+ const submit=setup(fields);
+ form.onsubmit=e=>{
+  e.preventDefault();
+  try{submit(Object.fromEntries(new FormData(form)));modal.close()}
+  catch(err){$('pacoteModalErro').textContent=err.message}
+ };
+ modal.showModal();
+}
+$('pacoteModalFechar').onclick=()=>$('pacoteModal').close();
+const pacotePagamentos=(data,id)=>data.finance.filter(f=>f.origemId==='pacote:'+id);
+const pacoteRecebido=(data,id)=>pacotePagamentos(data,id).reduce((n,f)=>n+pacoteCentavos(f.valor),0);
+function pacotePagamento(id){
+ const data=pacoteRead(),p=data.pacotes.find(p=>p.id===id);
+ const saldo=(pacoteCentavos(p.total)-pacoteRecebido(data,id))/100;
+ pacoteModal('Registrar recebimento','Confirmar recebimento',fields=>{
+  pacoteCampo(fields,'Valor recebido','valor','number',saldo,{required:true,min:'.01',step:'.01',max:saldo});
+  pacoteCampo(fields,'Data do recebimento','date','date',pacoteHoje(),{required:true,max:pacoteHoje()});
+  const field=document.createElement('label'),select=document.createElement('select');
+  field.className='field';field.textContent='Conta do recebimento';select.name='conta';select.required=true;
+  select.append(new Option('Selecione a conta',''),new Option('Itaú','itau'),new Option('Uber Conta','uber'));
+  field.append(select);fields.append(field);
+  return f=>{
+   const data=pacoteRead(),p=data.pacotes?.find(p=>p.id===id);
+   const value=pacoteCentavos(Number(f.valor));
+   if(!p||!(value>0&&value<=pacoteCentavos(p.total)-pacoteRecebido(data,id))||f.date>pacoteHoje()||!['itau','uber'].includes(f.conta))
+    throw Error('Confira o saldo em aberto, a data e a conta do recebimento.');
+   data.finance.unshift({id:crypto.randomUUID(),origemId:'pacote:'+id,tipo:'entrada',categoria:'Viagens executivas',desc:'Pacote de viagens · '+p.cliente,date:f.date,valor:value/100,conta:f.conta});
+   pacoteWrite(data);
+  };
+ });
+}
+const pacoteTipo=s=>s.type==='ida'?'Levar':'Buscar';
+function pacoteAjustar(id,slotId){
+ const p=pacoteRead().pacotes?.find(p=>p.id===id),slot=p?.slots.find(s=>s.id===slotId);
+ if(!slot)return;
+ pacoteModal(p.cliente+' · '+pacoteTipo(slot),'Salvar trajeto',fields=>{
+  pacoteCampo(fields,'Data','day','date',slot.day,{required:true});
+  pacoteCampo(fields,'Início da ocupação','inicio','time',slot.inicio,{required:true});
+  pacoteCampo(fields,'Embarque','hora','time',slot.hora,{required:true});
+  pacoteCampo(fields,'Disponível novamente','fim','time',slot.fim,{required:true});
+  const label=document.createElement('label'),select=document.createElement('select');
+  label.className='field';label.textContent='Status';select.name='status';
+  for(const state of ['Agendada','Realizada','Cancelada'])select.add(new Option(state,state));
+  select.value=slot.status;
+  label.append(select);fields.append(label);
+  return f=>{
+   const data=pacoteRead(),p=data.pacotes?.find(p=>p.id===id),index=p?.slots.findIndex(s=>s.id===slotId);
+   if(index===undefined||index<0)throw Error('Trajeto indisponível.');
+   const current=p.slots[index],next=pacoteFaixa(f.day,f,current.type);
+   next.id=current.id;next.status=f.status;
+   next.remarcada=!!current.remarcada||['day','inicio','hora','fim'].some(k=>current[k]!==next[k]);
+   if(next.status==='Realizada'&&Date.parse(next.availabilityEnd)>Date.now())throw Error('O horário deste trajeto ainda não terminou.');
+   if(next.status!=='Cancelada')pacoteConflito(data,next);
+   p.slots[index]=next;
+   pacoteWrite(data);
+  };
+ });
+}
+function pacoteRelatorio(id){
+ const p=pacoteRead().pacotes.find(p=>p.id===id);
+ const datas=p.slots.map(s=>s.day).sort();
+ pacoteModal('Gerar relatório · '+p.cliente,'Abrir relatório',fields=>{
+  pacoteCampo(fields,'De','de','date',datas[0],{required:true});
+  pacoteCampo(fields,'Até','ate','date',datas.at(-1),{required:true});
+  return f=>{
+   if(f.ate<f.de)throw Error('Confira o período do relatório.');
+   const data=pacoteRead(),p=data.pacotes?.find(p=>p.id===id);
+   if(!p)throw Error('Pacote indisponível.');
+   const slots=p.slots.filter(s=>s.day>=f.de&&s.day<=f.ate).sort((a,b)=>a.availabilityStart.localeCompare(b.availabilityStart));
+   const pagamentos=pacotePagamentos(data,id);
+   const balance=(pacoteCentavos(p.total)-pacoteRecebido(data,id))/100;
+   pacoteDocumento('Michelon Viagens Executivas · Relatório do pacote',[
+    p.cliente,p.origem+' ⇄ '+p.destino,pacoteData(f.de)+' a '+pacoteData(f.ate),
+    slots.length+' trajetos · '+['Agendada','Realizada','Cancelada'].map(st=>st+': '+slots.filter(s=>s.status===st).length).join(' · ')+' · Remarcada: '+slots.filter(s=>s.remarcada).length,
+    'Total contratado '+money(p.total)+' · Total recebido '+money(p.total-balance)+' · Saldo a receber '+money(balance),
+    'Pagamentos no período',...pagamentos.filter(v=>v.date>=f.de&&v.date<=f.ate).map(v=>pacoteData(v.date)+' · '+money(v.valor)),
+    'Trajetos no período',...slots.map(s=>pacoteData(s.day)+' '+s.hora+' · '+pacoteTipo(s)+' · '+s.status+(s.remarcada?' · Remarcada':''))]);
+  };
+ });
+}
+function pacoteRenovar(id){
+ const pacote=pacoteRead().pacotes?.find(p=>p.id===id);
+ if(!pacote)return;
+ const ultimoDia=new Date(pacote.fim+'T00:00:00Z');
+ const ano=ultimoDia.getUTCFullYear(),mesSeguinte=ultimoDia.getUTCMonth()+1;
+ const primeiro=new Date(Date.UTC(ano,mesSeguinte,1)).toISOString().slice(0,10);
+ const ultimo=new Date(Date.UTC(ano,mesSeguinte+1,0)).toISOString().slice(0,10);
+ // Pacotes anteriores guardavam as datas dos trajetos em vez dos dias selecionados.
+ const diasSemana=pacote.diasSemana??[...new Set(pacote.slots
+  .filter(s=>!s.remarcada&&s.day>=pacote.inicio&&s.day<=pacote.fim)
+  .map(s=>new Date(s.day+'T00:00:00Z').getUTCDay()))];
+ pacoteForm.reset();
+ pacoteDefaults();
+ const dados={...pacote.calculo,cliente:pacote.cliente,origem:pacote.origem,destino:pacote.destino,
+  inicio:primeiro,fim:ultimo,excecoes:''};
+ for(const [name,value] of Object.entries(dados)){
+  const campo=pacoteForm.elements.namedItem(name);
+  if(campo instanceof HTMLInputElement&&campo.type!=='checkbox')campo.value=value;
+ }
+ for(const campo of pacoteForm.querySelectorAll('input[name="dia"]'))
+  campo.checked=diasSemana.includes(Number(campo.value));
+ pacotePreview();
+ $('pacoteStatus').textContent='Renovação de '+pacote.cliente+' · Confira os dias da semana, os feriados e o valor antes de confirmar.';
+ $('pacoteRenovacao').textContent='Renovação de '+pacote.cliente+' · Revise o novo período.';
+ $('pacotes').scrollTop=0;
+ pacoteForm.elements.inicio.focus({preventScroll:true});
+}
+function renderPacotes(){
+ const data=pacoteRead(),list=$('pacoteLista');
+ list.replaceChildren();
+ for(const p of data.pacotes||[]){
+  const card=document.createElement('div'),title=document.createElement('h4'),info=document.createElement('p'),actions=document.createElement('div');
+  card.className='card';actions.className='actions';
+  title.textContent=p.cliente+' · '+p.origem+' ⇄ '+p.destino;
+  const received=pacoteRecebido(data,p.id),total=pacoteCentavos(p.total);
+  info.textContent=pacoteData(p.inicio)+' a '+pacoteData(p.fim)+' · '+money(p.total)+' · '+(received===0?'Aguardando pagamento':received<total?'Pagamento parcial':'Pagamento concluído')+' · Saldo a receber '+money((total-received)/100);
+  actions.append(btn('Renovar pacote',()=>pacoteRenovar(p.id)),btn('Gerar relatório',()=>pacoteRelatorio(p.id)));
+  if(received<total)actions.append(btn('Registrar recebimento',()=>pacotePagamento(p.id)));
+  card.append(title,info,actions);
+  for(const payment of pacotePagamentos(data,p.id)){
+   const line=document.createElement('p');
+   line.textContent=pacoteData(payment.date)+' · '+money(payment.valor)+' ';
+   line.append(btn('Emitir recibo',()=>window.dispatchEvent(new CustomEvent('michelon-open-receipt',{detail:{points:[p.origem,p.destino],total:payment.valor,client:p.cliente,date:payment.date}}))));
+   card.append(line);
+  }
+  list.append(card);
+ }
+ if(!list.children.length)list.textContent='Nenhum pacote confirmado.';
+}
+function renderPacoteAgenda(){
+ const data=pacoteRead();
+ const rows=(data.pacotes||[]).flatMap(p=>p.slots.map(s=>({p,s})));
+ rows.sort((a,b)=>a.s.availabilityStart.localeCompare(b.s.availabilityStart));
+ for(const {p,s} of rows){
+  const history=s.status!=='Agendada';
+  const [o,d]=s.type==='ida'?[p.origem,p.destino]:[p.destino,p.origem];
+  row($(history?'listaAgendaHistorico':'listaAgenda'),
+   [pacoteData(s.day)+' às '+s.hora,o,d,'Pacote · '+pacoteTipo(s)+' · '+p.cliente+' · '+s.status+(s.remarcada?' · Remarcada':'')],
+   btn('Ajustar trajeto',()=>pacoteAjustar(p.id,s.id)));
+ }
+}
+
 function go(page){
+ if(page==='pacotes')renderPacotes();
  const cotacao=$('cotacao');
  const entrandoNaCotacao=page==='cotacao'&&!cotacao.classList.contains('active');
  if(entrandoNaCotacao)document.activeElement?.blur();
  document.querySelectorAll('.page').forEach(p=>p.classList.toggle('active',p.id===page));document.querySelectorAll('.nav button[data-page]').forEach(b=>{
-  const current=b.dataset.page===page;
+  const current=b.dataset.page===(page==='pacotes'?'viagens':page);
   b.classList.toggle('active',current);
   if(current)b.setAttribute('aria-current','page');
   else b.removeAttribute('aria-current');
  });
- $('maisMenu').classList.toggle('active',!['inicio','cotacao','viagens','agenda'].includes(page));if(page==='inicio')stats();if(page==='rotas')renderRoutes();if(page==='financeiro')renderFin();if(page==='reciboAvulso'){renderFin();renderRecibosAvulsos()}if(page==='viagens'||page==='agenda')renderTrips();if(page==='uber')renderUber();document.activeElement.blur();
+ $('maisMenu').classList.toggle('active',!['inicio','cotacao','viagens','agenda','pacotes'].includes(page));if(page==='inicio')stats();if(page==='rotas')renderRoutes();if(page==='financeiro')renderFin();if(page==='reciboAvulso'){renderFin();renderRecibosAvulsos()}if(page==='viagens'||page==='agenda')renderTrips();if(page==='uber')renderUber();document.activeElement.blur();
  if(entrandoNaCotacao)cotacao.scrollTop=0;
 }
 document.querySelectorAll('[data-page]').forEach(b=>b.onclick=()=>go(b.dataset.page));document.querySelectorAll('[data-go]').forEach(b=>b.onclick=()=>go(b.dataset.go));
@@ -991,6 +1358,7 @@ function renderTrips(){
    agendaRow.append(actionCell);
    $(agendaStatus.history?'listaAgendaHistorico':'listaAgenda').append(agendaRow);
  });
+ renderPacoteAgenda();
  const historyCount=$('listaAgendaHistorico').rows.length;
  $('agendaHistorico').hidden=historyCount===0;
  $('agendaHistoricoTotal').textContent='('+historyCount+')';
@@ -1037,14 +1405,14 @@ $('rSalvar').onclick=()=>{const origem=$('rOrigem').value.trim(),destino=$('rDes
    renderContas();
   $('finLista').replaceChildren();
   month.filter(f=>filtro==='todos'||f.tipo===filtro).sort((a,b)=>finDate(b).localeCompare(finDate(a))).forEach(f=>{
-    const protectedPayment=String(f.origemId||'').startsWith('reserva:')||String(f.origemId||'').startsWith('uber:')||String(f.origemId||'').startsWith('contapagar:');
+    const protectedPayment=String(f.origemId||'').startsWith('reserva:')||String(f.origemId||'').startsWith('uber:')||String(f.origemId||'').startsWith('contapagar:')||String(f.origemId||'').startsWith('pacote:');
     const actions=document.createElement('div');actions.className='actions';
     if(f.reciboAvulso){
       actions.append(btn('Abrir recibo',()=>abrirReciboAvulso(f)));
       actions.append(btn('Excluir',()=>excluirReciboAvulso(f)));
     }
     else if(!protectedPayment){actions.append(btn('Editar',()=>{finEditId=f.id;$('finData').value=finDate(f);$('finDesc').value=f.desc||'';$('finValor').value=f.valor;$('finTipo').value=f.tipo;$('finConta').value=f.conta||'';finAtualizarCategorias(f.categoria||(f.tipo==='entrada'?'Outras receitas':'Outras despesas'));$('finSalvar').textContent='Salvar alterações';$('finCancelar').classList.remove('hidden');$('finValor').focus()}));actions.append(btn('Excluir',()=>{if(!confirm('Excluir este lançamento?'))return;db.finance=db.finance.filter(x=>x.id!==f.id);save();renderFin()}))}
-    else{const t=document.createElement('span');t.className='muted';t.textContent=String(f.origemId||'').startsWith('contapagar:')?'Conta fixa paga — gerencie em Contas a pagar':'Vinculado à viagem/Uber';actions.append(t)}
+    else{const t=document.createElement('span');t.className='muted';t.textContent=String(f.origemId||'').startsWith('contapagar:')?'Conta fixa paga — gerencie em Contas a pagar':String(f.origemId||'').startsWith('pacote:')?'Recebimento vinculado ao pacote':'Vinculado à viagem/Uber';actions.append(t)}
     const tr=document.createElement('tr');for(const v of [finDate(f)+' · '+(f.reciboAvulso?'Serviços extras · '+f.desc+' · '+avulsoConta(f.conta):(f.categoria||f.desc||'Sem categoria')),(f.tipo==='entrada'?'+ ':'− ')+money(f.valor)]){const td=document.createElement('td');td.textContent=v;tr.append(td)}const td=document.createElement('td');td.append(actions);tr.append(td);$('finLista').append(tr)
   });
   const categories={};month.filter(f=>f.tipo==='saida').forEach(f=>{const k=f.categoria||'Sem categoria';categories[k]=(categories[k]||0)+(Number(f.valor)||0)});
@@ -3287,6 +3655,7 @@ async function routeJson(url){const ctrl=new AbortController(),timer=setTimeout(
 async function locateRoute(place){place=canonicalPlace(place);const key=norm(place);if(key===norm('Aeroporto Internacional de Viracopos, Campinas, SP'))return [-47.1345,-23.0074];if(routeLocations.has(key))return routeLocations.get(key);const a=await routeJson('https://nominatim.openstreetmap.org/search?format=json&limit=1&countrycodes=br&q='+encodeURIComponent(place));if(!a.length)throw Error('Endereço não localizado: '+place);const coords=[Number(a[0].lon),Number(a[0].lat)];if(!coords.every(Number.isFinite))throw Error('Coordenadas inválidas: '+place);routeLocations.set(key,coords);return coords}
 async function routeKm(o,d,fromCoords,toCoords){const a=fromCoords??await locateRoute(o),b=toCoords??await locateRoute(d);const j=await routeJson('https://router.project-osrm.org/route/v1/driving/'+a.join(',')+';'+b.join(',')+'?overview=false');const distance=Number(j.routes?.[0]?.distance);if(j.code!=='Ok'||!Number.isFinite(distance)||distance<=0)throw Error('Não foi encontrada rota rodoviária');return distance/1000}
 
+window.michelonPacoteRota=routeKm;
 async function calculate(e){e.preventDefault();e.stopImmediatePropagation();const seq=++request;invalidate();const o=$('origem').value.trim(),d=$('destino').value.trim();if(!o||!d){status('Preencha origem e destino.');return}if(!travelFieldsWithText().some(selectedTravelCoords)&&prefill()){showCalculation();return}const ida=$('dreKmIda'),volta=$('dreKmVolta');if(Number(ida.value)>0&&volta.value!==''&&Number(volta.value)>=0&&$('dreKmBase').value!==''&&(same(o,$('dreBase').value)||Number($('dreKmBase').value)>0)){status('Distâncias preenchidas. Confira o cálculo e os pedágios.');showCalculation();return}status('Buscando distância rodoviária de ida e retorno…');result.textContent='Consultando os quilômetros rodoviários do percurso…';result.scrollIntoView({behavior:'smooth',block:'start'});try{const fields=travelFieldsWithText(),pts=points(),coords=fields.map(selectedTravelCoords);
 const distances=await Promise.all(pts.slice(1).map((p,i)=>routeKm(pts[i],p,coords[i],coords[i+1])));
 const a=distances.reduce((s,n)=>s+n,0),b=same(d,$('dreBase').value)?0:await routeKm(d,$('dreBase').value,coords.at(-1));
@@ -3899,7 +4268,10 @@ if(session)sync();
 const $=id=>document.getElementById(id);let editing=null;
 function isoDay(value){if(/^\d{4}-\d{2}-\d{2}$/.test(value||''))return value;const m=/^(\d{2})\/(\d{2})\/(\d{4})$/.exec(value||'');return m?`${m[3]}-${m[2]}-${m[1]}`:''}
 function span(trip){const day=isoDay(trip.date);if(trip.availabilityStart&&trip.availabilityEnd)return [Date.parse(trip.availabilityStart),Date.parse(trip.availabilityEnd)];if(!day)return null;const a=Date.parse(day+'T00:00:00-03:00');return [a,a+86400000]}
-function conflict(trips,id,start,end){const intervals=[{id:'MV-2026-0001',a:Date.parse('2026-12-03T08:00:00-03:00'),b:Date.parse('2026-12-03T22:00:00-03:00')}];for(const t of trips){if(!['Reserva confirmada','Pago'].includes(t.status)||t.id===id||t.id==='MV-2026-0001')continue;const x=span(t);if(x)intervals.push({id:t.id,a:x[0],b:x[1]})}return intervals.some(x=>x.id!==id&&start<x.b&&end>x.a)}
+function conflict(trips,id,start,end,pacotes=null){
+const packages=pacotes??JSON.parse(localStorage.getItem('michelon_base_nova_v1')||'{}').pacotes??[];
+if(packages.some(p=>p.slots.some(s=>s.id!==id&&s.status!=='Cancelada'&&start<Date.parse(s.availabilityEnd)&&end>Date.parse(s.availabilityStart))))return true;
+const intervals=[{id:'MV-2026-0001',a:Date.parse('2026-12-03T08:00:00-03:00'),b:Date.parse('2026-12-03T22:00:00-03:00')}];for(const t of trips){if(!['Reserva confirmada','Pago'].includes(t.status)||t.id===id||t.id==='MV-2026-0001')continue;const x=span(t);if(x)intervals.push({id:t.id,a:x[0],b:x[1]})}return intervals.some(x=>x.id!==id&&start<x.b&&end>x.a)}
 window.michelonAvailabilityRules={isoDay,span,conflict};
 window.michelonOpenAvailability=id=>{const db=JSON.parse(localStorage.getItem('michelon_base_nova_v1')||'{}'),t=(db.trips||[]).find(t=>t.id===id);if(!t)return alert('Não encontrei a viagem. Atualize a agenda.');editing=id;const day=isoDay(t.date);$('avDayStart').value=t.availabilityStart?.slice(0,10)||day;$('avDayEnd').value=t.availabilityAllDay&&t.availabilityEnd?new Date(Date.parse(t.availabilityEnd)-86400000-10800000).toISOString().slice(0,10):t.availabilityEnd?.slice(0,10)||day;$('avTimeStart').value=t.availabilityStart?.slice(11,16)||t.departureTime||'';$('avTimeEnd').value=t.availabilityEnd?.slice(11,16)||t.returnTime||'';$('avAllDay').checked=!!t.availabilityAllDay;$('avHint').textContent='';$('avModal').showModal();$('avAllDay').dispatchEvent(new Event('change'))};
 $('avAllDay').onchange=()=>{const all=$('avAllDay').checked;$('avTimeStart').disabled=all;$('avTimeEnd').disabled=all};
