@@ -479,7 +479,30 @@ body > header .dre-brand { display:flex; align-items:center; gap:8px; color:var(
 .agenda-history .table { margin-top:.5rem; }
 </style>
 <style>
-#pacotes .card{margin:12px 0}
+#pacotes.page.active{
+  display:block;
+  overflow:auto;
+  overscroll-behavior:contain;
+  padding-bottom:24px;
+}
+#pacotes .card{margin:12px 0;overflow-wrap:anywhere}
+#pacotes > .card > h3{margin:0 0 10px}
+#pacotes > .card > div > .card:last-child{margin-bottom:0}
+#pacoteStatus:empty,#pacotePdfAcoes[hidden]{display:none}
+#pacoteStatus:not(:empty){
+  padding:10px 12px;
+  border-radius:10px;
+  background:#e8f1fc;
+  color:#173a60;
+  overflow-wrap:anywhere;
+}
+#pacotePdfAcoes{margin-top:10px}
+#pacotePdfAcoes .actions > *{flex:1 1 145px;min-width:0;text-align:center}
+#pacoteAbrirOrcamento{
+  display:inline-flex;align-items:center;justify-content:center;
+  padding:10px 14px;border-radius:10px;text-decoration:none;
+  background:#e8f1ff;color:#1264a7;
+}
 #pacotes .field,#pacoteModal .field{display:grid;gap:5px;min-width:0}
 #pacotes .field[hidden]{display:none}
 #pacotes .field input{min-width:0;width:100%;font-size:max(16px,1em)}
@@ -595,7 +618,6 @@ body > header .dre-brand { display:flex; align-items:center; gap:8px; color:var(
   <p id="pacoteStatus" role="status" tabindex="-1"></p>
   <div class="actions"><button class="secondary" type="button" id="pacoteGerarOrcamento">Gerar orçamento</button><button class="primary" type="submit" id="pacoteConfirmar" value="confirmar">Confirmar e agendar</button><button class="secondary" type="button" id="pacoteLimpar">Limpar formulário</button><button class="secondary" type="button" id="pacoteCancelarEdicao" hidden>Cancelar edição</button></div>
   <div id="pacotePdfAcoes" hidden>
-   <style>#pacoteAbrirOrcamento{display:inline-flex;align-items:center;justify-content:center;padding:10px 14px;border-radius:10px;text-decoration:none}</style>
    <div class="actions">
     <button class="secondary" type="button" id="pacoteSalvarOrcamento">Salvar orçamento</button>
     <button class="primary" type="button" id="pacoteCompartilharOrcamento">Compartilhar PDF</button>
