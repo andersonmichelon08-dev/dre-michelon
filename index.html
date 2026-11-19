@@ -472,6 +472,8 @@ body > header .dre-brand { display:flex; align-items:center; gap:8px; color:var(
 #pacotes .card{margin:12px 0}
 #pacotes .field,#pacoteModal .field{display:grid;gap:5px}
 #pacotes .cols,#pacoteModal .cols{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(240px,100%),1fr));gap:9px}
+#pacoteClienteSalvoCampo[hidden]{display:none}
+#pacoteClienteSalvo{width:100%;min-width:0;margin-bottom:8px}
 #pacotes .actions{display:flex;gap:8px;flex-wrap:wrap}
 #pacoteDias input{width:auto}
 #pacoteDias label{display:flex;align-items:center;gap:4px}
@@ -532,15 +534,24 @@ body > header .dre-brand { display:flex; align-items:center; gap:8px; color:var(
  <p id="pacoteRenovacao" role="status"></p>
  <form id="pacoteForm">
   <div class="card"><h3>Detalhes do pacote</h3>
+   <label class="field" id="pacoteClienteSalvoCampo" hidden>
+    <span>Reutilizar endereços de um cliente</span>
+    <select id="pacoteClienteSalvo"><option value="">Selecione um cliente e seu trajeto</option></select>
+   </label>
    <div class="cols">
     <label class="field">Cliente<input name="cliente" required></label>
-    <label class="field">Embarque do cliente<input name="origem" required></label>
-    <label class="field">Destino do cliente<input name="destino" required></label>
+    <label class="field">Embarque do cliente<input name="origem" placeholder="Rua e número, cidade" autocomplete="off" required></label>
+    <label class="field">Destino do cliente<input name="destino" placeholder="Rua e número, cidade" autocomplete="off" required></label>
     <label class="field">Base do veículo · uso interno<input name="base" value="Limeira, SP" required></label>
     <label class="field">Partida para buscar · se diferente da base<input name="baseBusca" placeholder="Usa a base se vazio"></label>
     <label class="field">Primeiro dia<input type="date" name="inicio" required></label>
     <label class="field">Último dia<input type="date" name="fim" required></label>
    </div>
+   <fieldset>
+    <legend>Paradas do pacote (opcional)</legend>
+    <small>Preencha na ordem da ida, entre o primeiro embarque e o destino final. A volta usa a ordem inversa.</small>
+    <div class="cols" id="pacoteParadas"></div>
+   </fieldset>
    <fieldset><legend>Dias de atendimento</legend><div id="pacoteDias" class="actions"></div></fieldset>
    <label class="field">Datas sem atendimento, como feriados <input name="excecoes" placeholder="DD/MM/AAAA, DD/MM/AAAA"></label>
   </div>
@@ -771,12 +782,15 @@ if(Array.isArray(persisted.finance)){const current=Array.isArray(db.finance)?db.
 const pacoteForm=$('pacoteForm');
 const pacoteHoje=()=>new Intl.DateTimeFormat('sv-SE',{timeZone:'America/Sao_Paulo'}).format(new Date());
 const pacoteData=d=>d.split('-').reverse().join('/');
+const pacoteParadas=['parada1','parada2','parada3','parada4'];
+const pacoteEnderecos=['origem','destino','base','baseBusca',...pacoteParadas];
+const pacotePontos=(origem,destino,f)=>[origem,...pacoteParadas.map(k=>f?.[k]?.trim()).filter(Boolean),destino];
 const pacoteSeg=[
  ['Base → embarque do cliente','base','origem',false],
- ['Cliente → trabalho','origem','destino',true],
+ ['Embarque → destino, com paradas','origem','destino',true],
  ['Trabalho → base','destino','base',false],
  ['Partida para buscar → trabalho','baseBusca','destino',false],
- ['Trabalho → residência','destino','origem',true],
+ ['Destino → último desembarque, com paradas','destino','origem',true],
  ['Residência → base','origem','base',false]
 ];
 const pacoteDiasSemana=['Dom','Seg','Ter','Qua','Qui','Sex','Sáb'];
@@ -796,6 +810,8 @@ for(const [i,label] of pacoteDiasSemana.entries()){
  field.append(input,document.createTextNode(' '+label));
  $('pacoteDias').append(field);
 }
+for(const [i,name] of pacoteParadas.entries())
+ pacoteCampo($('pacoteParadas'),'Parada '+(i+1),name,'text','',{placeholder:'Rua e número, cidade',autocomplete:'off'});
 for(const [i,[label]] of pacoteSeg.entries())
  pacoteCampo($('pacoteKm'),label+' (km)','km'+i,'number','',{min:0,step:'.01',required:true});
 function pacoteDefaults(){
@@ -845,7 +861,18 @@ function pacotePreview(){
   output.textContent=dias.length+' dias · '+dias.length*2+' trajetos · '+kmCliente.toFixed(2)+' km com passageiro e '+kmVazio.toFixed(2)+' km vazios por dia · '+money(diario)+'/dia · sugerido '+money(sugerido)+' · total '+money(total);
  }catch(e){output.textContent=e.message}
 }
-pacoteForm.addEventListener('input',pacotePreview);
+pacoteForm.addEventListener('input',event=>{
+ const campo=event.target.name;
+ if(pacoteEnderecos.includes(campo)){
+  for(const [i,[,origem,destino,comPassageiro]] of pacoteSeg.entries()){
+   if(campo===origem||campo===destino||(comPassageiro&&pacoteParadas.includes(campo))||
+      (campo==='base'&&origem==='baseBusca'&&!pacoteForm.elements.baseBusca.value.trim()))
+    pacoteForm.elements['km'+i].value='';
+  }
+  $('pacoteStatus').textContent='';
+ }
+ pacotePreview();
+});
 $('pacoteRotas').onclick=async()=>{
  const button=$('pacoteRotas'),status=$('pacoteStatus');
  const f=Object.fromEntries(new FormData(pacoteForm));
@@ -853,12 +880,12 @@ $('pacoteRotas').onclick=async()=>{
  button.disabled=true;
  status.textContent='Buscando quilômetros rodoviários…';
  try{
-  const km=[];
-  for(const [,origem,destino] of pacoteSeg){
-   const partida=f[origem].trim()||f.base.trim(),chegada=f[destino].trim();
-   km.push(partida.toLocaleLowerCase()===chegada.toLocaleLowerCase()?0:await window.michelonPacoteRota(partida,chegada));
-  }
-  if(!['origem','destino','base','baseBusca'].every(k=>pacoteForm.elements[k].value===f[k]))
+  const paradas=pacoteParadas.filter(key=>f[key].trim());
+  const km=await window.michelonPacoteRotas(pacoteSeg.map(([,origem,destino,comPassageiro])=>{
+   const meio=comPassageiro?(origem==='origem'?paradas:paradas.slice().reverse()):[];
+   return [f[origem].trim()?origem:'base',...meio,destino].map(key=>pacoteForm.elements[key]);
+  }));
+  if(!pacoteEnderecos.every(k=>pacoteForm.elements[k].value===f[k]))
    throw Error('Os endereços mudaram durante a busca.');
   km.forEach((v,i)=>{pacoteForm.elements['km'+i].value=v.toFixed(2)});
   pacotePreview();
@@ -924,7 +951,7 @@ pacoteForm.onsubmit=e=>{
   if(f.idaFim>f.voltaInicio)throw Error('O horário de levar precisa terminar antes da ocupação para buscar.');
   if(e.submitter.value==='orcamento'){
    pacoteDocumento('Michelon Viagens Executivas · Orçamento de pacote',[
-    cliente,origem+' ⇄ '+destino,pacoteData(f.inicio)+' a '+pacoteData(f.fim),
+    cliente,pacotePontos(origem,destino,f).join(' → '),pacoteData(f.inicio)+' a '+pacoteData(f.fim),
     'Levar às '+f.idaHora+' · Buscar às '+f.voltaHora,
     dias.length+' dias: '+dias.map(pacoteData).join(', '),'Total do pacote: '+money(total)]);
    return;
@@ -1043,7 +1070,7 @@ function pacoteRelatorio(id){
    const pagamentos=pacotePagamentos(data,id);
    const balance=(pacoteCentavos(p.total)-pacoteRecebido(data,id))/100;
    pacoteDocumento('Michelon Viagens Executivas · Relatório do pacote',[
-    p.cliente,p.origem+' ⇄ '+p.destino,pacoteData(f.de)+' a '+pacoteData(f.ate),
+    p.cliente,pacotePontos(p.origem,p.destino,p.calculo).join(' → '),pacoteData(f.de)+' a '+pacoteData(f.ate),
     slots.length+' trajetos · '+['Agendada','Realizada','Cancelada'].map(st=>st+': '+slots.filter(s=>s.status===st).length).join(' · ')+' · Remarcada: '+slots.filter(s=>s.remarcada).length,
     'Total contratado '+money(p.total)+' · Total recebido '+money(p.total-balance)+' · Saldo a receber '+money(balance),
     'Pagamentos no período',...pagamentos.filter(v=>v.date>=f.de&&v.date<=f.ate).map(v=>pacoteData(v.date)+' · '+money(v.valor)),
@@ -1107,13 +1134,44 @@ function pacoteExcluir(id){
   };
  });
 }
+const pacoteClienteSalvo=$('pacoteClienteSalvo');
+pacoteClienteSalvo.addEventListener('change',()=>{
+ const id=pacoteClienteSalvo.value;
+ pacoteClienteSalvo.value='';
+ const pacote=pacoteRead().pacotes?.find(p=>p.id===id);
+ if(!pacote)return;
+ const dados={...pacote.calculo,cliente:pacote.cliente,origem:pacote.origem,destino:pacote.destino};
+ for(const name of ['cliente','origem',...pacoteParadas,'destino']){
+  const field=pacoteForm.elements[name],value=dados[name]??'';
+  if(field.value===value)continue;
+  field.value=value;
+  if(name!=='cliente')field.dispatchEvent(new Event('input',{bubbles:true}));
+ }
+ pacotePreview();
+});
+function pacoteOpcoesClientes(pacotes){
+ const options=[new Option('Selecione um cliente e seu trajeto','')];
+ const trajetos=new Set();
+ for(const {id,cliente,origem,destino,calculo} of pacotes){
+  if(!cliente||!origem||!destino)continue;
+  const pontos=pacotePontos(origem,destino,calculo);
+  const key=JSON.stringify([cliente,...pontos].map(v=>v.trim().toLocaleLowerCase('pt-BR')));
+  if(trajetos.has(key))continue;
+  trajetos.add(key);
+  options.push(new Option(cliente+' · '+pontos.join(' → '),id));
+ }
+ pacoteClienteSalvo.replaceChildren(...options);
+ $('pacoteClienteSalvoCampo').hidden=options.length===1;
+}
 function renderPacotes(){
- const data=pacoteRead(),list=$('pacoteLista');
+ const data=pacoteRead();
+ pacoteOpcoesClientes(data.pacotes||[]);
+ const list=$('pacoteLista');
  list.replaceChildren();
  for(const p of data.pacotes||[]){
   const card=document.createElement('div'),title=document.createElement('h4'),info=document.createElement('p'),actions=document.createElement('div');
   card.className='card';actions.className='actions';
-  title.textContent=p.cliente+' · '+p.origem+' ⇄ '+p.destino;
+  title.textContent=p.cliente+' · '+pacotePontos(p.origem,p.destino,p.calculo).join(' → ');
   const received=pacoteRecebido(data,p.id),total=pacoteCentavos(p.total);
   info.textContent=pacoteData(p.inicio)+' a '+pacoteData(p.fim)+' · '+money(p.total)+' · '+(received===0?'Aguardando pagamento':received<total?'Pagamento parcial':'Pagamento concluído')+' · Saldo a receber '+money((total-received)/100);
   actions.append(btn('Renovar pacote',()=>pacoteRenovar(p.id)),btn('Gerar relatório',()=>pacoteRelatorio(p.id)));
@@ -1123,7 +1181,7 @@ function renderPacotes(){
   for(const payment of pacotePagamentos(data,p.id)){
    const line=document.createElement('p');
    line.textContent=pacoteData(payment.date)+' · '+money(payment.valor)+' ';
-   line.append(btn('Emitir recibo',()=>window.dispatchEvent(new CustomEvent('michelon-open-receipt',{detail:{points:[p.origem,p.destino],total:payment.valor,client:p.cliente,date:payment.date}}))));
+   line.append(btn('Emitir recibo',()=>window.dispatchEvent(new CustomEvent('michelon-open-receipt',{detail:{points:pacotePontos(p.origem,p.destino,p.calculo),total:payment.valor,client:p.cliente,date:payment.date}}))));
    card.append(line);
   }
   list.append(card);
@@ -1136,7 +1194,9 @@ function renderPacoteAgenda(){
  rows.sort((a,b)=>a.s.availabilityStart.localeCompare(b.s.availabilityStart));
  for(const {p,s} of rows){
   const history=s.status!=='Agendada';
-  const [o,d]=s.type==='ida'?[p.origem,p.destino]:[p.destino,p.origem];
+  const pontos=pacotePontos(p.origem,p.destino,p.calculo);
+  if(s.type!=='ida')pontos.reverse();
+  const o=pontos[0],d=pontos.slice(1).join(' → ');
   row($(history?'listaAgendaHistorico':'listaAgenda'),
    [pacoteData(s.day)+' às '+s.hora,o,d,'Pacote · '+pacoteTipo(s)+' · '+p.cliente+' · '+s.status+(s.remarcada?' · Remarcada':'')],
    btn('Ajustar trajeto',()=>pacoteAjustar(p.id,s.id)));
@@ -3274,6 +3334,7 @@ const favorites=[
 
 function addAddressSuggestions(field, urban, onSelect){
  const selected=urban?urbanGpsPoints:travelPoints;
+ const pacote=field.form?.id==='pacoteForm';
  field.removeAttribute('list');
  const list=document.createElement('div');
  list.setAttribute('role','group');
@@ -3389,7 +3450,7 @@ function addAddressSuggestions(field, urban, onSelect){
    const value=field.value.trim();
    const city=urban?$('dreUrbCidade').value.trim():'';
    const cityName=norm(city.split(',')[0]);
-   if(value.length<2)return;
+   if(value.length<2||(pacote&&document.activeElement!==field))return;
    const terms=norm(value).split(/\s+/).filter(term=>!['de','da','das','do','dos','residencial','condominio'].includes(term));
    const matches=(label, terms)=>terms.length>0&&terms.every(term=>norm(label).split(' ').some(word=>word.startsWith(term)));
    const local=savedUrbanPlaces.filter(place=>(!cityName||cityName==='limeira')&&matches(place.terms,terms));
@@ -3401,12 +3462,12 @@ function addAddressSuggestions(field, urban, onSelect){
      controller=requestController;
      const {signal}=controller;
      const timeout=setTimeout(()=>requestController.abort(),8000);
-     const current=()=>field.isConnected&&isUrban()===urban&&field.value.trim()===value&&(!urban||$('dreUrbCidade').value.trim()===city);
+     const current=()=>field.isConnected&&(pacote?$('pacotes').classList.contains('active'):isUrban()===urban)&&field.value.trim()===value&&(!urban||$('dreUrbCidade').value.trim()===city);
      feedback.textContent='Buscando endereços…';
      try{
        const query=cityName&&!norm(value).includes(cityName)?value+', '+city:value;
        const params=new URLSearchParams({q:query+', Brasil',limit:'12'});
-       const originField=$(urban?'dreUrbOrigem':'origem');
+       const originField=pacote?field.form.elements.origem:$(urban?'dreUrbOrigem':'origem');
        const origin=selected.get(originField);
        const near=origin?.address===originField.value?origin.coords:null;
        if(near){params.set('lon',near[0]);params.set('lat',near[1]);}
@@ -3703,6 +3764,9 @@ $('dreSemPedagio').addEventListener('change',()=>{if($('dreSemPedagio').checked)
 ['origem','destino'].forEach(id=>$(id).addEventListener('input',renderTolls));const stops=$('paradasMichelon');stops?.addEventListener('input',()=>{request++;$('dreKmBase').value=same($('dreBase').value,$('origem').value)?'0':'';$('dreKmIda').value='';$('dreKmVolta').value='';renderTolls()});if(stops)new MutationObserver(()=>{request++;$('dreKmBase').value=same($('dreBase').value,$('origem').value)?'0':'';$('dreKmIda').value='';$('dreKmVolta').value='';renderTolls()}).observe(stops,{childList:true});
 renderTolls();
 for(const id of ['origem','destino'])addAddressSuggestions($(id),false);
+const pacoteAddressFields=$('pacoteForm').elements;
+for(const name of ['origem','destino','base','baseBusca','parada1','parada2','parada3','parada4'])
+ addAddressSuggestions(pacoteAddressFields[name],false);
 const boundStops=new WeakSet();
 function bindStopSuggestions(){
  for(const field of stops.querySelectorAll('input')){
@@ -3722,9 +3786,37 @@ function canonicalPlace(place){const n=norm(place);if(/\bviracopos\b|\bvcp\b|^vi
 const routeLocations=new Map();
 async function routeJson(url){const ctrl=new AbortController(),timer=setTimeout(()=>ctrl.abort(),18000);try{const r=await fetch(url,{signal:ctrl.signal});if(!r.ok)throw Error('Serviço de rotas indisponível');return await r.json()}finally{clearTimeout(timer)}}
 async function locateRoute(place){place=canonicalPlace(place);const key=norm(place);if(key===norm('Aeroporto Internacional de Viracopos, Campinas, SP'))return [-47.1345,-23.0074];if(routeLocations.has(key))return routeLocations.get(key);const a=await routeJson('https://nominatim.openstreetmap.org/search?format=json&limit=1&countrycodes=br&q='+encodeURIComponent(place));if(!a.length)throw Error('Endereço não localizado: '+place);const coords=[Number(a[0].lon),Number(a[0].lat)];if(!coords.every(Number.isFinite))throw Error('Coordenadas inválidas: '+place);routeLocations.set(key,coords);return coords}
-async function routeKm(o,d,fromCoords,toCoords){const a=fromCoords??await locateRoute(o),b=toCoords??await locateRoute(d);const j=await routeJson('https://router.project-osrm.org/route/v1/driving/'+a.join(',')+';'+b.join(',')+'?overview=false');const distance=Number(j.routes?.[0]?.distance);if(j.code!=='Ok'||!Number.isFinite(distance)||distance<=0)throw Error('Não foi encontrada rota rodoviária');return distance/1000}
-
-window.michelonPacoteRota=routeKm;
+async function roadDistance(points){
+ const path=points.map(point=>point.join(',')).join(';');
+ const j=await routeJson('https://router.project-osrm.org/route/v1/driving/'+path+'?overview=false');
+ const distance=Number(j.routes?.[0]?.distance);
+ if(j.code!=='Ok'||!Number.isFinite(distance)||distance<=0)throw Error('Não foi encontrada rota rodoviária');
+ return distance/1000;
+}
+async function routeKm(o,d,fromCoords,toCoords){
+ const a=fromCoords??await locateRoute(o),b=toCoords??await locateRoute(d);
+ return roadDistance([a,b]);
+}
+window.michelonPacoteRotas=async grupos=>{
+ const known=new Map();
+ const trajetos=grupos.map(fields=>fields.map(field=>{
+  const address=field.value.trim(),key=norm(address),coords=selectedTravelCoords(field);
+  if(coords)known.set(key,coords);
+  return {address,key};
+ }).filter(({key},i,points)=>i===0||key!==points[i-1].key));
+ const km=[];
+ for(const trajeto of trajetos){
+  const coords=[];
+  if(trajeto.length>1){
+   for(const {address,key} of trajeto){
+    if(!known.has(key))known.set(key,await locateRoute(address));
+    coords.push(known.get(key));
+   }
+  }
+  km.push(coords.length?await roadDistance(coords):0);
+ }
+ return km;
+};
 async function calculate(e){e.preventDefault();e.stopImmediatePropagation();const seq=++request;invalidate();const o=$('origem').value.trim(),d=$('destino').value.trim();if(!o||!d){status('Preencha origem e destino.');return}if(!travelFieldsWithText().some(selectedTravelCoords)&&prefill()){showCalculation();return}const ida=$('dreKmIda'),volta=$('dreKmVolta');if(Number(ida.value)>0&&volta.value!==''&&Number(volta.value)>=0&&$('dreKmBase').value!==''&&(same(o,$('dreBase').value)||Number($('dreKmBase').value)>0)){status('Distâncias preenchidas. Confira o cálculo e os pedágios.');showCalculation();return}status('Buscando distância rodoviária de ida e retorno…');result.textContent='Consultando os quilômetros rodoviários do percurso…';result.scrollIntoView({behavior:'smooth',block:'start'});try{const fields=travelFieldsWithText(),pts=points(),coords=fields.map(selectedTravelCoords);
 const distances=await Promise.all(pts.slice(1).map((p,i)=>routeKm(pts[i],p,coords[i],coords[i+1])));
 const a=distances.reduce((s,n)=>s+n,0),b=same(d,$('dreBase').value)?0:await routeKm(d,$('dreBase').value,coords.at(-1));
