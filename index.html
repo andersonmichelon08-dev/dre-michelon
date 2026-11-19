@@ -470,7 +470,9 @@ body > header .dre-brand { display:flex; align-items:center; gap:8px; color:var(
 </style>
 <style>
 #pacotes .card{margin:12px 0}
-#pacotes .field,#pacoteModal .field{display:grid;gap:5px}
+#pacotes .field,#pacoteModal .field{display:grid;gap:5px;min-width:0}
+#pacotes .field[hidden]{display:none}
+#pacotes .field input{min-width:0;width:100%;font-size:max(16px,1em)}
 #pacotes .cols,#pacoteModal .cols{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(240px,100%),1fr));gap:9px}
 #pacoteClienteSalvoCampo[hidden]{display:none}
 #pacoteClienteSalvo{width:100%;min-width:0;margin-bottom:8px}
@@ -538,20 +540,21 @@ body > header .dre-brand { display:flex; align-items:center; gap:8px; color:var(
     <span>Reutilizar endereços de um cliente</span>
     <select id="pacoteClienteSalvo"><option value="">Selecione um cliente e seu trajeto</option></select>
    </label>
+   <label class="field">Cliente<input name="cliente" required></label>
+   <fieldset>
+    <legend>Embarques</legend>
+    <small>Preencha na ordem em que vai buscar os passageiros. Na volta, o DRE usa a ordem inversa.</small>
+    <div class="cols" id="pacoteParadas">
+     <label class="field">Embarque 1<input name="origem" placeholder="Rua e número, cidade" autocomplete="off" required></label>
+    </div>
+   </fieldset>
    <div class="cols">
-    <label class="field">Cliente<input name="cliente" required></label>
-    <label class="field">Embarque do cliente<input name="origem" placeholder="Rua e número, cidade" autocomplete="off" required></label>
-    <label class="field">Destino do cliente<input name="destino" placeholder="Rua e número, cidade" autocomplete="off" required></label>
+    <label class="field">Destino final<input name="destino" placeholder="Rua e número, cidade" autocomplete="off" required></label>
     <label class="field">Base do veículo · uso interno<input name="base" value="Limeira, SP" required></label>
     <label class="field">Partida para buscar · se diferente da base<input name="baseBusca" placeholder="Usa a base se vazio"></label>
     <label class="field">Primeiro dia<input type="date" name="inicio" required></label>
     <label class="field">Último dia<input type="date" name="fim" required></label>
    </div>
-   <fieldset>
-    <legend>Paradas do pacote (opcional)</legend>
-    <small>Preencha na ordem da ida, entre o primeiro embarque e o destino final. A volta usa a ordem inversa.</small>
-    <div class="cols" id="pacoteParadas"></div>
-   </fieldset>
    <fieldset><legend>Dias de atendimento</legend><div id="pacoteDias" class="actions"></div></fieldset>
    <label class="field">Datas sem atendimento, como feriados <input name="excecoes" placeholder="DD/MM/AAAA, DD/MM/AAAA"></label>
   </div>
@@ -810,8 +813,15 @@ for(const [i,label] of pacoteDiasSemana.entries()){
  field.append(input,document.createTextNode(' '+label));
  $('pacoteDias').append(field);
 }
-for(const [i,name] of pacoteParadas.entries())
- pacoteCampo($('pacoteParadas'),'Parada '+(i+1),name,'text','',{placeholder:'Rua e número, cidade',autocomplete:'off'});
+for(const [i,name] of pacoteParadas.entries()){
+ const label=name==='parada4'?'Ponto extra do pacote salvo':'Embarque '+(i+2)+' (opcional)';
+ pacoteCampo($('pacoteParadas'),label,name,'text','',{placeholder:'Rua e número, cidade',autocomplete:'off'});
+}
+const pacotePontoExtra=pacoteForm.elements.parada4;
+function pacoteMostrarPontoExtra(){
+ pacotePontoExtra.parentElement.hidden=!pacotePontoExtra.value.trim();
+}
+pacoteMostrarPontoExtra();
 for(const [i,[label]] of pacoteSeg.entries())
  pacoteCampo($('pacoteKm'),label+' (km)','km'+i,'number','',{min:0,step:'.01',required:true});
 function pacoteDefaults(){
@@ -934,6 +944,7 @@ function pacoteModoEdicao(id=null){
 function pacoteLimparForm(){
  pacoteModoEdicao();
  pacoteForm.reset();
+ pacoteMostrarPontoExtra();
  pacoteDefaults();
  for(const campo of pacoteForm.querySelectorAll('input[name="dia"]'))
   campo.checked=Number(campo.value)>0&&Number(campo.value)<6;
@@ -1101,6 +1112,7 @@ function pacotePreencher(pacote,periodo={}){
   const campo=pacoteForm.elements.namedItem(name);
   if(campo instanceof HTMLInputElement&&campo.type!=='checkbox')campo.value=value;
  }
+ pacoteMostrarPontoExtra();
  const diasSemana=pacoteDiasDoPacote(pacote);
  for(const campo of pacoteForm.querySelectorAll('input[name="dia"]'))
   campo.checked=diasSemana.includes(Number(campo.value));
@@ -1147,6 +1159,7 @@ pacoteClienteSalvo.addEventListener('change',()=>{
   field.value=value;
   if(name!=='cliente')field.dispatchEvent(new Event('input',{bubbles:true}));
  }
+ pacoteMostrarPontoExtra();
  pacotePreview();
 });
 function pacoteOpcoesClientes(pacotes){
@@ -3450,8 +3463,16 @@ function addAddressSuggestions(field, urban, onSelect){
    const value=field.value.trim();
    const city=urban?$('dreUrbCidade').value.trim():'';
    const cityName=norm(city.split(',')[0]);
-   if(value.length<2||(pacote&&document.activeElement!==field))return;
-   const terms=norm(value).split(/\s+/).filter(term=>!['de','da','das','do','dos','residencial','condominio'].includes(term));
+   if(pacote&&document.activeElement!==field)return;
+   const streetType=/^(?:rua|r|avenida|av|travessa|tv|alameda|estrada)\.?\s+/i;
+   const searchText=pacote?value.replace(streetType,''):value;
+   const searchName=norm(searchText);
+   if(pacote&&(searchName.length<3||/^(?:ru|rua|av|ave|avenida|travessa|alameda|estrada)$/.test(searchName))){
+     feedback.textContent='Digite pelo menos 3 letras do nome da rua ou do local.';
+     return;
+   }
+   if(value.length<2)return;
+   const terms=searchName.split(/\s+/).filter(term=>!['de','da','das','do','dos','residencial','condominio'].includes(term));
    const matches=(label, terms)=>terms.length>0&&terms.every(term=>norm(label).split(' ').some(word=>word.startsWith(term)));
    const local=savedUrbanPlaces.filter(place=>(!cityName||cityName==='limeira')&&matches(place.terms,terms));
    if(!urban)local.push(...favorites.filter(place=>matches(place.name+' '+place.terms,terms)).map(place=>({label:place.name})));
@@ -3466,10 +3487,10 @@ function addAddressSuggestions(field, urban, onSelect){
      feedback.textContent='Buscando endereços…';
      try{
        const query=cityName&&!norm(value).includes(cityName)?value+', '+city:value;
-       const params=new URLSearchParams({q:query+', Brasil',limit:'12'});
+       const params=new URLSearchParams({q:pacote?searchText:query+', Brasil',limit:'12'});
        const originField=pacote?field.form.elements.origem:$(urban?'dreUrbOrigem':'origem');
        const origin=selected.get(originField);
-       const near=origin?.address===originField.value?origin.coords:null;
+       const near=origin&&origin.address===originField.value?origin.coords:pacote?[-47.4016,-22.5645]:null;
        if(near){params.set('lon',near[0]);params.set('lat',near[1]);}
        const response=await fetch('https://photon.komoot.io/api/?'+params,{signal});
        if(!response.ok)throw Error();
@@ -3488,7 +3509,7 @@ function addAddressSuggestions(field, urban, onSelect){
          remote.push({label,coords});
        }
        const distance=coords=>(coords[0]-near[0])**2+(coords[1]-near[1])**2;
-       if(near)remote.sort((a,b)=>distance(a.coords)-distance(b.coords));
+       if(near&&!pacote)remote.sort((a,b)=>distance(a.coords)-distance(b.coords));
        const items=[...local,...remote];
        render(items);
        feedback.textContent=items.length?'Selecione o endereço correto.':'Sem endereço correspondente. Digite o endereço completo.';
