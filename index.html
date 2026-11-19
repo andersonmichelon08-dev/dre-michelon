@@ -534,7 +534,7 @@ body > header .dre-brand { display:flex; align-items:center; gap:8px; color:var(
 <section class="page" id="pacotes">
  <div class="top"><h2>Pacotes de viagens</h2><button class="secondary" data-go="viagens">Voltar a Viagens</button></div>
  <p id="pacoteRenovacao" role="status"></p>
- <form id="pacoteForm">
+ <form id="pacoteForm" novalidate>
   <div class="card"><h3>Detalhes do pacote</h3>
    <label class="field" id="pacoteClienteSalvoCampo" hidden>
     <span>Reutilizar endereços de um cliente</span>
@@ -581,12 +581,13 @@ body > header .dre-brand { display:flex; align-items:center; gap:8px; color:var(
    <p id="pacoteCalculo" role="status"></p>
    <small>Confira os quilômetros. Informe zero nos deslocamentos vazios que não fizer. O pacote reserva horários na agenda interna do DRE.</small>
   </div>
-  <p id="pacoteStatus" role="status"></p>
-  <div class="actions"><button class="secondary" type="button" id="pacoteGerarOrcamento">Gerar orçamento</button><button class="primary" type="submit" id="pacoteConfirmar" value="confirmar">Confirmar e agendar</button><button class="secondary" type="button" id="pacoteCancelarEdicao" hidden>Cancelar edição</button></div>
+  <p id="pacoteStatus" role="status" tabindex="-1"></p>
+  <div class="actions"><button class="secondary" type="button" id="pacoteGerarOrcamento">Gerar orçamento</button><button class="primary" type="submit" id="pacoteConfirmar" value="confirmar">Confirmar e agendar</button><button class="secondary" type="button" id="pacoteLimpar">Limpar formulário</button><button class="secondary" type="button" id="pacoteCancelarEdicao" hidden>Cancelar edição</button></div>
   <div id="pacotePdfAcoes" hidden>
+   <style>#pacoteAbrirOrcamento{display:inline-flex;align-items:center;justify-content:center;padding:10px 14px;border-radius:10px;text-decoration:none}</style>
    <div class="actions">
     <button class="primary" type="button" id="pacoteCompartilharOrcamento">Compartilhar PDF</button>
-    <button class="secondary" type="button" id="pacoteAbrirOrcamento">Abrir PDF</button>
+    <a class="secondary" id="pacoteAbrirOrcamento" target="_blank" rel="noopener">Abrir PDF</a>
     <button class="secondary" type="button" id="pacoteBaixarOrcamento">Baixar PDF</button>
    </div>
   </div>
@@ -912,8 +913,10 @@ $('pacoteRotas').onclick=async()=>{
 };
 function pacoteFaixa(day,t,type){
  const {inicio,hora,fim}=t;
- if(!inicio||!hora||!fim||inicio>hora||hora>=fim)
-  throw Error('Confira a ordem dos horários de ocupação e embarque.');
+ if(!inicio||!hora||!fim||inicio>hora||hora>=fim){
+  const trecho=type==='ida'?'Levar':'Buscar';
+  throw Error(trecho+': o início da ocupação deve ser até o embarque, e o horário disponível novamente deve ser depois do embarque.');
+ }
  return {id:crypto.randomUUID(),day,inicio,hora,fim,type,status:'Agendada',
   availabilityStart:day+'T'+inicio+':00-03:00',availabilityEnd:day+'T'+fim+':00-03:00'};
 }
@@ -1064,16 +1067,19 @@ function pacoteLimparForm(){
   campo.checked=Number(campo.value)>0&&Number(campo.value)<6;
  for(const id of ['pacoteRenovacao','pacoteCalculo','pacoteStatus'])$(id).textContent='';
 }
+$('pacoteLimpar').onclick=()=>{
+ pacoteLimparForm();
+ $('pacoteStatus').textContent='Formulário limpo.';
+ pacoteForm.elements.cliente.focus();
+};
 $('pacoteCancelarEdicao').onclick=pacoteLimparForm;
 let pacotePdfGerado=null;
 function pacoteLimparPdf(){
  if(pacotePdfGerado)URL.revokeObjectURL(pacotePdfGerado.url);
  pacotePdfGerado=null;
  $('pacotePdfAcoes').hidden=true;
+ $('pacoteAbrirOrcamento').removeAttribute('href');
 }
-$('pacoteAbrirOrcamento').onclick=()=>{
- if(pacotePdfGerado)window.open(pacotePdfGerado.url,'_blank','noopener');
-};
 $('pacoteBaixarOrcamento').onclick=()=>{
  if(!pacotePdfGerado)return;
  const link=document.createElement('a');
@@ -1111,7 +1117,9 @@ $('pacoteGerarOrcamento').onclick=()=>{
   for(const nome of campos){
    const campo=pacoteForm.elements[nome];
    if(!campo.validity.valid){
-    if(campo.validity.valueMissing)throw Error('Preencha os quilômetros e as tarifas ou informe um valor fechado.');
+    if(campo.validity.valueMissing&&nome.startsWith('km'))
+     throw Error('Toque em Buscar quilômetros por endereço e aguarde o preenchimento dos seis trechos. Você também pode preencher os trechos manualmente ou informar um valor fechado.');
+    if(campo.validity.valueMissing)throw Error('Preencha o campo '+campo.labels[0].textContent.trim()+'.');
     throw Error('Confira o campo '+campo.labels[0].textContent.trim()+'.');
    }
   }
@@ -1124,19 +1132,34 @@ $('pacoteGerarOrcamento').onclick=()=>{
    ida:f.idaHora,volta:f.voltaHora,datas:calculo.dias.map(pacoteData),total
   });
   pacotePdfGerado={blob:pdf,url:URL.createObjectURL(pdf)};
+  const abrir=$('pacoteAbrirOrcamento');
+  abrir.href=pacotePdfGerado.url;
   $('pacotePdfAcoes').hidden=false;
-  status.textContent='PDF pronto. Toque em Compartilhar PDF e escolha o WhatsApp.';
- }catch(e){status.textContent=e.message;}
+  status.textContent='PDF pronto. Se a prévia não abrir, toque em Abrir PDF, Baixar PDF ou Compartilhar PDF.';
+  abrir.click();
+ }catch(e){
+  status.textContent=e.message;
+  status.focus();
+ }
 };
 pacoteForm.onsubmit=e=>{
  e.preventDefault();
  const status=$('pacoteStatus');
+ status.textContent='';
  try{
+  const invalido=Array.from(pacoteForm.elements).find(campo=>campo.willValidate&&!campo.validity.valid);
+  if(invalido){
+   const rotulo=invalido.labels?.[0]?.textContent.trim()||invalido.name;
+   status.textContent=(invalido.validity.valueMissing?'Preencha o campo ':'Confira o campo ')+rotulo+'.';
+   invalido.focus();
+   invalido.reportValidity();
+   return;
+  }
   const {f,dias,total}=pacoteCalcular();
   const cliente=f.cliente.trim(),origem=f.origem.trim(),destino=f.destino.trim();
   if(!cliente||!origem||!destino||!f.base.trim())throw Error('Preencha cliente, embarque, destino e base.');
   const slots=dias.flatMap(day=>['ida','volta'].map(type=>pacoteFaixa(day,{inicio:f[type+'Inicio'],hora:f[type+'Hora'],fim:f[type+'Fim']},type)));
-  if(f.idaFim>f.voltaInicio)throw Error('O horário de levar precisa terminar antes da ocupação para buscar.');
+  if(f.idaFim>f.voltaInicio)throw Error('O horário “Levar · disponível novamente” precisa ser igual ou anterior a “Buscar · início da ocupação”. Confira se o horário da tarde foi digitado no formato de 24 horas, como 17:00.');
   const data=pacoteRead();
   data.pacotes??=[];
   const diasSemana=pacoteDiasSelecionados();
@@ -1171,7 +1194,10 @@ pacoteForm.onsubmit=e=>{
   pacoteWrite(data);
   pacoteLimparForm();
   status.textContent=editando?'Alterações do pacote salvas.':'Pacote confirmado. '+slots.length+' horários registrados na agenda interna.';
- }catch(err){status.textContent=err.message}
+ }catch(err){
+  status.textContent=err.message;
+  status.scrollIntoView({block:'nearest'});
+ }
 };
 function pacoteModal(title,action,setup){
  const modal=$('pacoteModal'),form=$('pacoteModalForm'),fields=$('pacoteModalCampos');
