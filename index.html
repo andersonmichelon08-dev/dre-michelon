@@ -655,7 +655,7 @@ body > header .dre-brand { display:flex; align-items:center; gap:8px; color:var(
    <div class="field"><label for="avulsoDescricao">Descrição do serviço</label><textarea id="avulsoDescricao" required maxlength="1200" rows="4"></textarea></div>
    <div class="field"><label id="avulsoDataLabel" for="avulsoData">Previsão de pagamento</label><input id="avulsoData" type="date" required></div>
    <div class="field"><label for="avulsoValor">Valor (R$)</label><input id="avulsoValor" type="number" min="0.01" max="999999999.99" step="0.01" inputmode="decimal" required></div>
-   <div class="field"><label for="avulsoConta">Conta do recebimento</label><select id="avulsoConta"><option value="">Selecione a conta</option><option value="uber">Uber Conta</option><option value="itau">Itaú</option></select></div>
+   <div class="field"><label for="avulsoConta">Conta do recebimento</label><select id="avulsoConta"><option value="">Selecione a conta</option><option value="uber" selected>Uber Conta</option><option value="itau">Itaú</option></select></div>
    <div class="field"><label for="avulsoPagamento">Status do pagamento</label><select id="avulsoPagamento"><option value="pendente">Aguardando pagamento</option><option value="concluido">Pagamento concluído (pago)</option></select></div>
    <p class="muted">O valor entra no saldo da conta quando o pagamento é concluído.</p>
    <button class="primary" id="avulsoSalvar" type="submit">Salvar no histórico</button>
@@ -1293,7 +1293,7 @@ function pacotePagamento(id){
   pacoteCampo(fields,'Data do recebimento','date','date',pacoteHoje(),{required:true,max:pacoteHoje()});
   const field=document.createElement('label'),select=document.createElement('select');
   field.className='field';field.textContent='Conta do recebimento';select.name='conta';select.required=true;
-  select.append(new Option('Selecione a conta',''),new Option('Itaú','itau'),new Option('Uber Conta','uber'));
+  select.append(new Option('Itaú','itau'),new Option('Uber Conta','uber'));
   field.append(select);fields.append(field);
   return f=>{
    const data=pacoteRead(),p=data.pacotes?.find(p=>p.id===id);
@@ -1563,8 +1563,8 @@ function appendTripPaymentActions(container,trip,linkedPayments){
  const account=document.createElement('select');
  if(trip.urban&&(paid||!payment)){
   account.setAttribute('aria-label','Conta de recebimento da corrida particular');
-  account.append(new Option('Conta Uber','uber'),new Option('Itaú','itau'));
-  if(canChangeAccount&&payment.conta==='itau')account.value='itau';
+  account.append(new Option('Itaú','itau'),new Option('Conta Uber','uber'));
+  if(canChangeAccount&&payment.conta==='uber')account.value='uber';
   container.append(account);
  }
  container.append(btn(canChangeAccount?'Alterar conta do recebimento':payment?'Confirmar pagamento vinculado':'Registrar pagamento',()=>{
@@ -2053,12 +2053,17 @@ $('rSalvar').onclick=()=>{const origem=$('rOrigem').value.trim(),destino=$('rDes
    const valor=(cotacao?'Valor total: ':'')+money(registro.valor);
    const situacao=cotacao?'Proposta de serviço · pagamento não confirmado':
      'Data do recebimento: '+finDate(registro).split('-').reverse().join('/');
-   const linhas=[referencia,apresentacao,registro.desc,valor,situacao];
+   const chavePix='Chave Pix (Uber Conta): 19025027873';
+   const mensagemPagamento=cotacao?'Para efetuar o pagamento, use a chave Pix abaixo.':
+     'Pagamento recebido. Obrigado pela preferência!';
+   const linhas=[referencia,apresentacao,registro.desc,valor,situacao,mensagemPagamento,chavePix];
    add(details,'small',referencia);
    add(details,'p',apresentacao);
    add(details,'p',registro.desc,'descricao');
    add(details,'p',valor,'valor');
    add(details,'p',situacao);
+   add(details,'p',mensagemPagamento);
+   add(details,'p',chavePix);
    const nomePdf=cotacao?'Cotacao-Michelon.pdf':'Recibo-Michelon.pdf';
    const gerarPdf=()=>pacotePdf(titulo,linhas,null,true);
    const mensagem=doc.createElement('p');
@@ -3323,12 +3328,15 @@ function render(){urbanWhatsApp.hidden=!current?.urban;for(const id of ['docInic
  $('docResumoDesconto').classList.toggle('dre-only-travel-hidden',!!current?.urban);
  if(current){const d=Math.min(current.total,Math.max(0,Number($('docDesconto').value)||0));$('docResumoDesconto').textContent='Valor original: '+money(current.original)+'  •  Desconto: '+money(current.discount+d)+'  •  Valor negociado: '+money(current.total-d)}const f=fields();$('docPagamento').hidden=$('docTipo').value!=='recibo';$('docReserva').hidden=$('docTipo').value!=='reserva';if(!f){$('docPreview').textContent='Escolha o embarque e um destino posterior.';return}if(f.type==='recibo'){const image=document.createElement('img');image.alt='Recibo de pagamento Michelon';image.style.cssText='display:block;width:100%;height:auto';image.src=paintReceipt(f).toDataURL('image/png');$('docPreview').replaceChildren(image);return}let rows='';if(!f.urban){rows=`<div class="doc-row"><span class="doc-small">EMBARQUE</span><br><b>${safe(f.points[0])}</b></div>`;f.points.slice(1,-1).forEach((p,i)=>rows+=`<div class="doc-row"><span class="doc-small">PARADA ${i+1}</span><br><b>${safe(p)}</b></div>`);rows+=`<div class="doc-row"><span class="doc-small">DESTINO</span><br><b>${safe(f.points.at(-1))}</b></div>`;}if(f.type==='reserva')rows+=`<div class="doc-row doc-small">Data da viagem: ${safe(f.tripDate.split('-').reverse().join('/'))} · Embarque: ${safe(f.tripTime)}</div>`;if(f.type==='recibo')rows+=`<div class="doc-row doc-small">Pagamento: ${safe(f.form||'Não informado')} ${f.date?' · '+safe(f.date.split('-').reverse().join('/')):''}</div>`;
 $('docPreview').innerHTML=`<div class="doc-head"><div style="font-size:30px;font-weight:900;letter-spacing:2px">MICHELON</div><div class="doc-small" style="letter-spacing:3px">VIAGENS EXECUTIVAS</div><div style="margin-top:14px;color:#eac46b;font-weight:800">${title(f.type)}</div>${f.type==='recibo'?'<div class="doc-small" style="margin-top:8px;color:#fff">CNPJ: 34.811.990/0001-60</div>':''}</div><div class="doc-body">${rows}<div class="doc-value-card">${f.discount>0?`<div class="doc-value-line"><span>Valor original</span><strong>${money(f.original)}</strong></div><div class="doc-value-line doc-saving"><span>Desconto aplicado</span><strong>− ${money(f.discount)}</strong></div>`:""}<div class="doc-final-label">${f.discount>0?"VALOR FINAL COM DESCONTO":"VALOR TOTAL DA VIAGEM"}</div><div class="doc-final-amount">${money(f.total)}</div>${f.discount>0?`<div class="doc-saving-note">Você economiza ${money(f.discount)}</div>`:""}</div><p style="text-align:center;font-size:12px">Conforto • Segurança • Pontualidade</p><p class="doc-small" style="text-align:center">${f.type==='orcamento'?'Confirme a disponibilidade antes de fechar a viagem.':f.type==='reserva'?'Reserva confirmada pela Michelon Viagens Executivas.':'Pagamento recebido. Obrigado pela preferência!'}</p></div>`}
+const chavePixViagem='Chave Pix (Itaú): 19992462362';
 function message(f){if(f.urban)return ['*MICHELON VIAGENS EXECUTIVAS*','*'+title(f.type)+'*',
  f.type==='recibo'&&f.client?'Cliente: '+f.client:'',
  '*'+(f.type==='recibo'?'Valor recebido: ':'Valor total da corrida: ')+money(f.total)+'*',
- f.type==='recibo'?'Pagamento via '+f.form+' em '+f.date.split('-').reverse().join('/'):'',
+ f.type==='recibo'?'Pagamento recebido via '+f.form+' em '+f.date.split('-').reverse().join('/'):'',
+ f.type==='recibo'?chavePixViagem:'',
+ f.type==='recibo'?'Obrigado pela preferência!':'',
  f.type==='reserva'?f.tripDate.split('-').reverse().join('/')+' · '+f.tripTime:''].filter(Boolean).join('\n');
- return ['*MICHELON VIAGENS EXECUTIVAS*',f.type==='recibo'?'CNPJ: 34.811.990/0001-60':'',f.type==='recibo'&&f.client?'Cliente: '+f.client:'',`*${title(f.type)}*`,'','Embarque: '+f.points[0],...f.points.slice(1,-1).map((p,i)=>'Parada '+(i+1)+': '+p),'Destino: '+f.points.at(-1),'','Valor original: '+money(f.original),'Desconto concedido: − '+money(f.discount),'*'+(f.discount>0?'Total com desconto: ':'Valor total: ')+money(f.total)+'*',f.type==='reserva'?'Data da viagem: '+f.tripDate.split('-').reverse().join('/')+' · Horário: '+f.tripTime:'',f.type==='recibo'?'Pagamento recebido via '+f.form+' em '+f.date.split('-').reverse().join('/'):'',f.type==='orcamento'?'Confirme a disponibilidade antes de fechar a viagem.':f.type==='reserva'?'Reserva confirmada.':'Obrigado pela preferência!',f.type==='recibo'?'Precisa de nota fiscal? Solicite pelo nosso WhatsApp.':''].filter(Boolean).join('\n')}
+ return ['*MICHELON VIAGENS EXECUTIVAS*',f.type==='recibo'?'CNPJ: 34.811.990/0001-60':'',f.type==='recibo'&&f.client?'Cliente: '+f.client:'',`*${title(f.type)}*`,'','Embarque: '+f.points[0],...f.points.slice(1,-1).map((p,i)=>'Parada '+(i+1)+': '+p),'Destino: '+f.points.at(-1),'','Valor original: '+money(f.original),'Desconto concedido: − '+money(f.discount),'*'+(f.discount>0?'Total com desconto: ':'Valor total: ')+money(f.total)+'*',f.type==='reserva'?'Data da viagem: '+f.tripDate.split('-').reverse().join('/')+' · Horário: '+f.tripTime:'',f.type==='recibo'?'Pagamento recebido via '+f.form+' em '+f.date.split('-').reverse().join('/'):'',f.type==='orcamento'?'Confirme a disponibilidade antes de fechar a viagem.':f.type==='reserva'?'Reserva confirmada.':'Obrigado pela preferência!',f.type==='recibo'?chavePixViagem:'',f.type==='recibo'?'Precisa de nota fiscal? Solicite pelo nosso WhatsApp.':''].filter(Boolean).join('\n')}
 function valid(){if(current&&!current.urban&&(Number($('docDesconto').value)<0||Number($('docDesconto').value)>current.total)){alert('O desconto deve ficar entre zero e o valor calculado.');return null}const f=fields();if(!f){alert('Selecione o trecho do cliente.');return null}if(f.type==='reserva'&&(!f.tripDate||!f.tripTime)){alert('Informe a data e o horário da reserva.');return null}if(f.type==='recibo'&&(!$('docPago').checked||!f.form||!f.date)){alert('Para emitir recibo, confirme o recebimento, a forma de pagamento e a data.');return null}return f}
 function paintReceipt(f){
  const canvas=document.createElement('canvas'),x=canvas.getContext('2d');canvas.width=1080;
@@ -3338,7 +3346,7 @@ function paintReceipt(f){
  const stops=f.points.map((p,i)=>({label:i===0?'EMBARQUE':i===f.points.length-1?'DESTINO':'PARADA '+i,lines:wrap(p,850,'bold 30px Arial')}));
  const clientExtra=Math.max(0,customer.length-1)*36;
  let cursor=724+clientExtra;for(const p of stops){p.y=cursor;cursor+=45+p.lines.length*38+42}
- const discountY=cursor+15,boxY=discountY+(f.discount>0?156:0),height=boxY+466;canvas.height=height;
+ const discountY=cursor+15,boxY=discountY+(f.discount>0?156:0),height=boxY+508;canvas.height=height;
  function t(s,a,b,size,col=N,font='Arial',weight=''){x.font=`${weight} ${size}px ${font}`;x.fillStyle=col;x.textAlign='left';x.fillText(s,a,b)}
  function line(a,b,c,d,col=G){x.strokeStyle=col;x.lineWidth=1;x.beginPath();x.moveTo(a,b);x.lineTo(c,d);x.stroke()}
  function emblem(cx,cy,r,col){x.strokeStyle=col;x.lineWidth=2;x.beginPath();x.arc(cx,cy,r,0,Math.PI*2);x.stroke();x.lineWidth=3;x.beginPath();x.moveTo(cx-r*.48,cy+r*.4);x.lineTo(cx-r*.48,cy-r*.4);x.lineTo(cx,cy+r*.04);x.lineTo(cx+r*.48,cy-r*.4);x.lineTo(cx+r*.48,cy+r*.4);x.stroke()}
@@ -3355,7 +3363,8 @@ function paintReceipt(f){
  }
  x.fillStyle=N;x.beginPath();x.roundRect(76,boxY,928,182,8);x.fill();x.fillStyle=G;x.fillRect(76,boxY+20,4,142);t(f.discount>0?'VALOR RECEBIDO COM DESCONTO':'VALOR TOTAL RECEBIDO',111,boxY+43,24,'#fff','Arial','bold');
  let size=73;while(size>30){x.font=`bold ${size}px Arial`;if(x.measureText(money(f.total)).width<=565)break;size--}t(money(f.total),107,boxY+131,size,G,'Arial','bold');line(709,boxY+34,709,boxY+146,'#405261');t('FORMA DE PAGAMENTO',743,boxY+56,12,'#CDD5DC');const forms=wrap(f.form,235,'23px Arial');forms.slice(0,2).forEach((v,i)=>t(v,743,boxY+87+i*25,23,'#fff'));t(f.date.split('-').reverse().join('/'),743,boxY+146,19,'#CDD5DC');
- t('Obrigado por viajar com a Michelon.',80,boxY+246,29,N,'Georgia');t('Conforto, segurança e pontualidade em cada trajeto.',80,boxY+280,19,M);line(80,boxY+323,1000,boxY+323,'#DDDAD3');emblem(99,boxY+366,18,G);t('MICHELON  /  VIAGENS EXECUTIVAS',134,boxY+372,14,N,'Arial','bold');t('Precisa de nota fiscal? Solicite pelo nosso WhatsApp.',80,boxY+413,17,N);
+ t(chavePixViagem,80,boxY+225,23,N,'Arial','bold');
+ t('Obrigado por viajar com a Michelon.',80,boxY+267,29,N,'Georgia');t('Conforto, segurança e pontualidade em cada trajeto.',80,boxY+301,19,M);line(80,boxY+344,1000,boxY+344,'#DDDAD3');emblem(99,boxY+387,18,G);t('MICHELON  /  VIAGENS EXECUTIVAS',134,boxY+393,14,N,'Arial','bold');t('Precisa de nota fiscal? Solicite pelo nosso WhatsApp.',80,boxY+434,17,N);
  return canvas;
 }
 
