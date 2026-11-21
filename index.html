@@ -545,7 +545,7 @@ body > header .dre-brand { display:flex; align-items:center; gap:8px; color:var(
   <div class="dre-home-grid">
    <div class="dre-report-tile dre-home-total"><span>Saldo total</span><strong id="dreHomeTotal">—</strong></div>
    <div class="dre-report-tile dre-home-uber"><span class="dre-account-label"><span class="dre-account-mark dre-mark-uber" aria-hidden="true">Uber</span>Conta Uber</span><strong id="dreHomeUber">—</strong></div>
-   <div class="dre-report-tile dre-home-itau"><span class="dre-account-label"><span class="dre-account-mark dre-mark-itau" aria-hidden="true">Itaú</span>Conta Itaú</span><strong id="dreHomeItau">—</strong></div>
+   <div class="dre-report-tile dre-home-itau"><span class="dre-account-label"><span class="dre-account-mark dre-mark-itau" aria-hidden="true">Itaú</span>Conta Itaú</span><strong id="dreHomeItau">—</strong></div><div class="dre-report-tile" id="reservaHomeTile" hidden><span>Poupança Itaú</span><strong id="reservaHomeSaldo">—</strong></div>
    <div class="dre-report-tile dre-home-card-limit"><span class="dre-account-label"><span class="dre-account-mark dre-mark-itau" aria-hidden="true">Itaú</span>Limite disponível do cartão Itaú</span><strong id="dreHomeCardAvailable">—</strong></div>
   </div>
  </div>
@@ -665,7 +665,7 @@ body > header .dre-brand { display:flex; align-items:center; gap:8px; color:var(
   <div class="card stack"><h3>Histórico de recibos</h3><div id="avulsoLista" class="stack"></div></div>
  </div>
 </section>
-<section class="page" id="financeiro"><div class="top"><h2>Meu Financeiro</h2><span class="muted">Gestão mensal · DRE Michelon</span><button class="secondary" type="button" data-pay-cadastro>📅 Cadastrar conta</button></div><div class="card stack" id="dreContas"><h3 style="margin:0">🏦 Contas e saldos</h3><div class="dre-account-grid"><div class="dre-account-tile"><small>Saldo Itaú</small><strong id="dreSaldoItau">R$ 0,00</strong></div><div class="dre-account-tile"><small>Saldo Uber</small><strong id="dreSaldoUber">R$ 0,00</strong></div><div class="dre-account-tile"><small>Total disponível nas contas</small><strong id="dreSaldoContas">R$ 0,00</strong></div><div class="dre-account-tile"><small>Limite disponível cartão Itaú</small><strong id="dreLimiteDisponivel">R$ 0,00</strong><small id="dreLimiteDetalhe">Limite total: R$ 0,00</small></div><div class="dre-account-tile"><small>Cheque especial Itaú disponível</small><strong id="dreChequeDisponivel">R$ 0,00</strong><small id="dreChequeDetalhe"></small></div></div><details><summary>⚙️ Configurar saldos iniciais e limites</summary><p class="dre-note">Informe os saldos de referência das contas. Somente lançamentos vinculados a uma conta alteram os valores calculados. Os limites de crédito ficam separados do saldo das contas.</p><div class="dre-account-settings"><div class="field"><label for="dreItauInicial">Saldo inicial Itaú (R$)</label><input id="dreItauInicial" step="0.01" type="number"/></div><div class="field"><label for="dreUberInicial">Saldo inicial Uber (R$)</label><input id="dreUberInicial" step="0.01" type="number"/></div><div class="field"><label for="dreChequeLimite">Limite total do cheque especial Itaú (R$)</label><input id="dreChequeLimite" min="0" step="0.01" type="number"/></div><div class="field"><label for="dreCartaoLimite">Limite total cartão Itaú (R$)</label><input id="dreCartaoLimite" min="0" step="0.01" type="number"/></div><div class="field"><label for="dreCartaoUsado">Valor já utilizado no cartão (R$)</label><input id="dreCartaoUsado" min="0" step="0.01" type="number"/></div></div><button class="secondary" id="dreSalvarContas" type="button">Salvar saldos e limites</button></details><p class="dre-note">Regra: corridas, contas pessoais e despesas do carro → Uber; viagens executivas recebidas → Itaú. A conta sugerida pode ser alterada antes de salvar. Lançamentos antigos sem conta vinculada permanecem no DRE, mas não alteram os saldos bancários. Saldo Uber aqui é o valor informado ou lançado na conta, não uma consulta automática à plataforma.</p></div><div class="card stack"><div class="field"><label for="finMes">Mês de referência</label><input id="finMes" type="month"/></div><div class="grid3"><div class="card"><div class="muted">Receitas recebidas</div><div class="stat" id="finReceitas">R$ 0</div></div><div class="card"><div class="muted">Despesas</div><div class="stat" id="finDespesas">R$ 0</div></div><div class="card"><div class="muted">Resultado do mês</div><div class="stat" id="finSaldo">R$ 0</div></div></div><div class="grid3"><div class="card"><div class="muted">A receber (reservas)</div><div class="stat" id="finPendente">R$ 0</div></div><div class="card"><div class="muted">Receitas do ano</div><div class="stat" id="finAnoReceitas">R$ 0</div></div><div class="card"><div class="muted">Resultado do ano</div><div class="stat" id="finAnoSaldo">R$ 0</div></div></div><div class="notice">Reservas pendentes aparecem em A receber, mas não entram no saldo nem no resultado. Recebimentos vinculados a viagens são protegidos contra exclusão isolada.</div></div><div id="dreAlertasVencimento" role="status" aria-live="polite" hidden></div><section class="card stack" id="drePagar"><h3 style="margin:0">📅 Contas a pagar</h3><p class="muted" style="margin:0">Cadastre contas futuras sem descontar do saldo. O desconto acontece somente ao confirmar o pagamento.</p><div class="pay-agenda-grid"><div class="field"><label for="payTipoConta">Tipo de conta</label><select id="payTipoConta"><option value="unica">Única — uma vez</option><option value="parcelada">Parcelada — número de parcelas</option><option value="recorrente">Recorrente mensal</option></select></div><div class="field" id="payParcelasWrap" hidden><label for="payParcelas">Número de parcelas</label><input id="payParcelas" type="number" min="2" max="360" step="1" value="2"></div><div class="field" id="payValorModoWrap" hidden><label for="payValorModo">O valor informado é</label><select id="payValorModo"><option value="parcela">Valor de cada parcela</option><option value="total">Valor total da compra</option></select></div><div class="field" id="payFimWrap" hidden><label for="payFim">Repetir até (opcional)</label><input id="payFim" type="date"><span class="muted">Deixe vazio para continuar mensalmente.</span></div></div><p class="notice" id="payAgendaPrevia" role="status"></p><div class="pay-grid"><div class="field"><label for="payModelo">Selecionar conta fixa</label><select id="payModelo"></select></div><div class="field"><label for="payNome">Nome da conta</label><input id="payNome" placeholder="Ex.: Aluguel, seguro, IPVA" maxlength="100"/></div><div class="field"><label id="payVencLabel" for="payVenc">Data de vencimento</label><input id="payVenc" type="date"/></div><div class="field"><label id="payValorLabel" for="payValor">Valor (R$)</label><input id="payValor" type="number" min="0.01" step="0.01"/></div><div class="field"><label for="payCategoria">Categoria</label><select id="payCategoria"><option>Contas fixas</option><option>Alimentação</option><option>Combustível</option><option>Manutenção</option><option>Seguro</option><option>Impostos e taxas</option><option>Outras despesas</option></select></div><div class="field"><label for="payConta">Conta de pagamento</label><select id="payConta"><option value="uber">Saldo Uber</option><option value="itau">Conta Itaú</option><option value="cartao">Cartão de crédito Itaú</option></select></div></div><div class="field"><label for="payNovoTipo">Adicionar novo tipo de conta</label><div class="actions"><input id="payNovoTipo" maxlength="100" placeholder="Ex.: Plano de saúde"/><button class="secondary" id="payAdicionarTipo" type="button">+ Adicionar tipo</button></div></div><button class="primary" id="paySalvar" type="button">Cadastrar conta a pagar</button><button class="secondary" id="payRepetirMes" type="button">Copiar contas fixas para o mês seguinte</button><p class="muted" style="margin:0">A cópia cria contas pendentes para o próximo mês, sem descontar saldo. Confira os valores antes de confirmar pagamentos.</p><div class="field"><label for="payMes">Consultar contas do mês</label><input type="month" id="payMes"/></div><div class="pay-summary"><span>Pendente: <strong id="payPendente">R$ 0,00</strong></span><span>Pago: <strong id="payPago">R$ 0,00</strong></span><span>Em atraso: <strong id="payAtraso">R$ 0,00</strong></span></div><div id="payLista" aria-live="polite"></div><details><summary>Gerenciar contas recorrentes</summary><p class="muted">Parar uma recorrência mantém os vencimentos já criados.</p><div id="paySeriesLista"></div></details></section><div class="cols"><div class="card stack"><h3 style="margin:0">Lançamento avulso</h3><p class="muted">Registre aqui valores já pagos ou recebidos. Para contas futuras, parcelas e recorrência, use o botão abaixo.</p><button class="secondary" type="button" data-pay-cadastro>📅 Cadastrar conta a pagar</button><div class="field"><label>Data do lançamento</label><input id="finData" type="date"/></div><input aria-hidden="true" id="finDesc" type="hidden"/><div class="field"><label>Valor (R$)</label><input id="finValor" min="0.01" step="0.01" type="number"/></div><div class="field"><label>Tipo</label><select id="finTipo"><option value="saida">Despesa</option><option value="entrada">Receita</option></select></div><div class="field"><label for="finConta">Conta / forma de pagamento (automática, editável)</label><select id="finConta"><option value="">Sem conta vinculada (histórico)</option><option value="itau">Conta Itaú</option><option value="uber">Saldo Uber</option><option value="cartao">Cartão de crédito Itaú</option></select></div><div class="field"><label>Categoria</label><select id="finCategoria"><option>Combustível</option><option>Pedágio</option><option>Manutenção</option><option>Alimentação</option><option>Estacionamento</option><option>Seguro</option><option>Impostos e taxas</option><option>Viagens executivas</option><option>Uber</option><option>Outras receitas</option><option>Outras despesas</option></select></div><div class="field"><label for="finNovaCategoria">Nova categoria (opcional)</label><div class="actions"><input id="finNovaCategoria" maxlength="60" placeholder="Nome da categoria"/><button class="secondary" id="finAdicionarCategoria" type="button">+ Adicionar</button></div></div><button class="primary" id="finSalvar">Salvar lançamento</button><button class="secondary hidden" id="finCancelar" type="button">Cancelar edição</button></div><div class="card stack"><h3 style="margin:0">Histórico do mês</h3><div class="field"><label>Filtrar lançamentos</label><select id="finFiltro"><option value="todos">Todos</option><option value="entrada">Receitas</option><option value="saida">Despesas</option></select></div><div class="scroll"><table class="table"><thead><tr><th>Categoria</th><th>Valor</th><th>Ações</th></tr></thead><tbody id="finLista"></tbody></table></div><h3 style="margin:8px 0 0">Despesas por categoria</h3><div class="result" id="finCategorias"></div><button class="secondary" id="finExportar" type="button">Exportar relatório CSV do mês</button></div></div><div class="notice" id="dreAvisoDados">Os dados financeiros são armazenados neste navegador e endereço do site. Se um lançamento não aparecer, confira o backup antes de cadastrar novamente.</div><section class="card stack" id="dreAuditoria"><h3>🔎 Conferência de lançamentos</h3><p class="muted">Mostra registros de todos os meses, inclusive contas fixas pagas. Não cria nem apaga lançamentos.</p><div class="actions"><button class="secondary" type="button" id="audAtualizar">Atualizar conferência</button><button class="secondary" type="button" id="audBackup">Baixar backup de segurança</button></div><div id="audResumo" class="notice"></div><div id="audLista" style="max-height:300px;overflow:auto"></div></section><section aria-label="Relatório financeiro" class="card stack" id="dreRelatorio">
+<section class="page" id="financeiro"><div class="top"><h2>Meu Financeiro</h2><span class="muted">Gestão mensal · DRE Michelon</span><button class="secondary" type="button" data-pay-cadastro>📅 Cadastrar conta</button></div><div class="card stack" id="dreContas"><h3 style="margin:0">🏦 Contas e saldos</h3><div class="dre-account-grid"><div class="dre-account-tile"><small>Saldo Itaú</small><strong id="dreSaldoItau">R$ 0,00</strong></div><div class="dre-account-tile" id="reservaFinTile" hidden><small>Poupança Itaú</small><strong id="reservaFinSaldo">—</strong></div><div class="dre-account-tile"><small>Saldo Uber</small><strong id="dreSaldoUber">R$ 0,00</strong></div><div class="dre-account-tile"><small>Total disponível nas contas</small><strong id="dreSaldoContas">R$ 0,00</strong></div><div class="dre-account-tile"><small>Limite disponível cartão Itaú</small><strong id="dreLimiteDisponivel">R$ 0,00</strong><small id="dreLimiteDetalhe">Limite total: R$ 0,00</small></div><div class="dre-account-tile"><small>Cheque especial Itaú disponível</small><strong id="dreChequeDisponivel">R$ 0,00</strong><small id="dreChequeDetalhe"></small></div></div><details><summary>⚙️ Configurar saldos iniciais e limites</summary><p class="dre-note">Informe os saldos de referência das contas. Somente lançamentos vinculados a uma conta alteram os valores calculados. Os limites de crédito ficam separados do saldo das contas.</p><div class="dre-account-settings"><div class="field"><label for="dreItauInicial">Saldo inicial Itaú (R$)</label><input id="dreItauInicial" step="0.01" type="number"/></div><div class="field"><label for="dreUberInicial">Saldo inicial Uber (R$)</label><input id="dreUberInicial" step="0.01" type="number"/></div><div class="field"><label for="dreChequeLimite">Limite total do cheque especial Itaú (R$)</label><input id="dreChequeLimite" min="0" step="0.01" type="number"/></div><div class="field"><label for="dreCartaoLimite">Limite total cartão Itaú (R$)</label><input id="dreCartaoLimite" min="0" step="0.01" type="number"/></div><div class="field"><label for="dreCartaoUsado">Valor já utilizado no cartão (R$)</label><input id="dreCartaoUsado" min="0" step="0.01" type="number"/></div></div><button class="secondary" id="dreSalvarContas" type="button">Salvar saldos e limites</button></details><p class="dre-note">Regra: corridas, contas pessoais e despesas do carro → Uber; viagens executivas recebidas → Itaú. A conta sugerida pode ser alterada antes de salvar. Lançamentos antigos sem conta vinculada permanecem no DRE, mas não alteram os saldos bancários. Saldo Uber aqui é o valor informado ou lançado na conta, não uma consulta automática à plataforma.</p></div><div class="card stack"><div class="field"><label for="finMes">Mês de referência</label><input id="finMes" type="month"/></div><div class="grid3"><div class="card"><div class="muted">Receitas recebidas</div><div class="stat" id="finReceitas">R$ 0</div></div><div class="card"><div class="muted">Despesas</div><div class="stat" id="finDespesas">R$ 0</div></div><div class="card"><div class="muted">Resultado do mês</div><div class="stat" id="finSaldo">R$ 0</div></div></div><div class="grid3"><div class="card"><div class="muted">A receber (reservas)</div><div class="stat" id="finPendente">R$ 0</div></div><div class="card"><div class="muted">Receitas do ano</div><div class="stat" id="finAnoReceitas">R$ 0</div></div><div class="card"><div class="muted">Resultado do ano</div><div class="stat" id="finAnoSaldo">R$ 0</div></div></div><div class="notice">Reservas pendentes aparecem em A receber, mas não entram no saldo nem no resultado. Recebimentos vinculados a viagens são protegidos contra exclusão isolada.</div></div><div id="dreAlertasVencimento" role="status" aria-live="polite" hidden></div><section class="card stack" id="drePagar"><h3 style="margin:0">📅 Contas a pagar</h3><p class="muted" style="margin:0">Cadastre contas futuras sem descontar do saldo. O desconto acontece somente ao confirmar o pagamento.</p><div class="pay-agenda-grid"><div class="field"><label for="payTipoConta">Tipo de conta</label><select id="payTipoConta"><option value="unica">Única — uma vez</option><option value="parcelada">Parcelada — número de parcelas</option><option value="recorrente">Recorrente mensal</option></select></div><div class="field" id="payParcelasWrap" hidden><label for="payParcelas">Número de parcelas</label><input id="payParcelas" type="number" min="2" max="360" step="1" value="2"></div><div class="field" id="payValorModoWrap" hidden><label for="payValorModo">O valor informado é</label><select id="payValorModo"><option value="parcela">Valor de cada parcela</option><option value="total">Valor total da compra</option></select></div><div class="field" id="payFimWrap" hidden><label for="payFim">Repetir até (opcional)</label><input id="payFim" type="date"><span class="muted">Deixe vazio para continuar mensalmente.</span></div></div><p class="notice" id="payAgendaPrevia" role="status"></p><div class="pay-grid"><div class="field"><label for="payModelo">Selecionar conta fixa</label><select id="payModelo"></select></div><div class="field"><label for="payNome">Nome da conta</label><input id="payNome" placeholder="Ex.: Aluguel, seguro, IPVA" maxlength="100"/></div><div class="field"><label id="payVencLabel" for="payVenc">Data de vencimento</label><input id="payVenc" type="date"/></div><div class="field"><label id="payValorLabel" for="payValor">Valor (R$)</label><input id="payValor" type="number" min="0.01" step="0.01"/></div><div class="field"><label for="payCategoria">Categoria</label><select id="payCategoria"><option>Contas fixas</option><option>Alimentação</option><option>Combustível</option><option>Manutenção</option><option>Seguro</option><option>Impostos e taxas</option><option>Outras despesas</option></select></div><div class="field"><label for="payConta">Conta de pagamento</label><select id="payConta"><option value="uber">Saldo Uber</option><option value="itau">Conta Itaú</option><option value="cartao">Cartão de crédito Itaú</option><option value="poupanca-itau" hidden>Poupança Itaú</option></select></div></div><div class="field"><label for="payNovoTipo">Adicionar novo tipo de conta</label><div class="actions"><input id="payNovoTipo" maxlength="100" placeholder="Ex.: Plano de saúde"/><button class="secondary" id="payAdicionarTipo" type="button">+ Adicionar tipo</button></div></div><button class="primary" id="paySalvar" type="button">Cadastrar conta a pagar</button><button class="secondary" id="payRepetirMes" type="button">Copiar contas fixas para o mês seguinte</button><p class="muted" style="margin:0">A cópia cria contas pendentes para o próximo mês, sem descontar saldo. Confira os valores antes de confirmar pagamentos.</p><div class="field"><label for="payMes">Consultar contas do mês</label><input type="month" id="payMes"/></div><div class="pay-summary"><span>Pendente: <strong id="payPendente">R$ 0,00</strong></span><span>Pago: <strong id="payPago">R$ 0,00</strong></span><span>Em atraso: <strong id="payAtraso">R$ 0,00</strong></span></div><div id="payLista" aria-live="polite"></div><details><summary>Gerenciar contas recorrentes</summary><p class="muted">Parar uma recorrência mantém os vencimentos já criados.</p><div id="paySeriesLista"></div></details></section><div class="cols"><div class="card stack"><h3 style="margin:0">Lançamento avulso</h3><p class="muted">Registre aqui valores já pagos ou recebidos. Para contas futuras, parcelas e recorrência, use o botão abaixo.</p><button class="secondary" type="button" data-pay-cadastro>📅 Cadastrar conta a pagar</button><div class="field"><label>Data do lançamento</label><input id="finData" type="date"/></div><input aria-hidden="true" id="finDesc" type="hidden"/><div class="field"><label>Valor (R$)</label><input id="finValor" min="0.01" step="0.01" type="number"/></div><div class="field"><label>Tipo</label><select id="finTipo"><option value="saida">Despesa</option><option value="entrada">Receita</option></select></div><div class="field"><label for="finConta">Conta / forma de pagamento (automática, editável)</label><select id="finConta"><option value="">Sem conta vinculada (histórico)</option><option value="itau">Conta Itaú</option><option value="uber">Saldo Uber</option><option value="cartao">Cartão de crédito Itaú</option><option value="poupanca-itau" hidden>Poupança Itaú</option></select></div><div class="field"><label>Categoria</label><select id="finCategoria"><option>Combustível</option><option>Pedágio</option><option>Manutenção</option><option>Alimentação</option><option>Estacionamento</option><option>Seguro</option><option>Impostos e taxas</option><option>Viagens executivas</option><option>Uber</option><option>Outras receitas</option><option>Outras despesas</option></select></div><div class="field"><label for="finNovaCategoria">Nova categoria (opcional)</label><div class="actions"><input id="finNovaCategoria" maxlength="60" placeholder="Nome da categoria"/><button class="secondary" id="finAdicionarCategoria" type="button">+ Adicionar</button></div></div><button class="primary" id="finSalvar">Salvar lançamento</button><button class="secondary hidden" id="finCancelar" type="button">Cancelar edição</button></div><div class="card stack"><h3 style="margin:0">Histórico do mês</h3><div class="field"><label>Filtrar lançamentos</label><select id="finFiltro"><option value="todos">Todos</option><option value="entrada">Receitas</option><option value="saida">Despesas</option><option value="transferencia" hidden>Transferências</option></select></div><div class="scroll"><table class="table"><thead><tr><th>Categoria</th><th>Valor</th><th>Ações</th></tr></thead><tbody id="finLista"></tbody></table></div><h3 style="margin:8px 0 0">Despesas por categoria</h3><div class="result" id="finCategorias"></div><button class="secondary" id="finExportar" type="button">Exportar relatório CSV do mês</button></div></div><div class="notice" id="dreAvisoDados">Os dados financeiros são armazenados neste navegador e endereço do site. Se um lançamento não aparecer, confira o backup antes de cadastrar novamente.</div><section class="card stack" id="dreAuditoria"><h3>🔎 Conferência de lançamentos</h3><p class="muted">Mostra registros de todos os meses, inclusive contas fixas pagas. Não cria nem apaga lançamentos.</p><div class="actions"><button class="secondary" type="button" id="audAtualizar">Atualizar conferência</button><button class="secondary" type="button" id="audBackup">Baixar backup de segurança</button></div><div id="audResumo" class="notice"></div><div id="audLista" style="max-height:300px;overflow:auto"></div></section><section aria-label="Relatório financeiro" class="card stack" id="dreRelatorio">
 <div class="dre-report-header">
 <h3 id="dreReportTitle" tabindex="-1">DRE mensal</h3>
 <div class="dre-period-toggle" role="group" aria-label="Período do DRE">
@@ -757,7 +757,27 @@ body > header .dre-brand { display:flex; align-items:center; gap:8px; color:var(
       </details>
     </div>
 </div>
-<div class="cols"><div class="card stack"><div class="field"><label>Data trabalhada</label><input id="uberData" type="date"/></div><div class="field"><label>Faturamento no app Uber (R$)</label><input id="uberBruto" min="0" step=".01" type="number"/></div><div class="field"><label for="uberCreditado">Recebido na Uber Conta por corridas (R$)</label><input id="uberCreditado" min="0" step=".01" type="number" placeholder="Valor das corridas no extrato"/><small class="muted">Importe o PDF para preencher este valor com os créditos de Ganhos Uber da data trabalhada.</small></div><div class="field"><label for="uberCusto">Combustível (R$)</label><input id="uberCusto" min="0" step=".01" type="number" placeholder="0,00"/><label for="uberCombustivelConta">Pago por</label><select id="uberCombustivelConta"><option value="uber">Uber Conta</option><option value="itau">Itaú</option><option value="fora">Outra forma, fora das contas do DRE</option></select></div><div class="field"><label>Outras despesas do dia</label><p class="muted" style="margin:0">Escolha um tipo ou digite um novo nome e informe o valor. Use + Adicionar despesa para lançar mais de uma.</p><datalist id="uberTiposDespesa"></datalist><div id="uberDespesasItens"></div><button class="secondary" id="uberAdicionarDespesa" type="button">+ Adicionar despesa</button></div><div class="notice" id="uberResumo" aria-live="polite"></div><button class="primary" id="uberSalvar">Registrar dia</button><small class="muted">Use o Financeiro para Pix recebidos e outras movimentações avulsas da conta. As despesas registradas aqui já entram na conta escolhida.</small></div><div class="card scroll"><table class="table"><thead><tr><th>Dia</th><th>Faturamento</th><th>Custos</th><th>Resultado do dia</th><th>Movimento na Uber Conta</th><th>Ações</th></tr></thead><tbody id="uberLista"></tbody></table></div></div>
+<div class="cols"><div class="card stack"><div class="field"><label>Data trabalhada</label><input id="uberData" type="date"/></div><div class="field"><label>Faturamento no app Uber (R$)</label><input id="uberBruto" min="0" step=".01" type="number"/></div><div class="field"><label for="uberCreditado">Recebido na Uber Conta por corridas (R$)</label><input id="uberCreditado" min="0" step=".01" type="number" placeholder="Valor das corridas no extrato"/><small class="muted">Importe o PDF para preencher este valor com os créditos de Ganhos Uber da data trabalhada.</small></div><div class="field"><label for="uberCusto">Combustível (R$)</label><input id="uberCusto" min="0" step=".01" type="number" placeholder="0,00"/><label for="uberCombustivelConta">Pago por</label><select id="uberCombustivelConta"><option value="uber">Uber Conta</option><option value="itau">Itaú</option><option value="fora">Outra forma, fora das contas do DRE</option></select></div><div class="field"><label>Outras despesas do dia</label><p class="muted" style="margin:0">Escolha um tipo ou digite um novo nome e informe o valor. Use + Adicionar despesa para lançar mais de uma.</p><datalist id="uberTiposDespesa"></datalist><div id="uberDespesasItens"></div><button class="secondary" id="uberAdicionarDespesa" type="button">+ Adicionar despesa</button></div><div class="notice" id="uberResumo" aria-live="polite"></div><button class="primary" id="uberSalvar">Registrar dia</button>
+<style>#reservaCarro[hidden],#reservaFinTile[hidden],#reservaHomeTile[hidden]{display:none!important}</style>
+<article class="card stack" id="reservaCarro" hidden>
+  <h3 style="margin:0">Reserva da Prestação do Carro</h3>
+  <div style="display:flex;gap:16px;align-items:center">
+    <div id="reservaCirculo" style="width:76px;height:76px;border-radius:50%;display:grid;place-items:center;background:conic-gradient(#b88632 var(--progresso,0%), #e5eaf0 0);flex:none"><strong id="reservaPercentual" style="border-radius:50%;background:white;color:#122644;width:62px;height:62px;display:grid;place-items:center">0%</strong></div>
+    <div><small class="muted">Separar neste fechamento</small><div><strong id="reservaHoje" style="font-size:1.4rem"></strong></div></div>
+  </div>
+  <div class="mini"><span>Já guardado no mês</span><strong id="reservaGuardado"></strong></div>
+  <div class="mini"><span>Falta guardar</span><strong id="reservaFalta"></strong></div>
+  <div class="mini"><span>Dias trabalhados / previstos até dia 24</span><strong id="reservaDias"></strong></div>
+  <div class="mini"><span>Dias restantes para guardar</span><strong id="reservaRestam"></strong></div>
+  <div class="actions">
+    <button class="secondary" id="reservaPlanejar" type="button">Ajustar dias previstos</button>
+    <button class="secondary" id="reservaExtra" type="button">+ Adicionar dia extra</button>
+  </div>
+  <small class="muted">Faça o Pix no banco: Conta Uber → Poupança Itaú.</small>
+  <button class="primary" id="reservaConfirmar" type="button">Confirmar transferência</button>
+  <small id="reservaMensagem" class="muted" aria-live="polite"></small>
+  <small class="muted">Meta de R$ 1.700,00 para a prestação, com vencimento no dia 24.</small>
+</article><small class="muted">Use o Financeiro para Pix recebidos e outras movimentações avulsas da conta. As despesas registradas aqui já entram na conta escolhida.</small></div><div class="card scroll"><table class="table"><thead><tr><th>Dia</th><th>Faturamento</th><th>Custos</th><th>Resultado do dia</th><th>Movimento na Uber Conta</th><th>Ações</th></tr></thead><tbody id="uberLista"></tbody></table></div></div>
 <dialog id="uberEditarDialog" class="card" aria-labelledby="uberEditarTitulo">
 <form id="uberEditarForm" class="stack">
 <h3 id="uberEditarTitulo">Editar recebimento Uber</h3>
@@ -793,10 +813,12 @@ body > header .dre-brand { display:flex; align-items:center; gap:8px; color:var(
 <div aria-labelledby="waTitulo" aria-modal="true" class="wa-modal" id="waModal" role="dialog"><div class="wa-panel"><h3 id="waTitulo">📲 Importar solicitação do WhatsApp</h3><p class="muted">Copie a mensagem do cliente e cole abaixo. Confira os campos antes de calcular.</p><textarea id="waTexto" placeholder="Ex.: Olá, preciso de uma viagem. Origem: Limeira, SP. Destino: Aeroporto de Viracopos. Data: 25/10/2026. Horário: 08:00. Passageiros: 2."></textarea><div class="wa-preview" id="waPrevia">Nenhuma mensagem analisada.</div><div class="actions"><button class="secondary" id="waFechar" type="button">Cancelar</button><button class="secondary" id="waAnalisar" type="button">Identificar dados</button><button class="primary" disabled="" id="waAplicar" type="button">Usar na cotação</button></div></div></div>
 <script>
   function dreAccountBalances(c,finance){
-    const delta=key=>finance.filter(f=>f.conta===key).reduce((v,f)=>v+(f.tipo==='entrada'?1:-1)*(Number(f.valor)||0),0);
+    const delta=key=>finance.filter(f=>f.conta===key&&f.tipo!=='transferencia').reduce((v,f)=>v+(f.tipo==='entrada'?1:-1)*(Number(f.valor)||0),0);
     const itau=(Number(c.itauInicial)||0)+delta('itau');
     const uber=(Number(c.uberInicial)||0)+delta('uber');
-    return {itau,uber};
+    const transfers=finance.filter(f=>f.tipo==='transferencia'&&f.conta==='uber'&&f.contaDestino==='poupanca-itau')
+      .reduce((sum,f)=>sum+Math.round((Number(f.valor)||0)*100),0)/100;
+    return {itau,uber:uber-transfers,poupanca:delta('poupanca-itau')+transfers};
   }
   function dreCardLimit(contas,finance){
     const compras=finance.filter(f=>f.conta==='cartao'&&f.tipo==='saida').reduce((total,f)=>total+(Number(f.valor)||0),0);
@@ -839,9 +861,9 @@ let db;try{db=JSON.parse(localStorage.getItem(KEY))||structuredClone(defaults)}c
 for(const k of Object.keys(defaults))if(!(k in db))db[k]=structuredClone(defaults[k]);
 if(!db.contas||typeof db.contas!=='object')db.contas={itauInicial:0,uberInicial:0,cartaoLimite:0,cartaoUsado:0};
  if(!db.routes.length){try{const legacy=JSON.parse(localStorage.getItem(LEGACY)||'[]');if(Array.isArray(legacy)){db.routes=legacy.filter(r=>Number(r.ida)>0&&Number(r.volta)>0).map(r=>({id:crypto.randomUUID(),origem:'Limeira, SP',destino:r.nome,aliases:'',rodovia:r.rodovia||'',ida:Number(r.ida),volta:Number(r.volta),pedStatus:r.tipoIda==='nenhum'&&r.tipoVolta==='nenhum'?'nenhum':r.tipoIda==='valor'&&r.tipoVolta==='valor'?'valor':'pendente',pedIda:Number(r.pedIda)||0,pedVolta:Number(r.pedVolta)||0}))}}catch{}}
-const save=(salvarRecibosPendentes=false)=>{try{const persisted=JSON.parse(localStorage.getItem(KEY)||'{}');if(salvarRecibosPendentes!==true&&Array.isArray(persisted.recibosPendentes))db.recibosPendentes=persisted.recibosPendentes;if(salvarRecibosPendentes!==true&&persisted.sequenciasRecibos)db.sequenciasRecibos=persisted.sequenciasRecibos;if(Array.isArray(persisted.contasPagar))db.contasPagar=persisted.contasPagar;if(Array.isArray(persisted.tiposContas))db.tiposContas=persisted.tiposContas;if(Array.isArray(persisted.contasSeries))db.contasSeries=persisted.contasSeries;
+const save=(salvarRecibosPendentes=false)=>{try{const persisted=JSON.parse(localStorage.getItem(KEY)||'{}');if(salvarRecibosPendentes!==true&&Array.isArray(persisted.recibosPendentes))db.recibosPendentes=persisted.recibosPendentes;if(salvarRecibosPendentes!==true&&persisted.sequenciasRecibos)db.sequenciasRecibos=persisted.sequenciasRecibos;if(Array.isArray(persisted.contasPagar))db.contasPagar=persisted.contasPagar;if(persisted.reservaCarro)db.reservaCarro=persisted.reservaCarro;if(Array.isArray(persisted.tiposContas))db.tiposContas=persisted.tiposContas;if(Array.isArray(persisted.contasSeries))db.contasSeries=persisted.contasSeries;
 // Contas a pagar são gravadas por outro módulo: preservar seus pagamentos mesmo se a tela financeira mantiver uma cópia antiga.
-if(Array.isArray(persisted.finance)){const current=Array.isArray(db.finance)?db.finance:[];const currentIds=new Set(current.map(f=>String(f.id)));const pendingPayments=persisted.finance.filter(f=>String(f.origemId||'').startsWith('contapagar:')&&!currentIds.has(String(f.id)));if(pendingPayments.length)db.finance=[...pendingPayments,...current]}
+if(Array.isArray(persisted.finance)){const current=Array.isArray(db.finance)?db.finance:[];const currentIds=new Set(current.map(f=>String(f.id)));const pendingPayments=persisted.finance.filter(f=>(String(f.origemId||'').startsWith('contapagar:')||f.tipo==='transferencia')&&!currentIds.has(String(f.id)));if(pendingPayments.length)db.finance=[...pendingPayments,...current]}
 }catch(e){console.warn('Falha ao reconciliar dados antes de salvar',e)}localStorage.setItem(KEY,JSON.stringify(db))};save();let quote=null;
 const pacoteForm=$('pacoteForm');
 const pacoteHoje=()=>new Intl.DateTimeFormat('sv-SE',{timeZone:'America/Sao_Paulo'}).format(new Date());
@@ -1802,14 +1824,14 @@ $('rSalvar').onclick=()=>{const origem=$('rOrigem').value.trim(),destino=$('rDes
  const finMonthInput=$('finMes');finMonthInput.value=new Date(Date.now()-new Date().getTimezoneOffset()*60000).toISOString().slice(0,7);
   function renderContas(){
     const c=db.contas||{},all=Array.isArray(db.finance)?db.finance:[];
-    const {itau,uber}=dreAccountBalances(c,all);
+    const {itau,uber,poupanca}=dreAccountBalances(c,all);
     const {limite,usado,disponivel}=dreCardLimit(c,all);
     const chequeLimite=Number(c.chequeLimite)||0;
     const chequeUsado=Math.max(0,-itau);
     $('dreChequeDisponivel').textContent=money(Math.max(0,chequeLimite-chequeUsado));
     $('dreChequeDetalhe').textContent='Limite total: '+money(chequeLimite)+' · Saldo a descoberto: '+money(chequeUsado);
     $('dreSaldoItau').textContent=money(itau);$('dreSaldoUber').textContent=money(uber);
-    $('dreSaldoContas').textContent=money(itau+uber);$('dreLimiteDisponivel').textContent=money(disponivel);
+    $('dreSaldoContas').textContent=money(itau+uber+poupanca);$('reservaFinSaldo').textContent=money(poupanca);$('dreLimiteDisponivel').textContent=money(disponivel);
     $('dreLimiteDetalhe').textContent='Limite total: '+money(limite)+' · Utilizado: '+money(usado);
   }
   const contaFields=[['dreItauInicial','itauInicial'],['dreUberInicial','uberInicial'],['dreCartaoLimite','cartaoLimite'],['dreCartaoUsado','cartaoUsado'],['dreChequeLimite','chequeLimite']];
@@ -1837,13 +1859,15 @@ $('rSalvar').onclick=()=>{const origem=$('rOrigem').value.trim(),destino=$('rDes
   month.filter(f=>filtro==='todos'||f.tipo===filtro).sort((a,b)=>finDate(b).localeCompare(finDate(a))).forEach(f=>{
     const protectedPayment=String(f.origemId||'').startsWith('reserva:')||String(f.origemId||'').startsWith('uber:')||String(f.origemId||'').startsWith('contapagar:')||String(f.origemId||'').startsWith('pacote:');
     const actions=document.createElement('div');actions.className='actions';
-    if(f.reciboAvulso){
+    if(f.tipo==='transferencia'){
+      actions.textContent='Conta Uber → Poupança Itaú';
+    }else if(f.reciboAvulso){
       actions.append(btn('Abrir recibo',()=>abrirDocumentoAvulso(f)));
       actions.append(btn('Excluir',()=>excluirReciboAvulso(f)));
     }
     else if(!protectedPayment){actions.append(btn('Editar',()=>{finEditId=f.id;$('finData').value=finDate(f);$('finDesc').value=f.desc||'';$('finValor').value=f.valor;$('finTipo').value=f.tipo;$('finConta').value=f.conta||'';finAtualizarCategorias(f.categoria||(f.tipo==='entrada'?'Outras receitas':'Outras despesas'));$('finSalvar').textContent='Salvar alterações';$('finCancelar').classList.remove('hidden');$('finValor').focus()}));actions.append(btn('Excluir',()=>{if(!confirm('Excluir este lançamento?'))return;db.finance=db.finance.filter(x=>x.id!==f.id);save();renderFin()}))}
     else{const t=document.createElement('span');t.className='muted';t.textContent=String(f.origemId||'').startsWith('contapagar:')?'Conta fixa paga — gerencie em Contas a pagar':String(f.origemId||'').startsWith('pacote:')?'Recebimento vinculado ao pacote':'Vinculado à viagem/Uber';actions.append(t)}
-    const tr=document.createElement('tr');for(const v of [finDate(f)+' · '+(f.reciboAvulso?'Serviços extras · '+f.desc+' · '+avulsoConta(f.conta):(f.categoria||f.desc||'Sem categoria')),(f.tipo==='entrada'?'+ ':'− ')+money(f.valor)]){const td=document.createElement('td');td.textContent=v;tr.append(td)}const td=document.createElement('td');td.append(actions);tr.append(td);$('finLista').append(tr)
+    const tr=document.createElement('tr');for(const v of [finDate(f)+' · '+(f.reciboAvulso?'Serviços extras · '+f.desc+' · '+avulsoConta(f.conta):(f.categoria||f.desc||'Sem categoria')),(f.tipo==='transferencia'?'':f.tipo==='entrada'?'+ ':'− ')+money(f.valor)]){const td=document.createElement('td');td.textContent=v;tr.append(td)}const td=document.createElement('td');td.append(actions);tr.append(td);$('finLista').append(tr)
   });
   const categories={};month.filter(f=>f.tipo==='saida').forEach(f=>{const k=f.categoria||'Sem categoria';categories[k]=(categories[k]||0)+(Number(f.valor)||0)});
   const panel=$('finCategorias');panel.replaceChildren();const entries=Object.entries(categories).sort((a,b)=>b[1]-a[1]);if(!entries.length)panel.textContent='Nenhuma despesa neste mês.';
@@ -2246,7 +2270,12 @@ $('uberSalvar').onclick=()=>{
   renderUber();
   renderFin();
   stats();
-  alert('Dia registrado. Confira as movimentações das contas no Financeiro.');
+  if(iso>=RESERVA_INICIO&&reservaDataAtual()>=RESERVA_INICIO){
+    renderReserva();
+    $('reservaCarro').scrollIntoView({block:'nearest',behavior:'smooth'});
+  }else{
+    alert('Dia registrado. Confira as movimentações das contas no Financeiro.');
+  }
 };
 const uberEditarDialog=$('uberEditarDialog');
 const uberEditarValor=$('uberEditarValor');
@@ -2763,7 +2792,129 @@ function uberFotoUnir(paginas) {
   };
 }
 
+const RESERVA_INICIO='2026-12-01';
+const RESERVA_META=170000;
+const RESERVA_VENCIMENTO=24;
+const reservaDataAtual=()=>new Intl.DateTimeFormat('sv-SE',{timeZone:'America/Sao_Paulo'}).format(new Date());
+const reservaBase=()=>JSON.parse(localStorage.getItem(KEY));
+function reservaEstado(base,date){
+  const mes=date.slice(0,7);
+  const vencimento=mes+'-'+RESERVA_VENCIMENTO;
+  const [ano,mesNumero]=mes.split('-').map(Number);
+  let diasUteis=0;
+  for(let dia=1;dia<=RESERVA_VENCIMENTO;dia++){
+    const diaDaSemana=new Date(Date.UTC(ano,mesNumero-1,dia)).getUTCDay();
+    if(diaDaSemana>=1&&diaDaSemana<=5)diasUteis++;
+  }
+  const planoSalvo=base.reservaCarro?.[mes];
+  const extras=(planoSalvo?.extras||[]).filter(d=>d<=vencimento);
+  const plano={dias:Math.min(RESERVA_VENCIMENTO-extras.length,planoSalvo?.dias??diasUteis),extras};
+  const dias=new Set(base.uber.map(u=>String(u.date).split('/').reverse().join('-')).filter(d=>d.startsWith(mes+'-')));
+  const diasAteVencimento=[...dias].filter(d=>d<=vencimento).length;
+  const transferencias=base.finance.filter(f=>f.tipo==='transferencia'&&String(f.origemId).startsWith('reserva-carro:'+mes+'-'));
+  const guardado=transferencias.reduce((total,f)=>total+Math.round(f.valor*100),0);
+  const confirmado=transferencias.some(f=>f.origemId==='reserva-carro:'+date);
+  const registrado=dias.has(date);
+  const previstos=plano.dias+plano.extras.length;
+  const faltam=Math.max(0,RESERVA_META-guardado);
+  const hoje=reservaDataAtual();
+  const vencido=hoje>vencimento;
+  const limiteDias=hoje.slice(0,7)===mes?RESERVA_VENCIMENTO-Number(hoje.slice(8,10))+1:RESERVA_VENCIMENTO;
+  const restantes=vencido?0:Math.min(limiteDias,Math.max(Number(!confirmado),previstos-diasAteVencimento+Number(registrado&&!confirmado)));
+  return {mes,plano,previstos,dias:diasAteVencimento,guardado,confirmado,registrado,faltam,restantes,vencido,vencimento,
+    sugestao:Math.ceil(faltam/Math.max(1,restantes))};
+}
+function renderReserva(){
+  const date=$('uberData').value;
+  const ativa=reservaDataAtual()>=RESERVA_INICIO;
+  for(const id of ['reservaFinTile','reservaHomeTile'])$(id).hidden=!ativa;
+  for(const id of ['payConta','finConta','finFiltro']){
+    $(id).querySelector('option[value="'+(id==='finFiltro'?'transferencia':'poupanca-itau')+'"]').hidden=!ativa;
+  }
+  const exibir=ativa&&date>=RESERVA_INICIO;
+  $('reservaCarro').hidden=!exibir;
+  if(!exibir)return;
+  const e=reservaEstado(reservaBase(),date);
+  const progresso=e.faltam?Math.min(99,Math.round(e.guardado/RESERVA_META*100)):100;
+  $('reservaCirculo').style.setProperty('--progresso',progresso+'%');
+  $('reservaPercentual').textContent=progresso+'%';
+  $('reservaHoje').textContent=e.confirmado?'Registrado':money(e.sugestao/100);
+  $('reservaGuardado').textContent=money(e.guardado/100);
+  $('reservaFalta').textContent=money(e.faltam/100);
+  $('reservaDias').textContent=e.dias+' / '+e.previstos;
+  $('reservaRestam').textContent=e.restantes;
+  const fechado=e.registrado&&date<=reservaDataAtual();
+  $('reservaExtra').disabled=!fechado||e.vencido||date>e.vencimento||e.plano.extras.includes(date)||e.previstos>=RESERVA_VENCIMENTO;
+  $('reservaConfirmar').disabled=!fechado||e.confirmado||!e.faltam;
+  $('reservaMensagem').textContent=e.confirmado?'Transferência registrada neste fechamento.':
+    !e.faltam?'Meta da prestação atingida.':
+    e.vencido?'O dia 24 já passou. Confira o valor que falta guardar.':
+    !fechado?'Registre o dia trabalhado para confirmar o Pix.':'';
+}
+function reservaAtualizar(editar){
+  const date=$('uberData').value;
+  if(reservaDataAtual()<RESERVA_INICIO||date<RESERVA_INICIO)return;
+  try{
+    const base=reservaBase();
+    const estado=reservaEstado(base,date);
+    if(!editar(base,estado,date))return;
+    localStorage.setItem(KEY,JSON.stringify(base));
+    db=base;
+    renderFin();
+    renderReserva();
+  }catch(error){
+    alert('Não foi possível concluir a atualização da reserva. Confira o Financeiro antes de tentar novamente.');
+  }
+}
+function reservaSalvarPlano(base,mes,plano){
+  base.reservaCarro={...base.reservaCarro,[mes]:plano};
+}
+$('reservaPlanejar').onclick=()=>{
+  const date=$('uberData').value;
+  const e=reservaEstado(reservaBase(),date);
+  const valor=prompt('Quantos dias você pretende trabalhar até o dia 24, sem contar os dias extras já adicionados?',e.plano.dias);
+  if(valor===null)return;
+  reservaAtualizar((base,estado)=>{
+    const dias=Number(valor);
+    if(!Number.isInteger(dias)||dias<1||dias+estado.plano.extras.length>RESERVA_VENCIMENTO||dias+estado.plano.extras.length<estado.dias){
+      alert('Informe uma previsão válida de trabalho até o dia 24, considerando os dias já registrados e os extras.');
+      return false;
+    }
+    reservaSalvarPlano(base,estado.mes,{...estado.plano,dias});
+    return true;
+  });
+};
+$('reservaExtra').onclick=()=>reservaAtualizar((base,e,date)=>{
+  if(!e.registrado||e.vencido||date>e.vencimento||date>reservaDataAtual()||e.previstos>=RESERVA_VENCIMENTO||e.plano.extras.includes(date))return false;
+  reservaSalvarPlano(base,e.mes,{...e.plano,extras:[...e.plano.extras,date]});
+  return true;
+});
+$('reservaConfirmar').onclick=()=>{
+  const date=$('uberData').value;
+  const e=reservaEstado(reservaBase(),date);
+  if(!e.registrado||e.confirmado||!e.faltam||date>reservaDataAtual())return;
+  const valor=prompt('Informe quanto você já transferiu da Conta Uber para a Poupança Itaú (R$).',(e.sugestao/100).toFixed(2).replace('.',','));
+  if(valor===null)return;
+  const texto=valor.trim();
+  const centavos=Math.round(Number(texto.replace(',','.'))*100);
+  if(!/^\d+(?:[,.]\d{1,2})?$/.test(texto)||!Number.isSafeInteger(centavos)||centavos<=0){
+    alert('Informe um valor positivo com até duas casas decimais.');
+    return;
+  }
+  reservaAtualizar((base,estado,dia)=>{
+    if(dia!==date||!estado.registrado||estado.confirmado||!estado.faltam)return false;
+    const origemId='reserva-carro:'+dia;
+    base.finance.unshift({id:origemId,origemId,date:dia,desc:'Reserva da Prestação do Carro',categoria:'Reserva da Prestação do Carro',
+      tipo:'transferencia',valor:centavos/100,conta:'uber',contaDestino:'poupanca-itau'});
+    return true;
+  });
+};
+$('uberData').addEventListener('change',renderReserva);
+document.addEventListener('dre-contas-alteradas',renderReserva);
+document.addEventListener('visibilitychange',()=>{if(!document.hidden)renderReserva()});
+
 function renderUber(){
+  renderReserva();
   $('uberLista').replaceChildren();
   db.uber.forEach(u=>{
     const creditado=u.creditado??u.bruto;
@@ -4239,7 +4390,7 @@ function pendingAccount(id){
 function confirmPayment(id, done){
   const {item: shown} = pendingAccount(id);
   const date = today();
-  const account = {uber:'Uber',itau:'Itaú',cartao:'Cartão Itaú'}[shown.conta] || shown.conta || 'Sem conta vinculada';
+  const account = {uber:'Uber',itau:'Itaú',cartao:'Cartão Itaú','poupanca-itau':'Poupança Itaú'}[shown.conta] || shown.conta || 'Sem conta vinculada';
   if (!confirm('Confirmar pagamento de ' + shown.nome + ' de ' + money(shown.valor) + ' em ' +
     date.split('-').reverse().join('/') + '? Conta de pagamento: ' + account + '.')) return;
   const {base,item} = pendingAccount(id);
@@ -4401,7 +4552,7 @@ let d;
 try { d = JSON.parse(raw) || {}; } catch { d = {}; }
 const tomorrow = next(now),month = now.slice(0,7);
 const items=Array.isArray(d.contasPagar)?d.contasPagar:[],finance=Array.isArray(d.finance)?d.finance:[];
-const {itau,uber}=dreAccountBalances(d.contas||{},finance);
+const {itau,uber,poupanca}=dreAccountBalances(d.contas||{},finance);
 const {disponivel:cartaoDisponivel}=dreCardLimit(d.contas||{},finance);
 const monthEntries=finance.filter(f=>Number.isFinite(Number(f.valor))&&Number(f.valor)>0&&
   /^\d{4}-\d{2}-\d{2}/.test(String(f.date||''))&&String(f.date).slice(0,7)===month);
@@ -4409,7 +4560,7 @@ const sumMonth=tipo=>monthEntries.filter(f=>f.tipo===tipo).reduce((sum,f)=>sum+N
 const income=sumMonth('entrada'),cost=sumMonth('saida');
 const [year,monthNumber]=month.split('-').map(Number);
 document.getElementById('dreHomeMonth').textContent=monthLabel.format(new Date(year,monthNumber-1,1));
-for(const [id,value] of Object.entries({dreHomeUber:uber,dreHomeItau:itau,dreHomeTotal:itau+uber,dreHomeCardAvailable:cartaoDisponivel,
+for(const [id,value] of Object.entries({dreHomeUber:uber,dreHomeItau:itau,dreHomeTotal:itau+uber+poupanca,reservaHomeSaldo:poupanca,dreHomeCardAvailable:cartaoDisponivel,
   dreHomeIncome:income,dreHomeCost:cost,dreHomeNet:income-cost})){
   const amount=document.getElementById(id);
   amount.textContent=money(value);
@@ -4503,7 +4654,7 @@ function disclosure(key, label, value, entries, empty, note = ''){
     }
     const account = entry;
     const due = account.venc.split('-').reverse().join('/');
-    const paymentAccount = {uber:'Uber',itau:'Itaú',cartao:'Cartão Itaú'}[account.conta] || account.conta || 'Sem conta vinculada';
+    const paymentAccount = {uber:'Uber',itau:'Itaú',cartao:'Cartão Itaú','poupanca-itau':'Poupança Itaú'}[account.conta] || account.conta || 'Sem conta vinculada';
     item.textContent = (account.nome || 'Conta') + ' · ' + money(account.valor) + ' · Venc. ' + due +
       ' · Conta de pagamento: ' + paymentAccount;
     if (account.id){
