@@ -688,6 +688,25 @@ body > header .dre-brand { display:flex; align-items:center; gap:8px; color:var(
   padding:0;overflow:auto;overscroll-behavior:contain;border:1px solid #334a60;border-radius:18px;
   background:#121d29;color:#f3f7fc;color-scheme:dark;
 }
+#dreManual .dre-manual-flow {display:grid;gap:14px;padding:16px 16px 4px;line-height:1.5}
+#dreManual .dre-manual-flow h3 {margin:0;font-size:clamp(1.55rem,5vw,2.35rem);line-height:1.12;color:#f3f7fc}
+#dreManual .dre-manual-flow p {margin:0}
+#dreManual .dre-manual-flow > p,#dreManual .dre-manual-breadcrumb {color:#c7d5e5}
+#dreManual .dre-manual-stages {display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:9px}
+#dreManual .dre-manual-stages button {
+  width:100%;min-height:48px;padding:8px;border:1px solid #8299ad;border-radius:10px;
+  background:#121d29;color:#f3f7fc;font-size:1rem;font-weight:700;white-space:normal;
+}
+#dreManual .dre-manual-stages button[aria-pressed="true"] {border-color:#ebbe55;color:#ffe1a0}
+#dreManual .dre-manual-stages button:focus-visible {outline:2px solid #ffe1a0;outline-offset:2px}
+#dreManual .dre-manual-stage {display:grid;gap:12px;padding:16px;border:1px solid #476279;border-radius:16px;background:#192a3b}
+#dreManual .dre-manual-stage[hidden] {display:none}
+#dreManual .dre-manual-stage h4 {margin:0;color:#f3f7fc;font-size:clamp(1.25rem,4.5vw,1.8rem);line-height:1.2}
+#dreManual .dre-manual-stage dl {margin:0}
+#dreManual .dre-manual-stage dl div {display:flex;flex-wrap:wrap;justify-content:space-between;gap:4px 12px;padding:8px 0;border-bottom:1px solid #476279}
+#dreManual .dre-manual-stage dd {margin:0;font-weight:700}
+#dreManual .dre-manual-example-action {background:#18504c;border:1px solid #59817d;border-radius:9px;padding:8px;text-align:center;font-weight:700}
+#dreManual .dre-manual-topics {margin:6px 0 0;font-size:1.05rem;color:#f3f7fc}
 #dreManual::backdrop {background:rgba(5,12,20,.76)}
 #dreManual .dre-manual-head {
   position:sticky;top:0;z-index:1;display:flex;align-items:center;justify-content:space-between;
@@ -720,7 +739,46 @@ body:has(#dreManual[open]) {overflow:hidden}
     <h2 id="dreManualTitle">Manual do DRE</h2>
     <form method="dialog"><button class="secondary" autofocus>Fechar</button></form>
   </div>
+  <section class="dre-manual-flow" aria-labelledby="dreManualFlowTitle">
+    <h3 id="dreManualFlowTitle">Da cotação ao recebimento</h3>
+    <p>Toque em uma etapa para ver onde agir no DRE. Os cartões mostram uma viagem de exemplo.</p>
+    <div class="dre-manual-stages" role="group" aria-label="Etapas da viagem">
+      <button type="button" aria-controls="dreManualStage1" aria-pressed="true">1 · Cotação</button>
+      <button type="button" aria-controls="dreManualStage2" aria-pressed="false">2 · Agenda</button>
+      <button type="button" aria-controls="dreManualStage3" aria-pressed="false">3 · Viagens</button>
+      <button type="button" aria-controls="dreManualStage4" aria-pressed="false">4 · Financeiro</button>
+    </div>
+    <section class="dre-manual-stage" id="dreManualStage1">
+      <p class="dre-manual-breadcrumb">Início → Nova cotação</p>
+      <h4>Calcular e enviar orçamento</h4>
+      <dl><div><dt>Origem</dt><dd>Limeira</dd></div><div><dt>Destino</dt><dd>Viracopos</dd></div></dl>
+      <p class="dre-manual-example-action">Calcular orçamento</p>
+      <p>Preencha os endereços e as paradas. Calcule, confira os pedágios por trecho e confirme o orçamento. Use Enviar pelo WhatsApp para mandar a proposta e Salvar na agenda para guardar a cotação.</p>
+    </section>
+    <section class="dre-manual-stage" id="dreManualStage2" hidden>
+      <p class="dre-manual-breadcrumb">Início → Abrir agenda → Cotação salva</p>
+      <h4>Confirmar a reserva</h4>
+      <dl><div><dt>Trajeto</dt><dd>Limeira → Viracopos</dd></div><div><dt>Situação</dt><dd>Cliente aceitou</dd></div></dl>
+      <p class="dre-manual-example-action">Confirmar reserva</p>
+      <p>Abra a cotação do dia, toque em Confirmar reserva e confira o início e o fim da ocupação. A reserva ocupa o horário indicado na agenda.</p>
+    </section>
+    <section class="dre-manual-stage" id="dreManualStage3" hidden>
+      <p class="dre-manual-breadcrumb">Viagens → Minhas viagens → Atendimento salvo</p>
+      <h4>Registrar o pagamento</h4>
+      <dl><div><dt>Trajeto</dt><dd>Limeira → Viracopos</dd></div><div><dt>Situação</dt><dd>Pagamento recebido</dd></div></dl>
+      <p class="dre-manual-example-action">Registrar pagamento</p>
+      <p>Quando o cliente pagar, abra o atendimento, toque em Registrar pagamento e selecione a conta em que o dinheiro entrou. Se o pagamento já estiver lançado, confira se o DRE oferece a opção de vincular o registro existente.</p>
+    </section>
+    <section class="dre-manual-stage" id="dreManualStage4" hidden>
+      <p class="dre-manual-breadcrumb">Início → Meu Financeiro</p>
+      <h4>Conferir o recebimento</h4>
+      <dl><div><dt>Tipo</dt><dd>Receita de viagem</dd></div><div><dt>Conferência</dt><dd>Conta e valor recebido</dd></div></dl>
+      <p class="dre-manual-example-action">Meu Financeiro</p>
+      <p>Confira a receita na data do pagamento e na conta selecionada. Para emitir o recibo de pagamento, volte ao atendimento salvo e abra as opções de documentos.</p>
+    </section>
+  </section>
   <div class="dre-manual-body">
+    <h3 class="dre-manual-topics">Todos os tópicos do manual</h3>
     <details><summary>Cotação de viagem e aeroportos</summary><figure class="dre-manual-guide"><figcaption>Telas ilustradas · siga as setas</figcaption><ol class="dre-manual-scenes"><li class="dre-manual-scene"><div class="dre-manual-step"><b class="dre-manual-number">1</b>Abra a cotação</div><div class="dre-manual-phone"><strong class="dre-manual-phone-title">Início</strong><div class="dre-manual-controls"><span>Abrir agenda</span><span>Meu Financeiro</span><span class="dre-manual-target"><b class="dre-manual-arrow" aria-hidden="true">➜</b>Nova cotação</span></div></div></li><li class="dre-manual-scene"><div class="dre-manual-step"><b class="dre-manual-number">2</b>Informe o trajeto</div><div class="dre-manual-phone"><strong class="dre-manual-phone-title">Nova cotação</strong><div class="dre-manual-controls"><span>Tipo de percurso · Fora da cidade</span><span>Origem · Limeira</span><span class="dre-manual-target"><b class="dre-manual-arrow" aria-hidden="true">➜</b>Destino · Viracopos (VCP)</span></div></div></li><li class="dre-manual-scene"><div class="dre-manual-step"><b class="dre-manual-number">3</b>Calcule e revise</div><div class="dre-manual-phone"><strong class="dre-manual-phone-title">Nova cotação</strong><div class="dre-manual-controls"><span>Salvar cotação na agenda</span><span>Enviar proposta pelo WhatsApp</span><span class="dre-manual-target"><b class="dre-manual-arrow" aria-hidden="true">➜</b>Calcular orçamento</span></div></div></li></ol></figure><p class="dre-manual-path">Início → Nova cotação → Fora da cidade</p><ol><li>Preencha a origem real do passageiro, o destino e, se houver, as paradas na ordem da viagem. Para aeroportos, escolha a sugestão de Viracopos (VCP), Guarulhos (GRU) ou Congonhas (CGH).</li><li>Se o cliente já mandou os dados, use Importar WhatsApp, cole a mensagem e confira os campos preenchidos.</li><li>Confira o tipo de viagem, a base do veículo, os quilômetros e os trechos vazios. Inclua o deslocamento até o embarque e o retorno à base quando fizerem parte do atendimento.</li><li>Confira os pedágios por trecho. Se combinar desconto ou acréscimo, escolha R$ ou %, informe o valor e aplique o ajuste. Toque em Calcular orçamento e confira o total.</li><li>Use Salvar cotação na agenda para retomar depois ou Enviar proposta pelo WhatsApp para compartilhar. Confira no documento o trajeto do cliente e o total antes de enviar. A base, os trechos vazios e a composição do preço são de uso interno.</li></ol></details>
 <details><summary>Pedágios de Viracopos, Guarulhos e outras rotas</summary><figure class="dre-manual-guide"><figcaption>Telas ilustradas · siga as setas</figcaption><ol class="dre-manual-scenes"><li class="dre-manual-scene"><div class="dre-manual-step"><b class="dre-manual-number">1</b>Abra o trecho de ida</div><div class="dre-manual-phone"><strong class="dre-manual-phone-title">Pedágios por trecho</strong><div class="dre-manual-controls"><span>Base → embarque (vazio)</span><span>Retorno à base</span><span class="dre-manual-target"><b class="dre-manual-arrow" aria-hidden="true">➜</b>Trecho com cliente · Limeira → aeroporto</span></div></div></li><li class="dre-manual-scene"><div class="dre-manual-step"><b class="dre-manual-number">2</b>Confira as praças</div><div class="dre-manual-phone"><strong class="dre-manual-phone-title">Trecho com cliente</strong><div class="dre-manual-controls"><span>☐ Nova Odessa · SP-330</span><span>☐ Sumaré · SP-348</span><span class="dre-manual-target"><b class="dre-manual-arrow" aria-hidden="true">➜</b>Rodoanel, Ayrton Senna e Dutra ▾</span></div></div></li><li class="dre-manual-scene"><div class="dre-manual-step"><b class="dre-manual-number">3</b>Confira a volta</div><div class="dre-manual-phone"><strong class="dre-manual-phone-title">Pedágios por trecho</strong><div class="dre-manual-controls"><span>Trecho com cliente · Limeira → aeroporto</span><span>Calcular orçamento</span><span class="dre-manual-target"><b class="dre-manual-arrow" aria-hidden="true">➜</b>Retorno à base ▾</span></div></div></li></ol></figure><p class="dre-manual-path">Cotação → Fora da cidade → Pedágios por trecho</p><ol><li>Informe origem, paradas e destino. Abra cada trecho em Pedágios por trecho, incluindo o deslocamento vazio e o retorno quando houver.</li><li>Para Viracopos, confira as opções de Anhanguera ou Bandeirantes conforme o trajeto. Para Guarulhos, se o caminho passar por essas vias, abra Rodoanel, Ayrton Senna e Dutra dentro do trecho e confira a alça e o sentido.</li><li>Marque somente as praças realmente atravessadas em cada sentido e confira a tarifa de referência. Se a rota usar a Dutra expressa, use o simulador indicado para conferir o valor do free flow. Se faltar uma praça, use Outra praça.</li><li>Confira o total. Se houver cobrança na ida e na volta, registre cada passagem no trecho correspondente. Use a opção de viagem sem pedágio somente depois de conferir o percurso.</li></ol></details>
 <details><summary>Corrida particular dentro da cidade</summary><figure class="dre-manual-guide"><figcaption>Telas ilustradas · siga as setas</figcaption><ol class="dre-manual-scenes"><li class="dre-manual-scene"><div class="dre-manual-step"><b class="dre-manual-number">1</b>Escolha o tipo de percurso</div><div class="dre-manual-phone"><strong class="dre-manual-phone-title">Nova cotação</strong><div class="dre-manual-controls"><span>Tipo de percurso</span><span>Cidade dos endereços · Limeira</span><span class="dre-manual-target"><b class="dre-manual-arrow" aria-hidden="true">➜</b>Dentro da cidade</span></div></div></li><li class="dre-manual-scene"><div class="dre-manual-step"><b class="dre-manual-number">2</b>Registre os pontos</div><div class="dre-manual-phone"><strong class="dre-manual-phone-title">Dentro da cidade</strong><div class="dre-manual-controls"><span>Ponto de partida</span><span>Calcular orçamento</span><span class="dre-manual-target"><b class="dre-manual-arrow" aria-hidden="true">➜</b>+ Adicionar destino</span></div></div></li><li class="dre-manual-scene"><div class="dre-manual-step"><b class="dre-manual-number">3</b>Continue uma rota salva</div><div class="dre-manual-phone"><strong class="dre-manual-phone-title">Continuar rota</strong><div class="dre-manual-controls"><span>+ Adicionar trecho</span><span>Calcular novo total</span><span class="dre-manual-target"><b class="dre-manual-arrow" aria-hidden="true">➜</b>Salvar na mesma rota</span></div></div></li></ol></figure><p class="dre-manual-path">Cotação → Tipo de percurso → Dentro da cidade</p><ol><li>Confira a cidade e informe o ponto de partida. Você pode digitar o endereço ou usar a localização atual no ponto em que estiver. Se houver deslocamento para buscar o passageiro, registre também esse trecho.</li><li>Use + Adicionar destino para registrar cada parada na ordem em que rodou. Indique os trechos com ou sem passageiro conforme o atendimento. Confira os endereços e ajuste os quilômetros se necessário.</li><li>Toque em Calcular orçamento e salve na agenda. Para continuar mais tarde, abra a cotação salva, toque em Continuar rota, use + Adicionar trecho, depois Calcular novo total e Salvar na mesma rota.</li></ol></details>
@@ -738,6 +796,17 @@ body:has(#dreManual[open]) {overflow:hidden}
 (() => {
   const button = document.getElementById('dreManualOpen');
   const manual = document.getElementById('dreManual');
+  const stages = manual.querySelector('.dre-manual-stages');
+  stages.addEventListener('click', (event) => {
+    const selected = event.target.closest('button[aria-controls]');
+    if (!selected || selected.getAttribute('aria-pressed') === 'true') return;
+
+    const previous = stages.querySelector('[aria-pressed="true"]');
+    previous.setAttribute('aria-pressed', 'false');
+    document.getElementById(previous.getAttribute('aria-controls')).hidden = true;
+    selected.setAttribute('aria-pressed', 'true');
+    document.getElementById(selected.getAttribute('aria-controls')).hidden = false;
+  });
   button.addEventListener('click', () => manual.showModal());
   manual.addEventListener('close', () => button.focus({ preventScroll: true }));
 })();
@@ -844,7 +913,55 @@ body:has(#dreManual[open]) {overflow:hidden}
   <div class="card stack"><h3>Histórico de recibos</h3><div id="avulsoLista" class="stack"></div></div>
  </div>
 </section>
-<section class="page" id="financeiro"><div class="top"><h2>Meu Financeiro</h2><span class="muted">Gestão mensal · DRE Michelon</span><button class="secondary" type="button" data-pay-cadastro>📅 Cadastrar conta</button></div><div class="card stack" id="dreContas"><h3 style="margin:0">🏦 Contas e saldos</h3><div class="dre-account-grid"><div class="dre-account-tile"><small>Saldo Itaú</small><strong id="dreSaldoItau">R$ 0,00</strong></div><div class="dre-account-tile" id="reservaFinTile"><small>Poupança Itaú</small><strong id="reservaFinSaldo">—</strong></div><div class="dre-account-tile"><small>Saldo Uber</small><strong id="dreSaldoUber">R$ 0,00</strong></div><div class="dre-account-tile"><small>Total disponível nas contas</small><strong id="dreSaldoContas">R$ 0,00</strong></div><div class="dre-account-tile"><small>Limite disponível cartão Itaú</small><strong id="dreLimiteDisponivel">R$ 0,00</strong><small id="dreLimiteDetalhe">Limite total: R$ 0,00</small></div><div class="dre-account-tile"><small>Cheque especial Itaú disponível</small><strong id="dreChequeDisponivel">R$ 0,00</strong><small id="dreChequeDetalhe"></small></div></div><details><summary>⚙️ Configurar saldos iniciais e limites</summary><p class="dre-note">Informe os saldos de referência das contas. Somente lançamentos vinculados a uma conta alteram os valores calculados. Os limites de crédito ficam separados do saldo das contas.</p><div class="dre-account-settings"><div class="field"><label for="dreItauInicial">Saldo inicial Itaú (R$)</label><input id="dreItauInicial" step="0.01" type="number"/></div><div class="field"><label for="dreUberInicial">Saldo inicial Uber (R$)</label><input id="dreUberInicial" step="0.01" type="number"/></div><div class="field"><label for="dreChequeLimite">Limite total do cheque especial Itaú (R$)</label><input id="dreChequeLimite" min="0" step="0.01" type="number"/></div><div class="field"><label for="dreCartaoLimite">Limite total cartão Itaú (R$)</label><input id="dreCartaoLimite" min="0" step="0.01" type="number"/></div><div class="field"><label for="dreCartaoUsado">Valor já utilizado no cartão (R$)</label><input id="dreCartaoUsado" min="0" step="0.01" type="number"/></div></div><button class="secondary" id="dreSalvarContas" type="button">Salvar saldos e limites</button></details><p class="dre-note">Regra: corridas, contas pessoais e despesas do carro → Uber; viagens executivas recebidas → Itaú. A conta sugerida pode ser alterada antes de salvar. Lançamentos antigos sem conta vinculada permanecem no DRE, mas não alteram os saldos bancários. Saldo Uber aqui é o valor informado ou lançado na conta, não uma consulta automática à plataforma.</p></div><div class="card stack"><div class="field"><label for="finMes">Mês de referência</label><input id="finMes" type="month"/></div><div class="grid3"><div class="card"><div class="muted">Receitas recebidas</div><div class="stat" id="finReceitas">R$ 0</div></div><div class="card"><div class="muted">Despesas</div><div class="stat" id="finDespesas">R$ 0</div></div><div class="card"><div class="muted">Resultado do mês</div><div class="stat" id="finSaldo">R$ 0</div></div></div><div class="grid3"><div class="card"><div class="muted">A receber (reservas)</div><div class="stat" id="finPendente">R$ 0</div></div><div class="card"><div class="muted">Receitas do ano</div><div class="stat" id="finAnoReceitas">R$ 0</div></div><div class="card"><div class="muted">Resultado do ano</div><div class="stat" id="finAnoSaldo">R$ 0</div></div></div><div class="notice">Reservas pendentes aparecem em A receber, mas não entram no saldo nem no resultado. Recebimentos vinculados a viagens são protegidos contra exclusão isolada.</div></div><div id="dreAlertasVencimento" role="status" aria-live="polite" hidden></div><section class="card stack" id="drePagar"><h3 style="margin:0">📅 Contas a pagar</h3><p class="muted" style="margin:0">Cadastre contas futuras sem descontar do saldo. O desconto acontece somente ao confirmar o pagamento.</p><div class="pay-agenda-grid"><div class="field"><label for="payTipoConta">Tipo de conta</label><select id="payTipoConta"><option value="unica">Única — uma vez</option><option value="parcelada">Parcelada — número de parcelas</option><option value="recorrente">Recorrente mensal</option></select></div><div class="field" id="payParcelasWrap" hidden><label for="payParcelas">Número de parcelas</label><input id="payParcelas" type="number" min="2" max="360" step="1" value="2"></div><div class="field" id="payValorModoWrap" hidden><label for="payValorModo">O valor informado é</label><select id="payValorModo"><option value="parcela">Valor de cada parcela</option><option value="total">Valor total da compra</option></select></div><div class="field" id="payFimWrap" hidden><label for="payFim">Repetir até (opcional)</label><input id="payFim" type="date"><span class="muted">Deixe vazio para continuar mensalmente.</span></div></div><p class="notice" id="payAgendaPrevia" role="status"></p><div class="pay-grid"><div class="field"><label for="payModelo">Selecionar conta fixa</label><select id="payModelo"></select></div><div class="field"><label for="payNome">Nome da conta</label><input id="payNome" placeholder="Ex.: Aluguel, seguro, IPVA" maxlength="100"/></div><div class="field"><label id="payVencLabel" for="payVenc">Data de vencimento</label><input id="payVenc" type="date"/></div><div class="field"><label id="payValorLabel" for="payValor">Valor (R$)</label><input id="payValor" type="number" min="0.01" step="0.01"/></div><div class="field"><label for="payCategoria">Categoria</label><select id="payCategoria"><option>Contas fixas</option><option>Alimentação</option><option>Combustível</option><option>Manutenção</option><option>Seguro</option><option>Impostos e taxas</option><option>Outras despesas</option></select></div><div class="field"><label for="payConta">Conta de pagamento</label><select id="payConta"><option value="uber">Saldo Uber</option><option value="itau">Conta Itaú</option><option value="cartao">Cartão de crédito Itaú</option><option value="poupanca-itau" hidden>Poupança Itaú</option></select></div></div><div class="field"><label for="payNovoTipo">Adicionar novo tipo de conta</label><div class="actions"><input id="payNovoTipo" maxlength="100" placeholder="Ex.: Plano de saúde"/><button class="secondary" id="payAdicionarTipo" type="button">+ Adicionar tipo</button></div></div><button class="primary" id="paySalvar" type="button">Cadastrar conta a pagar</button><button class="secondary" id="payRepetirMes" type="button">Copiar contas fixas para o mês seguinte</button><p class="muted" style="margin:0">A cópia cria contas pendentes para o próximo mês, sem descontar saldo. Confira os valores antes de confirmar pagamentos.</p><div class="field"><label for="payMes">Consultar contas do mês</label><input type="month" id="payMes"/></div><div class="pay-summary"><span>Pendente: <strong id="payPendente">R$ 0,00</strong></span><span>Pago: <strong id="payPago">R$ 0,00</strong></span><span>Em atraso: <strong id="payAtraso">R$ 0,00</strong></span></div><div id="payLista" aria-live="polite"></div><details><summary>Gerenciar contas recorrentes</summary><p class="muted">Parar uma recorrência mantém os vencimentos já criados.</p><div id="paySeriesLista"></div></details></section><div class="cols"><div class="card stack"><h3 style="margin:0">Lançamento avulso</h3><p class="muted">Registre aqui valores já pagos ou recebidos. Para contas futuras, parcelas e recorrência, use o botão abaixo.</p><button class="secondary" type="button" data-pay-cadastro>📅 Cadastrar conta a pagar</button><div class="field"><label>Data do lançamento</label><input id="finData" type="date"/></div><input aria-hidden="true" id="finDesc" type="hidden"/><div class="field"><label>Valor (R$)</label><input id="finValor" min="0.01" step="0.01" type="number"/></div><div class="field"><label>Tipo</label><select id="finTipo"><option value="saida">Despesa</option><option value="entrada">Receita</option></select></div><div class="field"><label for="finConta">Conta / forma de pagamento (automática, editável)</label><select id="finConta"><option value="">Sem conta vinculada (histórico)</option><option value="itau">Conta Itaú</option><option value="uber">Saldo Uber</option><option value="cartao">Cartão de crédito Itaú</option><option value="poupanca-itau" hidden>Poupança Itaú</option></select></div><div class="field"><label>Categoria</label><select id="finCategoria"><option>Combustível</option><option>Pedágio</option><option>Manutenção</option><option>Alimentação</option><option>Estacionamento</option><option>Seguro</option><option>Impostos e taxas</option><option>Viagens executivas</option><option>Uber</option><option>Outras receitas</option><option>Outras despesas</option></select></div><div class="field"><label for="finNovaCategoria">Nova categoria (opcional)</label><div class="actions"><input id="finNovaCategoria" maxlength="60" placeholder="Nome da categoria"/><button class="secondary" id="finAdicionarCategoria" type="button">+ Adicionar</button></div></div><button class="primary" id="finSalvar">Salvar lançamento</button><button class="secondary hidden" id="finCancelar" type="button">Cancelar edição</button></div><div class="card stack"><h3 style="margin:0">Histórico do mês</h3><div class="field"><label>Filtrar lançamentos</label><select id="finFiltro"><option value="todos">Todos</option><option value="entrada">Receitas</option><option value="saida">Despesas</option><option value="transferencia" hidden>Transferências</option></select></div><div class="scroll"><table class="table"><thead><tr><th>Categoria</th><th>Valor</th><th>Ações</th></tr></thead><tbody id="finLista"></tbody></table></div><h3 style="margin:8px 0 0">Despesas por categoria</h3><div class="result" id="finCategorias"></div><button class="secondary" id="finExportar" type="button">Exportar relatório CSV do mês</button></div></div><div class="notice" id="dreAvisoDados">Os dados financeiros são armazenados neste navegador e endereço do site. Se um lançamento não aparecer, confira o backup antes de cadastrar novamente.</div><section class="card stack" id="dreAuditoria"><h3>🔎 Conferência de lançamentos</h3><p class="muted">Mostra registros de todos os meses, inclusive contas fixas pagas. Não cria nem apaga lançamentos.</p><div class="actions"><button class="secondary" type="button" id="audAtualizar">Atualizar conferência</button><button class="secondary" type="button" id="audBackup">Baixar backup de segurança</button></div><div id="audResumo" class="notice"></div><div id="audLista" style="max-height:300px;overflow:auto"></div></section><section aria-label="Relatório financeiro" class="card stack" id="dreRelatorio">
+<dialog class="card" id="dreReceivableDialog" aria-labelledby="dreReceivableTitle"
+ style="width:min(92vw,34rem);max-height:85vh;overflow:auto">
+  <h3 id="dreReceivableTitle">Pagamento da viagem</h3>
+  <p id="dreReceivableTrip"></p>
+  <form class="stack" id="dreReceivableForm">
+    <div id="dreReceivableSetup" class="stack">
+      <label class="field">Forma de pagamento
+        <select id="dreReceivableMethod">
+          <option>Débito</option><option>Crédito à vista</option>
+          <option>Crédito parcelado</option><option>Pix</option>
+        </select>
+      </label>
+      <label class="field" id="dreReceivableInstallmentsLabel" hidden>Parcelas do cliente
+        <input type="number" id="dreReceivableInstallments" min="2" step="1" value="2">
+      </label>
+      <label class="field">Taxa prevista (R$)
+        <input type="number" id="dreReceivableFee" min="0" step=".01" value="0" required>
+      </label>
+      <label class="field">Previsão de depósito
+        <input type="date" id="dreReceivableExpected">
+      </label>
+      <p>Líquido previsto no Itaú · <strong id="dreReceivableNet"></strong></p>
+    </div>
+    <div id="dreReceivableSettlement" class="stack" hidden>
+      <label class="field">Data do crédito no Itaú
+        <input type="date" id="dreReceivableDate">
+      </label>
+      <label class="field">Valor total creditado (R$)
+        <input type="number" id="dreReceivableAmount" min=".01" step=".01">
+      </label>
+      <p class="muted">Se o repasse cair em partes, confirme quando tiver recebido o total.</p>
+    </div>
+    <p id="dreReceivableMessage" role="status"></p>
+    <div class="actions">
+      <button class="primary" id="dreReceivableSubmit">Salvar</button>
+      <button class="secondary" type="button" id="dreReceivableClose">Fechar</button>
+    </div>
+  </form>
+</dialog>
+<style>
+#dreReceivableDialog [hidden] {display:none!important}
+#dreReceivables summary {cursor:pointer}
+</style>
+<section class="page" id="financeiro"><div class="top"><h2>Meu Financeiro</h2><span class="muted">Gestão mensal · DRE Michelon</span><button class="secondary" type="button" data-pay-cadastro>📅 Cadastrar conta</button></div><details class="card" id="dreReceivables">
+  <summary><strong>Recebimentos de viagens</strong></summary>
+  <p class="muted">Confira os pagamentos pendentes de crédito no Itaú.</p>
+  <div class="stack" id="dreReceivableList"></div>
+</details>
+<div class="card stack" id="dreContas"><h3 style="margin:0">🏦 Contas e saldos</h3><div class="dre-account-grid"><div class="dre-account-tile"><small>Saldo Itaú</small><strong id="dreSaldoItau">R$ 0,00</strong></div><div class="dre-account-tile" id="reservaFinTile"><small>Poupança Itaú</small><strong id="reservaFinSaldo">—</strong></div><div class="dre-account-tile"><small>Saldo Uber</small><strong id="dreSaldoUber">R$ 0,00</strong></div><div class="dre-account-tile"><small>Total disponível nas contas</small><strong id="dreSaldoContas">R$ 0,00</strong></div><div class="dre-account-tile"><small>Limite disponível cartão Itaú</small><strong id="dreLimiteDisponivel">R$ 0,00</strong><small id="dreLimiteDetalhe">Limite total: R$ 0,00</small></div><div class="dre-account-tile"><small>Cheque especial Itaú disponível</small><strong id="dreChequeDisponivel">R$ 0,00</strong><small id="dreChequeDetalhe"></small></div></div><details><summary>⚙️ Configurar saldos iniciais e limites</summary><p class="dre-note">Informe os saldos de referência das contas. Somente lançamentos vinculados a uma conta alteram os valores calculados. Os limites de crédito ficam separados do saldo das contas.</p><div class="dre-account-settings"><div class="field"><label for="dreItauInicial">Saldo inicial Itaú (R$)</label><input id="dreItauInicial" step="0.01" type="number"/></div><div class="field"><label for="dreUberInicial">Saldo inicial Uber (R$)</label><input id="dreUberInicial" step="0.01" type="number"/></div><div class="field"><label for="dreChequeLimite">Limite total do cheque especial Itaú (R$)</label><input id="dreChequeLimite" min="0" step="0.01" type="number"/></div><div class="field"><label for="dreCartaoLimite">Limite total cartão Itaú (R$)</label><input id="dreCartaoLimite" min="0" step="0.01" type="number"/></div><div class="field"><label for="dreCartaoUsado">Valor já utilizado no cartão (R$)</label><input id="dreCartaoUsado" min="0" step="0.01" type="number"/></div></div><button class="secondary" id="dreSalvarContas" type="button">Salvar saldos e limites</button></details><p class="dre-note">Regra: corridas, contas pessoais e despesas do carro → Uber; viagens executivas recebidas → Itaú. A conta sugerida pode ser alterada antes de salvar. Lançamentos antigos sem conta vinculada permanecem no DRE, mas não alteram os saldos bancários. Saldo Uber aqui é o valor informado ou lançado na conta, não uma consulta automática à plataforma.</p></div><div class="card stack"><div class="field"><label for="finMes">Mês de referência</label><input id="finMes" type="month"/></div><div class="grid3"><div class="card"><div class="muted">Receitas recebidas</div><div class="stat" id="finReceitas">R$ 0</div></div><div class="card"><div class="muted">Despesas</div><div class="stat" id="finDespesas">R$ 0</div></div><div class="card"><div class="muted">Resultado do mês</div><div class="stat" id="finSaldo">R$ 0</div></div></div><div class="grid3"><div class="card"><div class="muted">A receber (reservas)</div><div class="stat" id="finPendente">R$ 0</div></div><div class="card"><div class="muted">Receitas do ano</div><div class="stat" id="finAnoReceitas">R$ 0</div></div><div class="card"><div class="muted">Resultado do ano</div><div class="stat" id="finAnoSaldo">R$ 0</div></div></div><div class="notice">Reservas pendentes aparecem em A receber, mas não entram no saldo nem no resultado. Recebimentos vinculados a viagens são protegidos contra exclusão isolada.</div></div><div id="dreAlertasVencimento" role="status" aria-live="polite" hidden></div><section class="card stack" id="drePagar"><h3 style="margin:0">📅 Contas a pagar</h3><p class="muted" style="margin:0">Cadastre contas futuras sem descontar do saldo. O desconto acontece somente ao confirmar o pagamento.</p><div class="pay-agenda-grid"><div class="field"><label for="payTipoConta">Tipo de conta</label><select id="payTipoConta"><option value="unica">Única — uma vez</option><option value="parcelada">Parcelada — número de parcelas</option><option value="recorrente">Recorrente mensal</option></select></div><div class="field" id="payParcelasWrap" hidden><label for="payParcelas">Número de parcelas</label><input id="payParcelas" type="number" min="2" max="360" step="1" value="2"></div><div class="field" id="payValorModoWrap" hidden><label for="payValorModo">O valor informado é</label><select id="payValorModo"><option value="parcela">Valor de cada parcela</option><option value="total">Valor total da compra</option></select></div><div class="field" id="payFimWrap" hidden><label for="payFim">Repetir até (opcional)</label><input id="payFim" type="date"><span class="muted">Deixe vazio para continuar mensalmente.</span></div></div><p class="notice" id="payAgendaPrevia" role="status"></p><div class="pay-grid"><div class="field"><label for="payModelo">Selecionar conta fixa</label><select id="payModelo"></select></div><div class="field"><label for="payNome">Nome da conta</label><input id="payNome" placeholder="Ex.: Aluguel, seguro, IPVA" maxlength="100"/></div><div class="field"><label id="payVencLabel" for="payVenc">Data de vencimento</label><input id="payVenc" type="date"/></div><div class="field"><label id="payValorLabel" for="payValor">Valor (R$)</label><input id="payValor" type="number" min="0.01" step="0.01"/></div><div class="field"><label for="payCategoria">Categoria</label><select id="payCategoria"><option>Contas fixas</option><option>Alimentação</option><option>Combustível</option><option>Manutenção</option><option>Seguro</option><option>Impostos e taxas</option><option>Outras despesas</option></select></div><div class="field"><label for="payConta">Conta de pagamento</label><select id="payConta"><option value="uber">Saldo Uber</option><option value="itau">Conta Itaú</option><option value="cartao">Cartão de crédito Itaú</option><option value="poupanca-itau" hidden>Poupança Itaú</option></select></div></div><div class="field"><label for="payNovoTipo">Adicionar novo tipo de conta</label><div class="actions"><input id="payNovoTipo" maxlength="100" placeholder="Ex.: Plano de saúde"/><button class="secondary" id="payAdicionarTipo" type="button">+ Adicionar tipo</button></div></div><button class="primary" id="paySalvar" type="button">Cadastrar conta a pagar</button><button class="secondary" id="payRepetirMes" type="button">Copiar contas fixas para o mês seguinte</button><p class="muted" style="margin:0">A cópia cria contas pendentes para o próximo mês, sem descontar saldo. Confira os valores antes de confirmar pagamentos.</p><div class="field"><label for="payMes">Consultar contas do mês</label><input type="month" id="payMes"/></div><div class="pay-summary"><span>Pendente: <strong id="payPendente">R$ 0,00</strong></span><span>Pago: <strong id="payPago">R$ 0,00</strong></span><span>Em atraso: <strong id="payAtraso">R$ 0,00</strong></span></div><div id="payLista" aria-live="polite"></div><details><summary>Gerenciar contas recorrentes</summary><p class="muted">Parar uma recorrência mantém os vencimentos já criados.</p><div id="paySeriesLista"></div></details></section><div class="cols"><div class="card stack"><h3 style="margin:0">Lançamento avulso</h3><p class="muted">Registre aqui valores já pagos ou recebidos. Para contas futuras, parcelas e recorrência, use o botão abaixo.</p><button class="secondary" type="button" data-pay-cadastro>📅 Cadastrar conta a pagar</button><div class="field"><label>Data do lançamento</label><input id="finData" type="date"/></div><input aria-hidden="true" id="finDesc" type="hidden"/><div class="field"><label>Valor (R$)</label><input id="finValor" min="0.01" step="0.01" type="number"/></div><div class="field"><label>Tipo</label><select id="finTipo"><option value="saida">Despesa</option><option value="entrada">Receita</option></select></div><div class="field"><label for="finConta">Conta / forma de pagamento (automática, editável)</label><select id="finConta"><option value="">Sem conta vinculada (histórico)</option><option value="itau">Conta Itaú</option><option value="uber">Saldo Uber</option><option value="cartao">Cartão de crédito Itaú</option><option value="poupanca-itau" hidden>Poupança Itaú</option></select></div><div class="field"><label>Categoria</label><select id="finCategoria"><option>Combustível</option><option>Pedágio</option><option>Manutenção</option><option>Alimentação</option><option>Estacionamento</option><option>Seguro</option><option>Impostos e taxas</option><option>Viagens executivas</option><option>Uber</option><option>Outras receitas</option><option>Outras despesas</option></select></div><div class="field"><label for="finNovaCategoria">Nova categoria (opcional)</label><div class="actions"><input id="finNovaCategoria" maxlength="60" placeholder="Nome da categoria"/><button class="secondary" id="finAdicionarCategoria" type="button">+ Adicionar</button></div></div><button class="primary" id="finSalvar">Salvar lançamento</button><button class="secondary hidden" id="finCancelar" type="button">Cancelar edição</button></div><div class="card stack"><h3 style="margin:0">Histórico do mês</h3><div class="field"><label>Filtrar lançamentos</label><select id="finFiltro"><option value="todos">Todos</option><option value="entrada">Receitas</option><option value="saida">Despesas</option><option value="transferencia" hidden>Transferências</option></select></div><div class="scroll"><table class="table"><thead><tr><th>Categoria</th><th>Valor</th><th>Ações</th></tr></thead><tbody id="finLista"></tbody></table></div><h3 style="margin:8px 0 0">Despesas por categoria</h3><div class="result" id="finCategorias"></div><button class="secondary" id="finExportar" type="button">Exportar relatório CSV do mês</button></div></div><div class="notice" id="dreAvisoDados">Os dados financeiros são armazenados neste navegador e endereço do site. Se um lançamento não aparecer, confira o backup antes de cadastrar novamente.</div><section class="card stack" id="dreAuditoria"><h3>🔎 Conferência de lançamentos</h3><p class="muted">Mostra registros de todos os meses, inclusive contas fixas pagas. Não cria nem apaga lançamentos.</p><div class="actions"><button class="secondary" type="button" id="audAtualizar">Atualizar conferência</button><button class="secondary" type="button" id="audBackup">Baixar backup de segurança</button></div><div id="audResumo" class="notice"></div><div id="audLista" style="max-height:300px;overflow:auto"></div></section><section aria-label="Relatório financeiro" class="card stack" id="dreRelatorio">
 <div class="dre-report-header">
 <h3 id="dreReportTitle" tabindex="-1">DRE mensal</h3>
 <div class="dre-period-toggle" role="group" aria-label="Período do DRE">
@@ -1755,7 +1872,154 @@ function registerRecoveredPayment(legacy){
   alert(matches.length?'Este pagamento já estava registrado. Nenhuma receita duplicada.':'Pagamento registrado no Itaú. A reserva e a data da viagem foram preservadas.');
  }catch(e){alert('Não foi possível registrar o pagamento. Confira o armazenamento e tente novamente.');console.error(e)}
 }
+const receivableMethods=['Débito','Crédito à vista','Crédito parcelado','Pix'];
+const receivableField=name=>$('dreReceivable'+name);
+let receivableEdit=null;
+
+function receivableToday(){
+ return new Intl.DateTimeFormat('sv-SE',{timeZone:'America/Sao_Paulo'}).format(new Date());
+}
+
+function syncReceivableInputs(){
+ const method=receivableField('Method').value;
+ const installments=receivableField('Installments');
+ installments.disabled=receivableEdit.settle||method!=='Crédito parcelado';
+ receivableField('InstallmentsLabel').hidden=installments.disabled;
+ const fee=receivableField('Fee');
+ fee.disabled=receivableEdit.settle||method==='Pix';
+ if(method==='Pix')fee.value='0';
+ const net=receivableEdit.gross-Math.round(Number(fee.value)*100);
+ receivableField('Net').textContent=net>0?money(net/100):'Confira a taxa';
+}
+
+function openTripReceivable(trip,settle=false){
+ const gross=Math.round(Number(trip.total)*100);
+ if(!Number.isSafeInteger(gross)||gross<=0)return alert('Valor da viagem inválido.');
+ const pending=trip.recebimentoPendente;
+ receivableEdit={id:trip.id,gross,settle,pending:JSON.stringify(pending??null)};
+ const setup=receivableField('Setup'),settlement=receivableField('Settlement');
+ setup.hidden=settle;
+ settlement.hidden=!settle;
+ receivableField('Trip').textContent=trip.origin+' → '+trip.dest+' · '+money(gross/100);
+ receivableField('Title').textContent=settle?'Confirmar crédito no Itaú':'Pagamento a receber no Itaú';
+ receivableField('Method').value=pending?.method||'Débito';
+ receivableField('Installments').value=pending?.installments||2;
+ receivableField('Fee').value=(pending?.feeCents||0)/100;
+ receivableField('Fee').max=(gross-1)/100;
+ receivableField('Expected').value=pending?.expected||'';
+ receivableField('Date').value=receivableToday();
+ receivableField('Date').max=receivableToday();
+ receivableField('Amount').value=(gross-(pending?.feeCents||0))/100;
+ receivableField('Amount').max=gross/100;
+ for(const name of ['Method','Expected','Date','Amount']){
+  const field=receivableField(name);
+  field.disabled=name==='Date'||name==='Amount'?!settle:settle;
+  field.required=!field.disabled&&name!=='Method';
+ }
+ receivableField('Message').textContent='';
+ receivableField('Submit').textContent=settle?'Confirmar depósito':'Salvar recebimento previsto';
+ syncReceivableInputs();
+ receivableField('Dialog').showModal();
+}
+
+function saveTripReceivable(change, action){
+ const fresh=JSON.parse(localStorage.getItem(KEY)||'null');
+ const trip=fresh?.trips?.find(item=>item.id===change.id);
+ if(!trip||trip.urban||trip.status!=='Reserva confirmada'||
+    Math.round(Number(trip.total)*100)!==change.gross||
+    JSON.stringify(trip.recebimentoPendente??null)!==change.pending||
+    fresh.finance.some(item=>item.origemId==='reserva:'+change.id)){
+  throw new Error('A viagem ou o pagamento mudou. Feche a janela e confira o registro.');
+ }
+ action(trip,fresh);
+ localStorage.setItem(KEY,JSON.stringify(fresh));
+ db=fresh;
+}
+
+receivableField('Method').addEventListener('change',syncReceivableInputs);
+receivableField('Fee').addEventListener('input',syncReceivableInputs);
+receivableField('Close').onclick=()=>receivableField('Dialog').close();
+receivableField('Form').onsubmit=event=>{
+ event.preventDefault();
+ const change=receivableEdit;
+ const method=receivableField('Method').value;
+ const fee=Math.round(Number(receivableField('Fee').value)*100);
+ const installments=method==='Crédito parcelado'?Number(receivableField('Installments').value):1;
+ const expected=receivableField('Expected').value;
+ const date=receivableField('Date').value;
+ const amount=Math.round(Number(receivableField('Amount').value)*100);
+ try{
+  saveTripReceivable(change,(trip,fresh)=>{
+   if(!change.settle){
+    if(!receivableMethods.includes(method)||!Number.isSafeInteger(fee)||fee<0||fee>=change.gross||
+       !Number.isSafeInteger(installments)||installments<1||(method==='Crédito parcelado'&&installments<2)||!expected){
+     throw new Error('Confira a forma de pagamento, a taxa, as parcelas e a previsão.');
+    }
+    trip.recebimentoPendente={method,installments,feeCents:fee,expected};
+    return;
+   }
+   if(!trip.recebimentoPendente||!date||date>receivableToday()||
+      !Number.isSafeInteger(amount)||amount<=0||amount>change.gross||(trip.recebimentoPendente.method==='Pix'&&amount!==change.gross)){
+    throw new Error('Confira a data e o total creditado no extrato.');
+   }
+   const pending=trip.recebimentoPendente;
+   fresh.finance.unshift({id:crypto.randomUUID(),origemId:'reserva:'+trip.id,
+    desc:'Viagem recebida: '+trip.origin+' → '+trip.dest,valor:amount/100,date,
+    tipo:'entrada',categoria:'Viagens executivas',conta:'itau',
+    valorBruto:change.gross/100,taxaOperadora:(change.gross-amount)/100,
+    formaPagamento:pending.method,parcelas:pending.installments});
+   trip.status='Pago';
+   trip.paymentMethod=pending.method;
+   delete trip.recebimentoPendente;
+  });
+ }catch(error){
+  receivableField('Message').textContent=error.message;
+  return;
+ }
+ receivableField('Dialog').close();
+ renderTrips();renderFin();stats();
+};
+
+function renderTripReceivables(trips,finance){
+ const list=receivableField('List');
+ list.replaceChildren();
+ const linked=new Set(finance.map(item=>item.origemId));
+ for(const trip of trips){
+  const pending=trip.recebimentoPendente;
+  if(!pending||trip.status!=='Reserva confirmada'||linked.has('reserva:'+trip.id))continue;
+  const card=document.createElement('div');
+  const title=document.createElement('strong');
+  const info=document.createElement('p');
+  const actions=document.createElement('div');
+  actions.className='actions';
+  title.textContent=trip.origin+' → '+trip.dest;
+  info.textContent=pending.method+(pending.installments>1?' · '+pending.installments+' parcelas':'')+
+   ' · Itaú · Previsão: '+pending.expected.split('-').reverse().join('/')+
+   ' · Bruto '+money(trip.total)+' · Taxa prevista '+money(pending.feeCents/100)+
+   ' · Líquido previsto '+money((Math.round(Number(trip.total)*100)-pending.feeCents)/100);
+  actions.append(btn('Confirmar depósito',()=>openTripReceivable(trip,true)),
+   btn('Editar previsão',()=>openTripReceivable(trip)),
+   btn('Cancelar previsão',()=>{
+    if(!confirm('Cancelar esta previsão e manter a viagem na agenda?'))return;
+    try{
+     saveTripReceivable({id:trip.id,gross:Math.round(Number(trip.total)*100),
+      pending:JSON.stringify(pending)},current=>{delete current.recebimentoPendente});
+    }catch(error){alert(error.message);return}
+    renderTrips();renderFin();stats();
+   }));
+  card.append(title,info,actions);list.append(card);
+ }
+ if(!list.children.length)list.textContent='Nenhum pagamento com depósito pendente.';
+}
+
 function appendTripPaymentActions(container,trip,linkedPayments){
+ if(trip.recebimentoPendente){
+  container.append(btn('Editar recebimento previsto',()=>openTripReceivable(trip)));
+  return;
+ }
+ if(!trip.urban&&trip.status==='Reserva confirmada'&&!linkedPayments.length){
+  container.append(btn('Registrar cartão ou Pix pendente',()=>openTripReceivable(trip)));
+ }
  const paid=trip.status==='Pago';
  const payment=linkedPayments.length===1?linkedPayments[0]:null;
  const canChangeAccount=paid&&trip.urban&&payment?.categoria==='Viagens particulares'&&payment.tipo==='entrada';
@@ -1827,7 +2091,7 @@ const quoteEditor=$('dreEditarCotacao'),quoteForm=$('dreEditarCotacaoForm');
 let quoteEdit=null;
 function canEditQuote(trip, payments){
  return trip.id!=='MV-2026-0001'&&!trip.historicalProtected
-   &&trip.status!=='Pago'&&!payments.length&&Number.isFinite(Number(trip.total));
+   &&trip.status!=='Pago'&&!trip.recebimentoPendente&&!payments.length&&Number.isFinite(Number(trip.total));
 }
 function canContinueUrbanRoute(trip,payments){
  const points=trip.points?.length>=2?trip.points:[trip.origin,...(trip.stops||[]),trip.dest];
@@ -1975,13 +2239,14 @@ function renderTrips(){
   if(canContinueUrbanRoute(t,linkedPayments))actions.append(btn('Continuar rota',()=>continueUrbanRoute(t)));
   if(canEditQuote(t,linkedPayments))actions.append(btn('Editar cotação',()=>editQuotePrice(t)));
   if(t.status==='Pago'&&linkedPayments.length===1){
-   actions.append(btn('Emitir recibo',()=>window.dispatchEvent(new CustomEvent('michelon-open-receipt',{detail:{urban:!!t.urban,points:Array.isArray(t.points)&&t.points.length>=2?t.points:[t.origin,t.dest],total:linkedPayments[0].valor,client:t.name||t.client||'',form:t.paymentMethod||'',date:linkedPayments[0].date}}))));
+   actions.append(btn('Emitir recibo',()=>window.dispatchEvent(new CustomEvent('michelon-open-receipt',{detail:{urban:!!t.urban,points:Array.isArray(t.points)&&t.points.length>=2?t.points:[t.origin,t.dest],total:linkedPayments[0].valorBruto??linkedPayments[0].valor,client:t.name||t.client||'',form:t.paymentMethod||'',date:linkedPayments[0].date}}))));
   }
   if(t.status==='Reserva confirmada'||t.status==='Pago')actions.append(btn('Ajustar período',()=>window.michelonOpenAvailability(t.id)));
   actions.append(btn('Excluir',()=>{
    if(t.status==='Pago'||db.finance.some(f=>f.origemId==='reserva:'+t.id)){
     alert('Esta viagem possui recebimento financeiro e não pode ser excluída isoladamente. Preserve o histórico para conciliação.');return;
    }
+   if(t.recebimentoPendente){alert('Cancele a previsão em Meu Financeiro antes de excluir a viagem.');return}
    if(confirm('Excluir esta viagem sem pagamento registrado?')){db.trips=db.trips.filter(x=>x.id!==t.id);save();renderTrips();stats()}
   }));
   const tr=document.createElement('tr');
@@ -2005,6 +2270,7 @@ function renderTrips(){
      actionCell.append(confirmReservation);
     }
     actionCell.append(btn('🗑️ Excluir',()=>{
+     if(t.recebimentoPendente){alert('Cancele a previsão em Meu Financeiro antes de excluir a viagem.');return}
      if(!confirm('Excluir esta cotação/viagem da Agenda e de Minhas Viagens? Esta ação não pode ser desfeita.'))return;
      // Revalida o vínculo financeiro no instante da exclusão.
      if(db.finance.some(f=>f.origemId==='reserva:'+t.id)){alert('Existe um recebimento vinculado. Exclusão bloqueada.');return}
@@ -2049,6 +2315,9 @@ $('rSalvar').onclick=()=>{const origem=$('rOrigem').value.trim(),destino=$('rDes
   try{const latest=JSON.parse(localStorage.getItem(KEY)||'null');if(latest&&typeof latest==='object'&&Array.isArray(latest.finance)){db.finance=latest.finance;if(Array.isArray(latest.contasPagar))db.contasPagar=latest.contasPagar;if(Array.isArray(latest.tiposContas))db.tiposContas=latest.tiposContas}}catch(e){console.warn('Falha ao atualizar financeiro',e)}
   const mes=finMonthInput.value||new Date().toISOString().slice(0,7),ano=mes.slice(0,4),filtro=$('finFiltro').value;
   const all=Array.isArray(db.finance)?db.finance:[];
+  let currentTrips;
+  try{currentTrips=JSON.parse(localStorage.getItem(KEY)||'null')?.trips}catch{}
+  renderTripReceivables(Array.isArray(currentTrips)?currentTrips:db.trips,all);
   const month=all.filter(f=>finMonth(f)===mes);
   const sum=(items,tipo)=>items.filter(f=>f.tipo===tipo).reduce((v,f)=>v+(Number(f.valor)||0),0);
   const receitas=sum(month,'entrada'),despesas=sum(month,'saida');
@@ -2071,6 +2340,12 @@ $('rSalvar').onclick=()=>{const origem=$('rOrigem').value.trim(),destino=$('rDes
     }
     else if(!protectedPayment){actions.append(btn('Editar',()=>{finEditId=f.id;$('finData').value=finDate(f);$('finDesc').value=f.desc||'';$('finValor').value=f.valor;$('finTipo').value=f.tipo;$('finConta').value=f.conta||'';finAtualizarCategorias(f.categoria||(f.tipo==='entrada'?'Outras receitas':'Outras despesas'));$('finSalvar').textContent='Salvar alterações';$('finCancelar').classList.remove('hidden');$('finValor').focus()}));actions.append(btn('Excluir',()=>{if(!confirm('Excluir este lançamento?'))return;db.finance=db.finance.filter(x=>x.id!==f.id);save();renderFin()}))}
     else{const t=document.createElement('span');t.className='muted';t.textContent=String(f.origemId||'').startsWith('contapagar:')?'Conta fixa paga — gerencie em Contas a pagar':String(f.origemId||'').startsWith('pacote:')?'Recebimento vinculado ao pacote':'Vinculado à viagem/Uber';actions.append(t)}
+    if(f.formaPagamento&&Number.isFinite(f.valorBruto)){
+      const details=document.createElement('small');details.className='muted';
+      details.textContent=f.formaPagamento+(f.parcelas>1?' · '+f.parcelas+' parcelas':'')+
+       ' · Bruto '+money(f.valorBruto)+' · Taxa '+money(f.taxaOperadora);
+      actions.append(details);
+    }
     const tr=document.createElement('tr');for(const v of [finDate(f)+' · '+(f.reciboAvulso?'Serviços extras · '+f.desc+' · '+avulsoConta(f.conta):(f.categoria||f.desc||'Sem categoria')),(f.tipo==='transferencia'?'':f.tipo==='entrada'?'+ ':'− ')+money(f.valor)]){const td=document.createElement('td');td.textContent=v;tr.append(td)}const td=document.createElement('td');td.append(actions);tr.append(td);$('finLista').append(tr)
   });
   const categories={};month.filter(f=>f.tipo==='saida').forEach(f=>{const k=f.categoria||'Sem categoria';categories[k]=(categories[k]||0)+(Number(f.valor)||0)});
